@@ -555,23 +555,23 @@ export const AdminLayout = () => {
               </AnimatePresence>
             </div>
 
-            {/* Admin Profile Pill (Sleek Redesigned Gold Badge) */}
+            {/* Admin Profile Avatar (Only Logo) */}
             <div
+              title={`${currentUser?.name || 'Admin'} - ${t('admin.superAdmin') || 'Bosh Boshqaruvchi'}`}
+              className="tap-target-44"
               style={{
+                width: '44px',
+                height: '44px',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.6rem',
-                padding: '0.3rem 0.65rem',
-                borderRadius: 'var(--radius-full)',
-                border: '1px solid var(--border-gold-subtle)',
-                background: 'radial-gradient(circle at center, rgba(212, 175, 55, 0.12) 0%, rgba(10, 11, 14, 0.85) 100%)',
-                boxShadow: '0 2px 10px rgba(0, 0, 0, 0.5)'
+                justifyContent: 'center',
+                cursor: 'pointer'
               }}
             >
               <div
                 style={{
-                  width: '2.25rem',
-                  height: '2.25rem',
+                  width: '2.4rem',
+                  height: '2.4rem',
                   borderRadius: '50%',
                   background: 'linear-gradient(135deg, #fce7a4 0%, #d4af37 50%, #8c6d23 100%)',
                   color: '#06070a',
@@ -580,21 +580,14 @@ export const AdminLayout = () => {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: '0.8rem',
-                  boxShadow: '0 0 10px rgba(212, 175, 55, 0.45)',
-                  border: '1.5px solid rgba(255, 255, 255, 0.4)',
-                  flexShrink: 0
+                  fontSize: '0.85rem',
+                  boxShadow: '0 0 12px rgba(212, 175, 55, 0.45)',
+                  border: '2px solid rgba(255, 255, 255, 0.5)',
+                  flexShrink: 0,
+                  transition: 'transform 0.2s ease, box-shadow 0.2s ease'
                 }}
               >
                 {currentUser?.name ? currentUser.name.slice(0, 2).toUpperCase() : 'AD'}
-              </div>
-              <div className="hidden sm:flex" style={{ flexDirection: 'column' }}>
-                <span style={{ fontWeight: 700, fontSize: '0.78rem', color: '#ffffff', lineHeight: 1.2 }}>
-                  {currentUser?.name || 'Admin'}
-                </span>
-                <span style={{ fontSize: '0.62rem', color: 'var(--color-gold-400)', fontWeight: 600, letterSpacing: '0.05em' }}>
-                  {t('admin.superAdmin') || 'Bosh Boshqaruvchi'}
-                </span>
               </div>
             </div>
           </div>
