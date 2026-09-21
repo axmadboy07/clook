@@ -547,7 +547,7 @@ export const ProfilePage = () => {
 
           {/* TAB: SETTINGS */}
           {activeTab === 'settings' && (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.5rem' }}>
               {/* Profile Details Form */}
               <form onSubmit={handleSaveProfile} className="glass-panel" style={{ padding: '1.75rem', borderRadius: 'var(--radius-2xl)', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>

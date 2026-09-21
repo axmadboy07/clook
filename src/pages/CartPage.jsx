@@ -135,17 +135,17 @@ export const CartPage = () => {
                   justifyContent: 'space-between'
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', minWidth: '240px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', minWidth: 0, flex: '1 1 220px' }}>
                   <img
                     src={item.watch.images?.[0]}
                     alt={item.watch.name}
-                    style={{ width: '6rem', height: '6rem', objectFit: 'contain', borderRadius: 'var(--radius-xl)', border: '1px solid var(--border-subtle)', flexShrink: 0 }}
+                    style={{ width: '5rem', height: '5rem', objectFit: 'contain', borderRadius: 'var(--radius-xl)', border: '1px solid var(--border-subtle)', flexShrink: 0 }}
                   />
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', minWidth: 0 }}>
                     <span style={{ fontSize: '0.7rem', color: 'var(--color-gold-400)' }}>
                       {item.watch.collection || item.watch.category}
                     </span>
-                    <h3 style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '1.1rem', color: 'var(--text-primary)', margin: 0 }}>
+                    <h3 style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '1.05rem', color: 'var(--text-primary)', margin: 0, wordBreak: 'break-word' }}>
                       {item.watch.name}
                     </h3>
                     <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
@@ -160,31 +160,33 @@ export const CartPage = () => {
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '1.5rem', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', maxWidth: '100%', gap: '1rem', flexWrap: 'wrap' }}>
                   {/* Quantity Control */}
                   <div style={{ display: 'flex', alignItems: 'center', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-lg)', backgroundColor: 'var(--bg-obsidian-950)' }}>
                     <button
                       onClick={() => dispatch(updateQuantity({ index, quantity: item.quantity - 1 }))}
-                      className="btn-glass"
-                      style={{ padding: '0.35rem 0.6rem', border: 'none' }}
+                      className="btn-glass tap-target-44"
+                      style={{ width: '40px', height: '40px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none' }}
+                      aria-label="Decrease quantity"
                     >
-                      <Minus size={13} />
+                      <Minus size={14} />
                     </button>
-                    <span style={{ padding: '0 0.75rem', fontSize: '0.8rem', color: 'var(--text-primary)' }}>
+                    <span style={{ padding: '0 0.75rem', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-primary)' }}>
                       {item.quantity}
                     </span>
                     <button
                       onClick={() => dispatch(updateQuantity({ index, quantity: item.quantity + 1 }))}
-                      className="btn-glass"
-                      style={{ padding: '0.35rem 0.6rem', border: 'none' }}
+                      className="btn-glass tap-target-44"
+                      style={{ width: '40px', height: '40px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none' }}
+                      aria-label="Increase quantity"
                     >
-                      <Plus size={13} />
+                      <Plus size={14} />
                     </button>
                   </div>
 
                   {/* Price */}
                   <div style={{ textAlign: 'right' }}>
-                    <div className="gold-gradient-text" style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '1.25rem' }}>
+                    <div className="gold-gradient-text" style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '1.2rem' }}>
                       {formatPrice(item.watch.price * item.quantity)}
                     </div>
                     <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>
@@ -195,9 +197,10 @@ export const CartPage = () => {
                   {/* Remove Button */}
                   <button
                     onClick={() => dispatch(removeFromCart(index))}
-                    className="btn-glass"
-                    style={{ padding: '0.5rem', color: 'var(--color-ruby-400)', borderRadius: '50%' }}
+                    className="btn-glass tap-target-44"
+                    style={{ width: '40px', height: '40px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-ruby-400)', borderRadius: '50%' }}
                     title="Remove from vault"
+                    aria-label="Remove item"
                   >
                     <Trash2 size={16} />
                   </button>

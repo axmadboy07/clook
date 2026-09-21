@@ -88,7 +88,9 @@ export const CartDrawer = () => {
               </div>
               <button
                 onClick={() => dispatch(toggleCartDrawer(false))}
-                style={{ color: 'var(--color-platinum-400)', padding: '0.5rem', cursor: 'pointer' }}
+                className="icon-button"
+                style={{ minWidth: '44px', minHeight: '44px', width: '44px', height: '44px' }}
+                title="Yopish"
               >
                 <X size={20} />
               </button>

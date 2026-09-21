@@ -183,17 +183,19 @@ export const CheckoutPage = () => {
 
         {/* STEP 1 & 2: SHIPPING / PAYMENT GRID */}
         {currentStep !== 'confirmation' && (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 360px), 1fr))', gap: '2rem' }}>
             {/* Left Column: Form Steps */}
             <div>
               {currentStep === 'shipping' && (
-                <form onSubmit={handleProceedToPayment} className="glass-panel" style={{ padding: '2rem', borderRadius: 'var(--radius-3xl)', display: 'flex', flexDirection: 'column', gap: '1.25rem', border: '1px solid var(--border-gold-subtle)' }}>
+                <form onSubmit={handleProceedToPayment} className="glass-panel" style={{ padding: 'clamp(1.25rem, 4vw, 2rem)', borderRadius: 'var(--radius-3xl)', display: 'flex', flexDirection: 'column', gap: '1.25rem', border: '1px solid var(--border-gold-subtle)' }}>
                   <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.35rem', margin: 0, color: 'var(--text-primary)' }}>
                     {t('checkout.shippingDetails') || 'Yetkazib berish ma’lumotlari'}
                   </h2>
 
                   <div>
-                    <label className="luxury-label">{t('auth.fullName') || 'To‘liq ismingiz *'}</label>
+                    <label className="luxury-label" style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.35rem' }}>
+                      {t('auth.fullName') || 'To‘liq ismingiz *'}
+                    </label>
                     <input
                       type="text"
                       required
@@ -201,48 +203,52 @@ export const CheckoutPage = () => {
                       onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                       placeholder="Alisher Navoiy"
                       className="luxury-input"
-                      style={{ width: '100%' }}
                     />
                     {formErrors.fullName && <div style={{ color: '#f87171', fontSize: '0.75rem', marginTop: '0.25rem' }}>{formErrors.fullName}</div>}
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: '0.75rem' }}>
                     <div>
-                      <label className="luxury-label">{t('auth.phone') || 'Telefon *'}</label>
+                      <label className="luxury-label" style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.35rem' }}>
+                        {t('auth.phone') || 'Telefon *'}
+                      </label>
                       <input
                         type="tel"
                         required
+                        inputMode="tel"
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                         placeholder="+998 90 123 45 67"
                         className="luxury-input"
-                        style={{ width: '100%' }}
                       />
                       {formErrors.phone && <div style={{ color: '#f87171', fontSize: '0.75rem', marginTop: '0.25rem' }}>{formErrors.phone}</div>}
                     </div>
                     <div>
-                      <label className="luxury-label">{t('auth.email') || 'Email *'}</label>
+                      <label className="luxury-label" style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.35rem' }}>
+                        {t('auth.email') || 'Email *'}
+                      </label>
                       <input
                         type="email"
                         required
+                        autoCapitalize="none"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         placeholder="masalan@aura.uz"
                         className="luxury-input"
-                        style={{ width: '100%' }}
                       />
                       {formErrors.email && <div style={{ color: '#f87171', fontSize: '0.75rem', marginTop: '0.25rem' }}>{formErrors.email}</div>}
                     </div>
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: '0.75rem' }}>
                     <div>
-                      <label className="luxury-label">{t('auth.city') || 'Shahar'}</label>
+                      <label className="luxury-label" style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.35rem' }}>
+                        {t('auth.city') || 'Shahar'}
+                      </label>
                       <select
                         value={formData.city}
                         onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                         className="luxury-input"
-                        style={{ width: '100%' }}
                       >
                         <option value="Toshkent shahri">Toshkent shahri</option>
                         <option value="Samarqand">Samarqand</option>
@@ -254,7 +260,9 @@ export const CheckoutPage = () => {
                       </select>
                     </div>
                     <div>
-                      <label className="luxury-label">{t('auth.address') || 'Manzil *'}</label>
+                      <label className="luxury-label" style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.35rem' }}>
+                        {t('auth.address') || 'Manzil *'}
+                      </label>
                       <input
                         type="text"
                         required
@@ -262,7 +270,6 @@ export const CheckoutPage = () => {
                         onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                         placeholder="Ko‘cha, uy raqami"
                         className="luxury-input"
-                        style={{ width: '100%' }}
                       />
                       {formErrors.address && <div style={{ color: '#f87171', fontSize: '0.75rem', marginTop: '0.25rem' }}>{formErrors.address}</div>}
                     </div>

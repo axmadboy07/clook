@@ -47,7 +47,7 @@ export const QuickViewModal = ({ watch, onClose }) => {
           style={{
             maxWidth: '900px',
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
             padding: 0,
             overflow: 'hidden',
             border: '1px solid var(--border-gold-subtle)'
@@ -56,8 +56,8 @@ export const QuickViewModal = ({ watch, onClose }) => {
           {/* Close button */}
           <button
             onClick={onClose}
-            className="btn-glass"
-            style={{ position: 'absolute', top: '1rem', right: '1rem', zIndex: 30, padding: '0.5rem', borderRadius: '50%' }}
+            className="btn-glass modal-close-btn tap-target-44"
+            style={{ position: 'absolute', top: '0.75rem', right: '0.75rem', zIndex: 30, width: '44px', height: '44px', padding: 0, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             aria-label="Close modal"
           >
             <X size={20} />
@@ -198,10 +198,15 @@ export const QuickViewModal = ({ watch, onClose }) => {
               <div style={{ display: 'flex', gap: '0.75rem' }}>
                 <button
                   onClick={() => dispatch(toggleWishlist(watch))}
-                  className="btn-glass"
+                  className="btn-glass tap-target-44"
                   style={{
-                    padding: '0.75rem',
+                    width: '44px',
+                    height: '44px',
+                    padding: 0,
                     borderRadius: 'var(--radius-lg)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                     borderColor: wishlisted ? 'var(--color-rosegold-400)' : 'var(--border-subtle)',
                     color: wishlisted ? 'var(--color-rosegold-400)' : 'var(--text-secondary)'
                   }}
@@ -212,15 +217,16 @@ export const QuickViewModal = ({ watch, onClose }) => {
 
                 <button
                   onClick={handleAddAndClose}
-                  className="btn-gold"
+                  className="btn-gold tap-target-44"
                   style={{
                     flex: 1,
+                    minHeight: '44px',
                     padding: '0.75rem',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     gap: '0.5rem',
-                    fontSize: '0.75rem'
+                    fontSize: '0.8rem'
                   }}
                 >
                   <ShoppingBag size={16} />
@@ -233,9 +239,10 @@ export const QuickViewModal = ({ watch, onClose }) => {
                   onClose();
                   navigate(`/watch/${watch.id}`);
                 }}
-                className="btn-glass"
+                className="btn-glass tap-target-44"
                 style={{
                   width: '100%',
+                  minHeight: '44px',
                   padding: '0.65rem',
                   fontSize: '0.75rem',
                   display: 'flex',

@@ -111,49 +111,97 @@
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 50;
-  background: rgba(0, 0, 0, 0.8);
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 1rem;
+  box-sizing: border-box;
 }
 
 .modal-content {
   background: linear-gradient(145deg, rgba(16, 19, 26, 0.98), rgba(10, 11, 15, 0.99));
   border: 1px solid var(--border-gold-medium);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-2xl);
   box-shadow: var(--shadow-dark-2xl), var(--shadow-gold-subtle);
   width: 100%;
   max-width: 840px;
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 640px) {
+  .modal-backdrop {
+    padding: 0;
+    align-items: flex-end;
+  }
+  .modal-content {
+    max-height: 94vh;
+    height: 94vh;
+    border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+    border-bottom: none;
+  }
 }
 
 .modal-close-btn {
   position: absolute;
-  top: 1.25rem;
-  right: 1.25rem;
-  width: 36px;
-  height: 36px;
+  top: 1rem;
+  right: 1rem;
+  min-width: 44px;
+  min-height: 44px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   border: 1px solid var(--border-platinum-subtle);
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--color-platinum-400);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-platinum-300);
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all var(--transition-fast);
-  z-index: 20;
+  z-index: 30;
+  cursor: pointer;
+  touch-action: manipulation;
 }
 
 .modal-close-btn:hover {
-  background: rgba(239, 68, 68, 0.15);
+  background: rgba(239, 68, 68, 0.2);
   color: var(--color-red-400);
-  border-color: rgba(239, 68, 68, 0.4);
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+.modal-close-btn:active {
+  transform: scale(0.92);
+}
+
+/* Sticky Mobile Bottom Action Bar */
+.sticky-mobile-bottom-bar {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .sticky-mobile-bottom-bar {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 45;
+    background: rgba(8, 10, 14, 0.95);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid var(--border-gold-subtle);
+    padding: 0.75rem 1rem calc(0.75rem + var(--safe-area-bottom));
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.8);
+  }
 }
 
 /* 3D Customizer Banner */
@@ -260,10 +308,78 @@
   border-color: var(--border-platinum-medium);
 }
 
-.filter-category-pill.active {
-  background: linear-gradient(135deg, var(--color-gold-400), var(--color-gold-600));
-  border-color: var(--color-gold-400);
-  color: var(--bg-obsidian-950);
-  font-weight: 700;
-  box-shadow: var(--shadow-gold-glow);
+/* Catalog Product Grid - 2 Columns on Mobile */
+.catalog-product-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 1200px) {
+  .catalog-product-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+}
+
+@media (max-width: 860px) {
+  .catalog-product-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.875rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .catalog-product-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.625rem;
+  }
+}
+
+/* Mobile Filter Drawer */
+.mobile-filter-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.mobile-filter-content {
+  width: 100%;
+  max-width: 440px;
+  height: 100%;
+  background: var(--bg-obsidian-900);
+  border-left: 1px solid var(--border-gold-subtle);
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 640px) {
+  .mobile-filter-content {
+    max-width: 100vw;
+    border-left: none;
+  }
+}
+
+/* Floating Concierge Chat responsive */
+.floating-chat-container {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 90;
+  user-select: none;
+}
+
+@media (max-width: 768px) {
+  .floating-chat-container {
+    bottom: calc(1rem + var(--safe-area-bottom));
+    right: 1rem;
+  }
 }

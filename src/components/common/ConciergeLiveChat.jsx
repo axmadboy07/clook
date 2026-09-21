@@ -85,7 +85,7 @@ export const ConciergeLiveChat = () => {
   }, [messages, isTyping, isOpen]);
 
   return (
-    <div style={{ position: 'fixed', bottom: '2rem', right: '2rem', zIndex: 1000, userSelect: 'none' }}>
+    <div className="floating-chat-container">
       {/* Floating Chat Modal */}
       <AnimatePresence>
         {isOpen && (
@@ -95,9 +95,8 @@ export const ConciergeLiveChat = () => {
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             className="glass-panel"
             style={{
-              width: 'min(90vw, 380px)',
-              height: '520px',
-              maxHeight: '580px',
+              width: 'min(92vw, 380px)',
+              height: 'min(520px, 75vh)',
               borderRadius: 'var(--radius-2xl)',
               display: 'flex',
               flexDirection: 'column',
@@ -109,7 +108,7 @@ export const ConciergeLiveChat = () => {
             }}
           >
             {/* Header */}
-            <div style={{ padding: '1rem', backgroundColor: 'var(--bg-obsidian-950)', borderBottom: '1px solid var(--border-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ padding: '0.85rem 1rem', backgroundColor: 'var(--bg-obsidian-950)', borderBottom: '1px solid var(--border-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: '50%', background: 'radial-gradient(circle at center, rgba(212,175,55,0.3) 0%, var(--bg-obsidian-900) 100%)', border: '1px solid var(--color-gold-400)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-gold-400)' }}>
                   <Bot size={20} />
@@ -126,8 +125,8 @@ export const ConciergeLiveChat = () => {
               </div>
               <button
                 onClick={() => setIsOpen(false)}
-                className="btn-glass"
-                style={{ padding: '0.4rem', borderRadius: '50%' }}
+                className="btn-glass modal-close-btn tap-target-44"
+                style={{ width: '44px', height: '44px', padding: 0, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                 aria-label="Close chat"
               >
                 <X size={18} />

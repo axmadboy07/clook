@@ -60,16 +60,16 @@ export const LoginPage = () => {
   };
 
   return (
-    <div style={{ minHeight: '85vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '3rem 1rem' }}>
+    <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem 1rem' }}>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
         className="glass-panel"
-        style={{ width: '100%', maxWidth: '440px', padding: '2.5rem', borderRadius: 'var(--radius-3xl)', display: 'flex', flexDirection: 'column', gap: '1.5rem', border: '1px solid var(--border-gold-subtle)', boxShadow: 'var(--shadow-gold)' }}
+        style={{ width: '100%', maxWidth: '440px', padding: 'clamp(1.5rem, 6vw, 2.5rem)', borderRadius: 'var(--radius-3xl)', display: 'flex', flexDirection: 'column', gap: '1.25rem', border: '1px solid var(--border-gold-subtle)', boxShadow: 'var(--shadow-gold)' }}
       >
         {/* Header */}
-        <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem' }}>
+        <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
           <div style={{ width: '48px', height: '48px', borderRadius: 'var(--radius-xl)', backgroundColor: 'rgba(212, 175, 55, 0.1)', border: '1px solid rgba(212, 175, 55, 0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-gold-400)' }}>
             <Lock size={22} />
           </div>
@@ -98,35 +98,40 @@ export const LoginPage = () => {
         {/* Login Form */}
         <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <div>
-            <label className="luxury-label">{t('auth.emailOrPhone') || 'Email yoki Telefon raqam'}</label>
+            <label className="luxury-label" style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.35rem' }}>
+              {t('auth.emailOrPhone') || 'Email yoki Telefon raqam'}
+            </label>
             <input
               type="text"
               required
+              autoCapitalize="none"
+              autoCorrect="off"
               value={identifier}
               onChange={(e) => setIdentifier(e.target.value)}
               placeholder="masalan@aura.uz yoki +998 90 123 45 67"
               className="luxury-input"
-              style={{ width: '100%' }}
             />
           </div>
 
           <div>
-            <label className="luxury-label">{t('auth.password') || 'Maxfiy parol'}</label>
+            <label className="luxury-label" style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.35rem' }}>
+              {t('auth.password') || 'Maxfiy parol'}
+            </label>
             <input
               type="password"
               required
+              autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               className="luxury-input"
-              style={{ width: '100%' }}
             />
           </div>
 
           <button
             type="submit"
-            className="btn btn-gold"
-            style={{ width: '100%', padding: '0.85rem', marginTop: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
+            className="btn btn-gold tap-target-44"
+            style={{ width: '100%', padding: '0.75rem', marginTop: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', minHeight: '44px' }}
           >
             <span>{t('nav.login') || 'Kirish'}</span>
             <ArrowRight size={14} />
@@ -134,9 +139,9 @@ export const LoginPage = () => {
         </form>
 
         {/* Footer Link */}
-        <div style={{ textAlign: 'center', fontSize: '0.8rem', color: 'var(--text-muted)', paddingTop: '1rem', borderTop: '1px solid var(--border-subtle)' }}>
+        <div style={{ textAlign: 'center', fontSize: '0.8rem', color: 'var(--text-muted)', paddingTop: '0.85rem', borderTop: '1px solid var(--border-subtle)' }}>
           <span>{t('auth.noAccount') || 'Hisobingiz yo‘qmi?'} </span>
-          <Link to="/register" style={{ color: 'var(--color-gold-400)', fontWeight: 600, textDecoration: 'none' }}>
+          <Link to="/register" style={{ color: 'var(--color-gold-400)', fontWeight: 600, textDecoration: 'none', display: 'inline-block', padding: '0.25rem 0.5rem' }}>
             {t('nav.register') || 'Ro‘yxatdan o‘tish'}
           </Link>
         </div>

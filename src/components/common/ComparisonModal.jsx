@@ -79,8 +79,8 @@ export const ComparisonModal = () => {
               {items.length > 0 && (
                 <button
                   onClick={() => dispatch(clearCompare())}
-                  className="btn-glass"
-                  style={{ fontSize: '0.75rem', padding: '0.4rem 0.75rem', color: 'var(--color-ruby-400)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
+                  className="btn-glass tap-target-44"
+                  style={{ minHeight: '44px', fontSize: '0.75rem', padding: '0.4rem 0.75rem', color: 'var(--color-ruby-400)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
                 >
                   <Trash2 size={13} />
                   <span>{t('wishlist.remove') || 'Tozalash'}</span>
@@ -88,8 +88,8 @@ export const ComparisonModal = () => {
               )}
               <button
                 onClick={() => dispatch(toggleCompareModal(false))}
-                className="btn-glass"
-                style={{ padding: '0.5rem', borderRadius: '50%' }}
+                className="btn-glass modal-close-btn tap-target-44"
+                style={{ width: '44px', height: '44px', padding: 0, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                 aria-label="Close modal"
               >
                 <X size={20} />

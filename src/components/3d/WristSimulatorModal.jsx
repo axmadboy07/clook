@@ -71,7 +71,7 @@ export const WristSimulatorModal = ({
           style={{
             maxWidth: '900px',
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
             padding: 0,
             overflow: 'hidden',
             border: '1px solid var(--border-gold-subtle)'
@@ -80,8 +80,8 @@ export const WristSimulatorModal = ({
           {/* Close button */}
           <button
             onClick={onClose}
-            className="btn-glass"
-            style={{ position: 'absolute', top: '1rem', right: '1rem', zIndex: 30, padding: '0.5rem', borderRadius: '50%' }}
+            className="btn-glass modal-close-btn tap-target-44"
+            style={{ position: 'absolute', top: '0.75rem', right: '0.75rem', zIndex: 30, width: '44px', height: '44px', padding: 0, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             aria-label="Close modal"
           >
             <X size={20} />

@@ -473,26 +473,44 @@ export const CatalogPage = () => {
         </div>
 
         {/* Catalog Results Bar */}
-        <div className="glass-panel" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.75rem 1.25rem', borderRadius: 'var(--radius-xl)', fontSize: '0.8rem' }}>
+        <div className="glass-panel" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.75rem 1.25rem', borderRadius: 'var(--radius-xl)', fontSize: '0.8rem', flexWrap: 'wrap', gap: '0.5rem' }}>
           <span style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
             <span className="text-secondary">Natijalar:</span>
             <strong className="gold-gradient-text" style={{ fontSize: '1rem' }}>{filteredWatches.length}</strong>
-            <span className="text-secondary">ta Shveysariya va premium soat</span>
+            <span className="text-secondary">ta premium soat</span>
           </span>
-          {hasActiveFilters && (
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            {/* Mobile Filter Sheet Trigger Button */}
             <button
-              onClick={resetFilters}
-              style={{ background: 'transparent', border: 'none', color: 'var(--color-gold-400)', fontSize: '0.75rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem', textDecoration: 'underline' }}
+              onClick={() => setIsMobileFilterOpen(true)}
+              className="btn-gold show-on-mobile-flex"
+              style={{ padding: '0.45rem 0.85rem', fontSize: '0.75rem', gap: '0.35rem', minHeight: '36px' }}
             >
-              <RotateCcw size={12} />
-              <span>{t('filters.clearFilters') || 'Filtrlarni tozalash'}</span>
+              <SlidersHorizontal size={14} />
+              <span>Filtrlar</span>
+              {activeFilterCount > 0 && (
+                <span style={{ width: '16px', height: '16px', borderRadius: '50%', background: '#000', color: '#fff', fontSize: '0.625rem', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  {activeFilterCount}
+                </span>
+              )}
             </button>
-          )}
+
+            {hasActiveFilters && (
+              <button
+                onClick={resetFilters}
+                style={{ background: 'transparent', border: 'none', color: 'var(--color-gold-400)', fontSize: '0.75rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem', textDecoration: 'underline' }}
+              >
+                <RotateCcw size={12} />
+                <span>{t('filters.clearFilters') || 'Tozalash'}</span>
+              </button>
+            )}
+          </div>
         </div>
 
-        {/* Full-Width Watch Product Grid */}
+        {/* Full-Width Watch Product Grid (2 Columns on Mobile) */}
         {filteredWatches.length === 0 ? (
-          <div className="glass-panel" style={{ padding: '4rem 2rem', textAlign: 'center', borderRadius: 'var(--radius-3xl)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+          <div className="glass-panel" style={{ padding: '3.5rem 1.5rem', textAlign: 'center', borderRadius: 'var(--radius-3xl)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
             <div style={{ width: '4rem', height: '4rem', borderRadius: '50%', backgroundColor: 'rgba(212,175,55,0.1)', color: 'var(--color-gold-400)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Filter size={28} />
             </div>
@@ -505,22 +523,13 @@ export const CatalogPage = () => {
             <button
               onClick={resetFilters}
               className="btn-gold"
-              style={{ padding: '0.65rem 1.5rem', fontSize: '0.75rem' }}
+              style={{ padding: '0.65rem 1.5rem', fontSize: '0.75rem', minHeight: '44px' }}
             >
               {t('filters.clearFilters') || 'Filtrlarni tozalash'}
             </button>
           </div>
         ) : (
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-              gap: '1.5rem',
-              width: '100%',
-              maxWidth: '100%',
-              boxSizing: 'border-box'
-            }}
-          >
+          <div className="catalog-product-grid">
             {filteredWatches.map((watch) => (
               <ProductCard
                 key={watch.id}
@@ -530,6 +539,139 @@ export const CatalogPage = () => {
             ))}
           </div>
         )}
+
+        {/* Mobile Dedicated Filter Bottom-Sheet Modal */}
+        <AnimatePresence>
+          {isMobileFilterOpen && (
+            <div className="mobile-filter-drawer" onClick={() => setIsMobileFilterOpen(false)}>
+              <motion.div
+                initial={{ y: '100%' }}
+                animate={{ y: 0 }}
+                exit={{ y: '100%' }}
+                transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                className="mobile-filter-content"
+                onClick={(e) => e.stopPropagation()}
+                style={{ borderRadius: 'var(--radius-2xl) var(--radius-2xl) 0 0' }}
+              >
+                {/* Header */}
+                <div style={{ padding: '1.25rem', borderBottom: '1px solid var(--border-platinum-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <SlidersHorizontal size={18} style={{ color: 'var(--color-gold-400)' }} />
+                    <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.15rem', color: '#fff', margin: 0 }}>
+                      Katalog Filtrlari
+                    </h3>
+                  </div>
+                  <button
+                    onClick={() => setIsMobileFilterOpen(false)}
+                    className="icon-button"
+                    style={{ minWidth: '40px', minHeight: '40px', width: '40px', height: '40px' }}
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+
+                {/* Filter Controls Body */}
+                <div style={{ padding: '1.25rem', flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                  {/* Category */}
+                  <div>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-gold-400)', textTransform: 'uppercase', display: 'block', marginBottom: '0.4rem' }}>
+                      Kategoriya
+                    </label>
+                    <select
+                      value={selectedCategory}
+                      onChange={(e) => setSelectedCategory(e.target.value)}
+                      className="luxury-input"
+                    >
+                      {CATEGORIES.map((cat) => (
+                        <option key={cat} value={cat}>
+                          {cat === 'All Categories' ? 'Barcha Kategoriyalar' : cat}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Brand */}
+                  <div>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-gold-400)', textTransform: 'uppercase', display: 'block', marginBottom: '0.4rem' }}>
+                      Brend
+                    </label>
+                    <select
+                      value={selectedBrand}
+                      onChange={(e) => setSelectedBrand(e.target.value)}
+                      className="luxury-input"
+                    >
+                      {BRANDS.map((b) => (
+                        <option key={b} value={b}>{b}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Price Slider */}
+                  <div className="glass-panel" style={{ padding: '1rem', borderRadius: 'var(--radius-xl)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontSize: '0.8rem' }}>
+                      <span style={{ color: 'var(--color-gold-400)', fontWeight: 700 }}>Maksimal Narx:</span>
+                      <strong className="gold-gradient-text">{formatPrice(maxPrice)}</strong>
+                    </div>
+                    <input
+                      type="range"
+                      min={50}
+                      max={75000}
+                      step={250}
+                      value={maxPrice}
+                      onChange={(e) => setMaxPrice(Number(e.target.value))}
+                      style={{ width: '100%', accentColor: 'var(--color-gold-400)', minHeight: '36px' }}
+                    />
+                  </div>
+
+                  {/* Movement */}
+                  <div>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-gold-400)', textTransform: 'uppercase', display: 'block', marginBottom: '0.4rem' }}>
+                      Mexanizm
+                    </label>
+                    <select
+                      value={selectedMovement}
+                      onChange={(e) => setSelectedMovement(e.target.value)}
+                      className="luxury-input"
+                    >
+                      {movements.map((m) => (
+                        <option key={m} value={m}>{m === 'All' ? 'Barchasi' : m}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* In stock */}
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.75rem 1rem', background: 'var(--bg-obsidian-950)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-platinum-subtle)' }}>
+                    <span style={{ fontSize: '0.85rem', color: '#fff' }}>Faqat mavjud bo‘lganlar</span>
+                    <input
+                      type="checkbox"
+                      checked={onlyInStock}
+                      onChange={(e) => setOnlyInStock(e.target.checked)}
+                      style={{ width: '20px', height: '20px', accentColor: 'var(--color-emerald-500)', cursor: 'pointer' }}
+                    />
+                  </div>
+                </div>
+
+                {/* Sticky Apply Button at Bottom */}
+                <div style={{ padding: '1rem 1.25rem calc(1rem + var(--safe-area-bottom))', borderTop: '1px solid var(--border-platinum-subtle)', background: 'var(--bg-obsidian-950)', display: 'flex', gap: '0.75rem' }}>
+                  <button
+                    onClick={resetFilters}
+                    className="btn-outline-gold"
+                    style={{ flex: 1, padding: '0.75rem', minHeight: '44px' }}
+                  >
+                    Tozalash
+                  </button>
+                  <button
+                    onClick={() => setIsMobileFilterOpen(false)}
+                    className="btn-gold"
+                    style={{ flex: 2, padding: '0.75rem', minHeight: '44px' }}
+                  >
+                    Filtrlarni qo‘llash ({filteredWatches.length})
+                  </button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
 
         {/* Full-Width VIP Concierge & Chronos Warranty Card Banner */}
         <div className="glass-panel" style={{ padding: '2rem', borderRadius: 'var(--radius-3xl)', border: '1px solid var(--border-gold-subtle)', marginTop: '2rem' }}>

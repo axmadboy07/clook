@@ -64,49 +64,53 @@ export const ProductCard = ({ watch, onQuickView }) => {
       <div className="product-card glass-panel glass-panel-hover" style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', position: 'relative', overflow: 'hidden' }}>
         
         {/* Top Badges */}
-        <div style={{ position: 'absolute', top: '0.75rem', left: '0.75rem', zIndex: 20, display: 'flex', flexDirection: 'column', gap: '0.375rem', pointerEvents: 'none' }}>
+        <div style={{ position: 'absolute', top: '0.5rem', left: '0.5rem', zIndex: 20, display: 'flex', flexDirection: 'column', gap: '0.25rem', pointerEvents: 'none', maxWidth: '65%' }}>
           {watch.limitedEdition && (
             <span
               className="badge-gold"
               style={{
-                fontSize: '0.65rem',
+                fontSize: '0.6rem',
                 fontWeight: 700,
-                backgroundColor: 'rgba(8, 10, 14, 0.88)',
+                backgroundColor: 'rgba(8, 10, 14, 0.92)',
                 backdropFilter: 'blur(8px)',
                 WebkitBackdropFilter: 'blur(8px)',
                 border: '1px solid rgba(212, 175, 55, 0.6)',
                 color: 'var(--color-gold-300)',
                 boxShadow: '0 4px 10px rgba(0,0,0,0.6)',
-                padding: '0.2rem 0.5rem',
-                borderRadius: '9999px'
+                padding: '0.15rem 0.4rem',
+                borderRadius: '9999px',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis'
               }}
             >
-              Limited Edition {watch.editionCount ? `(${watch.editionCount})` : ''}
+              Limited {watch.editionCount ? `(${watch.editionCount})` : ''}
             </span>
           )}
           {watch.isNewArrival && !watch.limitedEdition && (
             <span
               className="badge-amber"
               style={{
-                fontSize: '0.65rem',
+                fontSize: '0.6rem',
                 fontWeight: 700,
-                backgroundColor: 'rgba(8, 10, 14, 0.88)',
+                backgroundColor: 'rgba(8, 10, 14, 0.92)',
                 backdropFilter: 'blur(8px)',
                 WebkitBackdropFilter: 'blur(8px)',
                 border: '1px solid rgba(245, 158, 11, 0.6)',
                 color: '#fbbf24',
                 boxShadow: '0 4px 10px rgba(0,0,0,0.6)',
-                padding: '0.2rem 0.5rem',
-                borderRadius: '9999px'
+                padding: '0.15rem 0.4rem',
+                borderRadius: '9999px',
+                whiteSpace: 'nowrap'
               }}
             >
-              New Calibre
+              New
             </span>
           )}
         </div>
 
         {/* Floating Quick Action Icons Stack (Top-Right) */}
-        <div style={{ position: 'absolute', top: '0.75rem', right: '0.75rem', zIndex: 20, display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+        <div style={{ position: 'absolute', top: '0.5rem', right: '0.5rem', zIndex: 20, display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
           {/* 3D Interactive Mode Toggle Button */}
           <button
             type="button"
@@ -115,14 +119,14 @@ export const ProductCard = ({ watch, onQuickView }) => {
               e.stopPropagation();
               setIs3DMode(!is3DMode);
             }}
+            className="tap-target-44"
             style={{
-              width: '2.1rem',
-              height: '2.1rem',
+              width: '36px',
+              height: '36px',
+              minWidth: '36px',
+              minHeight: '36px',
               padding: 0,
               borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
               backgroundColor: is3DMode ? 'rgba(212, 175, 55, 0.95)' : 'rgba(8, 10, 14, 0.88)',
               backdropFilter: 'blur(10px)',
               WebkitBackdropFilter: 'blur(10px)',
@@ -130,7 +134,8 @@ export const ProductCard = ({ watch, onQuickView }) => {
               boxShadow: '0 4px 12px rgba(0, 0, 0, 0.6)',
               cursor: 'pointer',
               color: is3DMode ? '#000' : 'var(--color-gold-300)',
-              transition: 'all 0.25s ease'
+              transition: 'all 0.2s ease',
+              touchAction: 'manipulation'
             }}
             title={is3DMode ? '2D Photo' : '3D WebGL'}
           >
@@ -147,14 +152,14 @@ export const ProductCard = ({ watch, onQuickView }) => {
           <button
             type="button"
             onClick={handleToggleWishlist}
+            className="tap-target-44"
             style={{
-              width: '2.1rem',
-              height: '2.1rem',
+              width: '36px',
+              height: '36px',
+              minWidth: '36px',
+              minHeight: '36px',
               padding: 0,
               borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
               backgroundColor: wishlisted ? 'rgba(244, 63, 94, 0.9)' : 'rgba(8, 10, 14, 0.88)',
               backdropFilter: 'blur(10px)',
               WebkitBackdropFilter: 'blur(10px)',
@@ -162,7 +167,8 @@ export const ProductCard = ({ watch, onQuickView }) => {
               boxShadow: '0 4px 12px rgba(0, 0, 0, 0.6)',
               cursor: 'pointer',
               color: wishlisted ? '#ffffff' : '#ffffff',
-              transition: 'all 0.25s ease'
+              transition: 'all 0.2s ease',
+              touchAction: 'manipulation'
             }}
             title={wishlisted ? (t('wishlist.remove') || 'Istaklardan o‘chirish') : (t('wishlist.title') || 'Istaklarga qo‘shish')}
           >
@@ -173,14 +179,14 @@ export const ProductCard = ({ watch, onQuickView }) => {
           <button
             type="button"
             onClick={handleToggleCompare}
+            className="tap-target-44 hide-on-mobile"
             style={{
-              width: '2.1rem',
-              height: '2.1rem',
+              width: '36px',
+              height: '36px',
+              minWidth: '36px',
+              minHeight: '36px',
               padding: 0,
               borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
               backgroundColor: compared ? 'rgba(212, 175, 55, 0.9)' : 'rgba(8, 10, 14, 0.88)',
               backdropFilter: 'blur(10px)',
               WebkitBackdropFilter: 'blur(10px)',
@@ -188,7 +194,8 @@ export const ProductCard = ({ watch, onQuickView }) => {
               boxShadow: '0 4px 12px rgba(0, 0, 0, 0.6)',
               cursor: 'pointer',
               color: compared ? '#000' : '#ffffff',
-              transition: 'all 0.25s ease'
+              transition: 'all 0.2s ease',
+              touchAction: 'manipulation'
             }}
             title={t('compare.title') || 'Taqqoslama'}
           >
@@ -204,14 +211,14 @@ export const ProductCard = ({ watch, onQuickView }) => {
                 e.stopPropagation();
                 onQuickView(watch);
               }}
+              className="tap-target-44 hide-on-mobile"
               style={{
-                width: '2.1rem',
-                height: '2.1rem',
+                width: '36px',
+                height: '36px',
+                minWidth: '36px',
+                minHeight: '36px',
                 padding: 0,
                 borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
                 backgroundColor: 'rgba(8, 10, 14, 0.88)',
                 backdropFilter: 'blur(10px)',
                 WebkitBackdropFilter: 'blur(10px)',
@@ -219,7 +226,8 @@ export const ProductCard = ({ watch, onQuickView }) => {
                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.6)',
                 cursor: 'pointer',
                 color: '#ffffff',
-                transition: 'all 0.25s ease'
+                transition: 'all 0.2s ease',
+                touchAction: 'manipulation'
               }}
               title={t('product.quickView') || 'Tezkor ko‘rish'}
             >
@@ -234,7 +242,7 @@ export const ProductCard = ({ watch, onQuickView }) => {
           style={{
             position: 'relative',
             width: '100%',
-            height: '260px',
+            aspectRatio: '1 / 1',
             overflow: 'hidden',
             cursor: 'pointer',
             backgroundColor: '#0a0b0e',
@@ -263,16 +271,17 @@ export const ProductCard = ({ watch, onQuickView }) => {
                 className="glass-pill"
                 style={{
                   position: 'absolute',
-                  bottom: '0.5rem',
+                  bottom: '0.35rem',
                   left: '50%',
                   transform: 'translateX(-50%)',
-                  fontSize: '0.65rem',
+                  fontSize: '0.6rem',
                   color: 'var(--color-gold-400)',
-                  padding: '0.2rem 0.5rem',
-                  pointerEvents: 'none'
+                  padding: '0.15rem 0.4rem',
+                  pointerEvents: 'none',
+                  whiteSpace: 'nowrap'
                 }}
               >
-                3D WebGL View
+                3D WebGL
               </div>
             </div>
           ) : (
@@ -298,16 +307,15 @@ export const ProductCard = ({ watch, onQuickView }) => {
         </div>
 
         {/* Product Details Section */}
-        <div style={{ padding: '1.15rem', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '0.75rem', minWidth: 0, width: '100%', boxSizing: 'border-box' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem', minWidth: 0 }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.75rem', gap: '0.5rem' }}>
-              <span className="badge-gold" style={{ fontSize: '0.65rem', padding: '0.15rem 0.4rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                {watch.collection || watch.category}
+        <div style={{ padding: '0.875rem', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '0.6rem', minWidth: 0, width: '100%', boxSizing: 'border-box' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', minWidth: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.72rem', gap: '0.35rem' }}>
+              <span className="badge-gold" style={{ fontSize: '0.6rem', padding: '0.15rem 0.35rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                {watch.brand || watch.category}
               </span>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: 'var(--color-gold-400)', flexShrink: 0 }}>
-                <Star size={11} fill="currentColor" />
-                <span style={{ fontWeight: 700, fontSize: '0.75rem', color: 'var(--text-primary)' }}>{watch.rating}</span>
-                <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>({watch.reviewsCount})</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.2rem', color: 'var(--color-gold-400)', flexShrink: 0 }}>
+                <Star size={10} fill="currentColor" />
+                <span style={{ fontWeight: 700, fontSize: '0.7rem', color: 'var(--text-primary)' }}>{watch.rating}</span>
               </div>
             </div>
 
@@ -316,76 +324,69 @@ export const ProductCard = ({ watch, onQuickView }) => {
               style={{
                 fontFamily: 'var(--font-serif)',
                 fontWeight: 700,
-                fontSize: '1rem',
+                fontSize: 'clamp(0.85rem, 2.8vw, 1rem)',
                 color: 'var(--text-primary)',
                 textDecoration: 'none',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
-                display: 'block'
+                display: 'block',
+                lineHeight: 1.25
               }}
               title={watch.name}
             >
               {watch.name}
             </Link>
 
-            <p className="text-muted" style={{ fontSize: '0.75rem', margin: 0, minHeight: '2rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+            <p className="text-muted hide-on-mobile" style={{ fontSize: '0.72rem', margin: 0, minHeight: '1.8rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
               {watch.tagline || watch.description}
             </p>
 
             {/* Quick Horology Key Specs Pills */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.375rem', paddingTop: '0.25rem' }}>
-              <span className="glass-pill" style={{ fontSize: '0.65rem', padding: '0.15rem 0.4rem' }}>
-                {watch.movement}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.25rem', paddingTop: '0.15rem' }}>
+              <span className="glass-pill" style={{ fontSize: '0.6rem', padding: '0.1rem 0.35rem' }}>
+                {watch.movement?.split(' ')?.[0] || 'Automatic'}
               </span>
-              <span className="glass-pill" style={{ fontSize: '0.65rem', padding: '0.15rem 0.4rem' }}>
-                {watch.specs?.caseDiameter || '40.0 mm'}
-              </span>
-              <span className="glass-pill" style={{ fontSize: '0.65rem', padding: '0.15rem 0.4rem' }}>
-                {watch.caseMaterial?.split(' ')?.[0] || 'Titanium'}
+              <span className="glass-pill hide-on-mobile" style={{ fontSize: '0.6rem', padding: '0.1rem 0.35rem' }}>
+                {watch.specs?.caseDiameter || '40mm'}
               </span>
             </div>
           </div>
 
           {/* Pricing & Add to Cart Action */}
-          <div style={{ paddingTop: '0.75rem', borderTop: '1px solid var(--border-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', marginTop: 'auto', width: '100%', boxSizing: 'border-box' }}>
+          <div style={{ paddingTop: '0.5rem', borderTop: '1px solid var(--border-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.35rem', marginTop: 'auto', width: '100%', boxSizing: 'border-box' }}>
             <div style={{ minWidth: 0, flex: '1 1 auto', overflow: 'hidden' }}>
-              <span className="gold-gradient-text" style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '1rem', whiteSpace: 'nowrap', display: 'block', lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              <span className="gold-gradient-text" style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: 'clamp(0.85rem, 2.8vw, 1rem)', whiteSpace: 'nowrap', display: 'block', lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {formatPrice(watch.price)}
               </span>
-              {watch.originalPrice && (
-                <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textDecoration: 'line-through', display: 'block', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                  {formatPrice(watch.originalPrice)}
-                </span>
-              )}
             </div>
 
             <motion.button
-              whileTap={{ scale: 0.95 }}
-              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.94 }}
               onClick={handleAddToCart}
-              className={justAdded ? 'btn-gold' : 'btn-gold'}
+              className="btn-gold tap-target-44"
               style={{
-                padding: '0.5rem 0.85rem',
-                fontSize: '0.75rem',
-                fontWeight: 600,
+                padding: '0.45rem 0.65rem',
+                fontSize: '0.7rem',
+                fontWeight: 700,
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.375rem',
+                gap: '0.25rem',
                 flexShrink: 0,
                 whiteSpace: 'nowrap',
+                minHeight: '36px',
                 backgroundColor: justAdded ? 'var(--color-emerald-500)' : undefined,
                 color: justAdded ? '#000' : undefined
               }}
             >
               {justAdded ? (
                 <>
-                  <Check size={14} />
+                  <Check size={13} />
                   <span>Qo‘shildi</span>
                 </>
               ) : (
                 <>
-                  <ShoppingBag size={14} />
+                  <ShoppingBag size={13} />
                   <span>SAVATGA</span>
                 </>
               )}

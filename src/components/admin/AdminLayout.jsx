@@ -65,7 +65,7 @@ export const AdminLayout = () => {
   ];
 
   return (
-    <div style={{ height: '100vh', width: '100vw', backgroundColor: 'var(--bg-obsidian-950)', color: 'var(--text-primary)', display: 'flex', flexDirection: 'row', overflow: 'hidden' }}>
+    <div className="admin-layout" style={{ height: '100vh', width: '100vw', backgroundColor: 'var(--bg-obsidian-950)', color: 'var(--text-primary)', display: 'flex', flexDirection: 'row', overflow: 'hidden' }}>
       
       {/* Desktop Animated Sidebar */}
       <aside
@@ -110,8 +110,8 @@ export const AdminLayout = () => {
             {!sidebarCollapsed && (
               <button
                 onClick={() => setSidebarCollapsed(true)}
-                className="btn-glass"
-                style={{ width: '2rem', height: '2rem', padding: 0, borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                className="btn-glass tap-target-44"
+                style={{ width: '2.5rem', height: '2.5rem', padding: 0, borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                 title="Sidebar-ni yopish"
               >
                 <ChevronLeft size={16} />
@@ -119,7 +119,7 @@ export const AdminLayout = () => {
             )}
           </div>
 
-          {/* Navigation Links with Equalized Vertical Spacing */}
+          {/* Navigation Links */}
           <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             {navItems.map((item) => {
               const isActive = location.pathname === item.path;
@@ -201,53 +201,167 @@ export const AdminLayout = () => {
         </div>
       </aside>
 
+      {/* Mobile Navigation Drawer */}
+      <AnimatePresence>
+        {mobileSidebarOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="mobile-nav-backdrop"
+              onClick={() => setMobileSidebarOpen(false)}
+            />
+            <motion.aside
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="mobile-nav-drawer"
+              style={{
+                width: '80vw',
+                maxWidth: '300px',
+                backgroundColor: 'var(--bg-obsidian-900)',
+                borderRight: '1px solid var(--border-gold-subtle)',
+                padding: '1.5rem',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                zIndex: 100
+              }}
+            >
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: 'var(--radius-lg)', border: '1px solid var(--color-gold-400)', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(212,175,55,0.1)' }}>
+                      <Clock size={18} style={{ color: 'var(--color-gold-400)' }} />
+                    </div>
+                    <div>
+                      <span style={{ fontFamily: 'var(--font-serif)', fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '0.15em' }}>CHRONOS</span>
+                      <span style={{ display: 'block', fontSize: '0.65rem', color: 'var(--color-amber-400)' }}>EXECUTIVE ADMIN</span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setMobileSidebarOpen(false)}
+                    className="tap-target-44 btn-glass"
+                    style={{ width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 'var(--radius-full)' }}
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+
+                <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  {navItems.map((item) => {
+                    const isActive = location.pathname === item.path;
+                    return (
+                      <Link
+                        key={item.path}
+                        to={item.path}
+                        onClick={() => setMobileSidebarOpen(false)}
+                        className={`btn-glass tap-target-44 ${isActive ? 'active-filter' : ''}`}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.75rem',
+                          padding: '0.75rem 1rem',
+                          borderRadius: 'var(--radius-xl)',
+                          textDecoration: 'none',
+                          color: isActive ? 'var(--color-gold-300)' : 'var(--text-secondary)',
+                          backgroundColor: isActive ? 'rgba(212,175,55,0.15)' : 'transparent',
+                          borderColor: isActive ? 'var(--color-gold-400)' : 'transparent'
+                        }}
+                      >
+                        <span style={{ color: isActive ? 'var(--color-gold-400)' : 'inherit' }}>{item.icon}</span>
+                        <span style={{ fontSize: '0.85rem', fontWeight: isActive ? 700 : 500 }}>{item.label}</span>
+                      </Link>
+                    );
+                  })}
+                </nav>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', paddingTop: '1rem', borderTop: '1px solid var(--border-subtle)' }}>
+                <Link
+                  to="/"
+                  target="_blank"
+                  className="btn-glass tap-target-44"
+                  style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 1rem', borderRadius: 'var(--radius-lg)', textDecoration: 'none', fontSize: '0.8rem' }}
+                >
+                  <ExternalLink size={16} />
+                  <span>{t('admin.goToStore') || 'Do‘konga o‘tish'}</span>
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="btn-glass tap-target-44"
+                  style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 1rem', borderRadius: 'var(--radius-lg)', color: 'var(--color-ruby-400)', fontSize: '0.8rem' }}
+                >
+                  <LogOut size={16} />
+                  <span>{t('admin.logout') || 'Chiqish'}</span>
+                </button>
+              </div>
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
+
       {/* Main Admin Content Viewport */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, height: '100%', overflow: 'hidden' }}>
+      <div className="admin-content-viewport" style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, height: '100%', overflow: 'hidden' }}>
         
         {/* Top Floating Glass Header */}
         <header
+          className="admin-header"
           style={{
-            padding: '1rem 1.5rem',
+            padding: '0.75rem 1.25rem',
             borderBottom: '1px solid var(--border-subtle)',
-            backgroundColor: 'rgba(10, 11, 14, 0.8)',
+            backgroundColor: 'rgba(10, 11, 14, 0.85)',
             backdropFilter: 'blur(16px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
             flexShrink: 0,
             zIndex: 20,
-            minHeight: '72px'
+            minHeight: '64px'
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            {/* Mobile menu trigger */}
+            <button
+              onClick={() => setMobileSidebarOpen(true)}
+              className="btn-glass tap-target-44 flex lg:hidden"
+              style={{ width: '44px', height: '44px', padding: 0, borderRadius: 'var(--radius-lg)', alignItems: 'center', justifyContent: 'center' }}
+              title="Menu"
+            >
+              <Menu size={18} />
+            </button>
+
+            {/* Desktop collapse trigger */}
             <button
               onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-              className="btn-glass hidden lg:flex"
-              style={{ width: '2.25rem', height: '2.25rem', padding: 0, borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              className="btn-glass tap-target-44 hidden lg:flex"
+              style={{ width: '2.5rem', height: '2.5rem', padding: 0, borderRadius: 'var(--radius-lg)', alignItems: 'center', justifyContent: 'center' }}
               title={sidebarCollapsed ? "Sidebar-ni ochish" : "Sidebar-ni yopish"}
             >
               <Menu size={17} />
             </button>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-              <span style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: 'var(--color-emerald-400)' }}></span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--color-emerald-400)', flexShrink: 0 }}></span>
               <div>
-                <h2 style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)', margin: 0 }}>
-                  CHRONOS EXECUTIVE COMMAND
+                <h2 style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-primary)', margin: 0, whiteSpace: 'nowrap' }}>
+                  CHRONOS COMMAND
                 </h2>
-                <span style={{ fontSize: '0.65rem', color: 'var(--color-gold-400)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-                  {t('admin.systemStatus') || 'Barcha tizimlar faol va barqaror'}
+                <span className="hidden sm:block" style={{ fontSize: '0.6rem', color: 'var(--color-gold-400)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                  {t('admin.systemStatus') || 'Barcha tizimlar faol'}
                 </span>
               </div>
             </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             {/* Currency switcher */}
             <button
               onClick={() => dispatch(toggleCurrency())}
-              className="btn-glass"
-              style={{ padding: '0.4rem 0.75rem', fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-gold-300)' }}
+              className="btn-glass tap-target-44"
+              style={{ minWidth: '44px', height: '44px', padding: '0 0.5rem', fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-gold-300)' }}
             >
               {currentCurrency}
             </button>
@@ -256,11 +370,11 @@ export const AdminLayout = () => {
             <div style={{ position: 'relative' }}>
               <button
                 onClick={() => setLangDropdown(!langDropdown)}
-                className="btn-glass"
-                style={{ padding: '0.4rem 0.75rem', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.375rem' }}
+                className="btn-glass tap-target-44"
+                style={{ height: '44px', padding: '0 0.5rem', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
               >
                 <span>{currentLangObj.flag}</span>
-                <span>{currentLangObj.code.toUpperCase()}</span>
+                <span className="hidden sm:inline">{currentLangObj.code.toUpperCase()}</span>
                 <ChevronDown size={12} style={{ transform: langDropdown ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
               </button>
 
@@ -287,8 +401,10 @@ export const AdminLayout = () => {
                       <button
                         key={lng.code}
                         onClick={() => changeLanguage(lng.code)}
+                        className="tap-target-44"
                         style={{
                           width: '100%',
+                          minHeight: '44px',
                           textAlign: 'left',
                           padding: '0.5rem 0.75rem',
                           fontSize: '0.75rem',
@@ -315,12 +431,12 @@ export const AdminLayout = () => {
             <div style={{ position: 'relative' }}>
               <button
                 onClick={() => setNotificationsOpen(!notificationsOpen)}
-                className="btn-glass"
-                style={{ padding: '0.5rem', borderRadius: 'var(--radius-lg)', position: 'relative' }}
+                className="btn-glass tap-target-44"
+                style={{ width: '44px', height: '44px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 'var(--radius-lg)', position: 'relative' }}
                 title={t('admin.notifications') || 'Bildirishnomalar'}
               >
                 <Bell size={16} />
-                <span style={{ position: 'absolute', top: '6px', right: '6px', width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--color-amber-400)' }}></span>
+                <span style={{ position: 'absolute', top: '10px', right: '10px', width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--color-amber-400)' }}></span>
               </button>
 
               <AnimatePresence>
@@ -335,7 +451,7 @@ export const AdminLayout = () => {
                       position: 'absolute',
                       right: 0,
                       marginTop: '0.5rem',
-                      width: '18rem',
+                      width: 'min(90vw, 18rem)',
                       borderRadius: 'var(--radius-xl)',
                       padding: '1rem',
                       zIndex: 50,
@@ -368,11 +484,11 @@ export const AdminLayout = () => {
             </div>
 
             {/* Admin Profile Pill */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', paddingLeft: '0.5rem', borderLeft: '1px solid var(--border-subtle)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', paddingLeft: '0.35rem', borderLeft: '1px solid var(--border-subtle)' }}>
               <div style={{ width: '2rem', height: '2rem', borderRadius: '50%', background: 'linear-gradient(135deg, var(--color-gold-500), var(--color-amber-700))', color: '#000', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem' }}>
                 AD
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <div className="hidden sm:flex" style={{ flexDirection: 'column' }}>
                 <span style={{ fontWeight: 700, fontSize: '0.75rem', color: 'var(--text-primary)' }}>{currentUser?.name || 'Admin'}</span>
                 <span style={{ fontSize: '0.65rem', color: 'var(--color-gold-400)' }}>{t('admin.superAdmin') || 'Bosh Boshqaruvchi'}</span>
               </div>
@@ -381,9 +497,26 @@ export const AdminLayout = () => {
         </header>
 
         {/* Page Content Viewport */}
-        <main style={{ padding: '1.5rem 2rem', flex: 1, overflowY: 'auto', overflowX: 'hidden' }}>
+        <main className="admin-main-scroll" style={{ padding: '1.5rem', flex: 1, overflowY: 'auto', overflowX: 'hidden' }}>
           <Outlet />
         </main>
+
+        {/* Mobile Admin Bottom Navigation Bar */}
+        <nav className="admin-mobile-bottom-nav">
+          {navItems.map((item) => {
+            const isActive = location.pathname === item.path;
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`admin-mobile-bottom-nav-item tap-target-44 ${isActive ? 'active' : ''}`}
+              >
+                <span>{item.icon}</span>
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
       </div>
     </div>
   );

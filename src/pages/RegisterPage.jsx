@@ -126,41 +126,46 @@ export const RegisterPage = () => {
             />
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 210px), 1fr))', gap: '0.75rem' }}>
             <div>
-              <label className="luxury-label">{t('auth.email') || 'Email manzil *'}</label>
+              <label className="luxury-label" style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.35rem' }}>
+                {t('auth.email') || 'Email manzil *'}
+              </label>
               <input
                 type="email"
                 required
+                autoCapitalize="none"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 placeholder="masalan@aura.uz"
                 className="luxury-input"
-                style={{ width: '100%' }}
               />
             </div>
             <div>
-              <label className="luxury-label">{t('auth.phone') || 'Telefon raqam *'}</label>
+              <label className="luxury-label" style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.35rem' }}>
+                {t('auth.phone') || 'Telefon raqam *'}
+              </label>
               <input
                 type="tel"
                 required
+                inputMode="tel"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                 placeholder="+998 90 123 45 67"
                 className="luxury-input"
-                style={{ width: '100%' }}
               />
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 210px), 1fr))', gap: '0.75rem' }}>
             <div>
-              <label className="luxury-label">{t('auth.city') || 'Shahar / Viloyat'}</label>
+              <label className="luxury-label" style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.35rem' }}>
+                {t('auth.city') || 'Shahar / Viloyat'}
+              </label>
               <select
                 value={formData.city}
                 onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                 className="luxury-input"
-                style={{ width: '100%' }}
               >
                 <option value="Toshkent shahri">Toshkent shahri</option>
                 <option value="Samarqand">Samarqand</option>
@@ -178,41 +183,47 @@ export const RegisterPage = () => {
               </select>
             </div>
             <div>
-              <label className="luxury-label">{t('auth.address') || 'Yetkazish manzili'}</label>
+              <label className="luxury-label" style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.35rem' }}>
+                {t('auth.address') || 'Yetkazish manzili *'}
+              </label>
               <input
                 type="text"
+                required
                 value={formData.address}
                 onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                placeholder="Ko‘cha, uy raqami"
+                placeholder="Amir Temur shox ko‘chasi, 14-uy"
                 className="luxury-input"
-                style={{ width: '100%' }}
               />
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 210px), 1fr))', gap: '0.75rem' }}>
             <div>
-              <label className="luxury-label">{t('auth.password') || 'Maxfiy parol *'}</label>
+              <label className="luxury-label" style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.35rem' }}>
+                {t('auth.password') || 'Maxfiy parol *'}
+              </label>
               <input
                 type="password"
                 required
+                autoComplete="new-password"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                placeholder="Kamida 6 ta belgi"
+                placeholder="Kamida 6 belgi"
                 className="luxury-input"
-                style={{ width: '100%' }}
               />
             </div>
             <div>
-              <label className="luxury-label">{t('auth.confirmPassword') || 'Parolni tasdiqlang *'}</label>
+              <label className="luxury-label" style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.35rem' }}>
+                {t('auth.confirmPassword') || 'Parolni tasdiqlang *'}
+              </label>
               <input
                 type="password"
                 required
+                autoComplete="new-password"
                 value={formData.confirmPassword}
                 onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                placeholder="Parolni qayta kiriting"
+                placeholder="Parolni qayta tering"
                 className="luxury-input"
-                style={{ width: '100%' }}
               />
             </div>
           </div>

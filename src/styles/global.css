@@ -10,17 +10,23 @@
 html {
   scroll-behavior: smooth;
   color-scheme: dark;
+  -webkit-text-size-adjust: 100%;
+  font-size: 16px;
 }
 
 body {
   background-color: var(--bg-obsidian-950);
   color: var(--color-platinum-200);
   font-family: var(--font-sans);
+  font-size: 0.9375rem; /* ~15px base, never < 14px */
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
   min-height: 100vh;
+  width: 100%;
+  max-width: 100vw;
+  touch-action: manipulation;
 }
 
 /* Custom Scrollbar */
@@ -50,7 +56,7 @@ body {
   color: var(--color-gold-300);
 }
 
-/* Typography Helpers */
+/* Typography Helpers with Fluid Scalable Sizing */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-serif);
   color: var(--color-platinum-100);
@@ -58,8 +64,14 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1.2;
 }
 
+h1 { font-size: clamp(1.75rem, 4.5vw, 3rem); }
+h2 { font-size: clamp(1.35rem, 3.5vw, 2.25rem); }
+h3 { font-size: clamp(1.15rem, 2.75vw, 1.65rem); }
+h4 { font-size: clamp(1rem, 2.2vw, 1.25rem); }
+
 p {
   color: var(--color-platinum-400);
+  font-size: clamp(0.875rem, 1.5vw, 1rem);
 }
 
 a {
@@ -74,11 +86,18 @@ button {
   background: none;
   cursor: pointer;
   outline: none;
+  touch-action: manipulation;
+}
+
+button:active, .btn:active, .btn-gold:active, .btn-outline-gold:active, .btn-glass:active {
+  transform: scale(0.97);
+  transition: transform 0.08s ease;
 }
 
 input, select, textarea {
   font-family: inherit;
   outline: none;
+  font-size: 1rem; /* >= 16px to prevent iOS auto-zoom */
 }
 
 /* Layout Utilities */
@@ -88,15 +107,16 @@ input, select, textarea {
   max-width: 1320px;
   margin-left: auto;
   margin-right: auto;
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  box-sizing: border-box;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .container,
   .site-container {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: 0.875rem;
+    padding-right: 0.875rem;
   }
 }
 
@@ -259,14 +279,16 @@ input, select, textarea {
 /* Form Controls */
 .luxury-input {
   width: 100%;
+  min-height: 44px;
   background: var(--bg-obsidian-950);
   border: 1px solid var(--border-platinum-medium);
   border-radius: var(--radius-md);
-  padding: 0.75rem 1rem;
+  padding: 0.65rem 1rem;
   color: var(--color-platinum-100);
-  font-size: 0.85rem;
+  font-size: 0.9375rem;
   font-family: var(--font-sans);
   transition: all var(--transition-fast);
+  box-sizing: border-box;
 }
 
 .luxury-input:focus {
@@ -325,4 +347,37 @@ input, select, textarea {
   font-family: var(--font-sans);
   font-size: 0.7rem;
   font-weight: 600;
+}
+
+/* Touch & Tap Target Utilities */
+.tap-target-44 {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Mobile Responsive Utility Classes */
+@media (max-width: 768px) {
+  .hide-on-mobile {
+    display: none !important;
+  }
+  .show-on-mobile {
+    display: block !important;
+  }
+  .show-on-mobile-flex {
+    display: flex !important;
+  }
+  .form-grid-stack {
+    grid-template-columns: 1fr !important;
+    gap: 0.875rem !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .show-on-mobile,
+  .show-on-mobile-flex {
+    display: none !important;
+  }
 }

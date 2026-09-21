@@ -92,13 +92,32 @@ export const Navbar = () => {
   return (
     <>
       {/* Top Announcement Ribbon */}
-      <div className="bg-obsidian-900 border-b border-platinum-subtle" style={{ background: 'var(--bg-obsidian-900)', borderBottom: '1px solid var(--border-platinum-subtle)', padding: '0.45rem 1rem', textAlign: 'center', fontSize: '0.75rem', fontFamily: 'var(--font-sans)', color: 'var(--color-platinum-300)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem' }}>
-        <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--color-gold-400)', display: 'inline-block' }} />
-        <span>O‘zbekiston bo‘ylab bepul inkassator yetkazib berish va 5 yillik rasmiy kafolat</span>
-        <span style={{ opacity: 0.4 }}>|</span>
-        <span style={{ color: 'var(--color-gold-400)', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
+      <div
+        className="bg-obsidian-900 border-b border-platinum-subtle"
+        style={{
+          background: 'var(--bg-obsidian-900)',
+          borderBottom: '1px solid var(--border-platinum-subtle)',
+          padding: '0.4rem 0.75rem',
+          textAlign: 'center',
+          fontSize: '0.72rem',
+          fontFamily: 'var(--font-sans)',
+          color: 'var(--color-platinum-300)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '0.5rem',
+          flexWrap: 'wrap',
+          lineHeight: 1.3
+        }}
+      >
+        <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--color-gold-400)', display: 'inline-block', flexShrink: 0 }} />
+        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '90vw' }}>
+          O‘zbekiston bo‘ylab bepul inkassator yetkazib berish va 5 yillik kafolat
+        </span>
+        <span className="hide-on-mobile" style={{ opacity: 0.4 }}>|</span>
+        <span className="hide-on-mobile" style={{ color: 'var(--color-gold-400)', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
           <Sparkles size={12} />
-          <span>Promokod: <strong style={{ color: '#ffffff' }}>AURA10</strong> (10% VIP chegirma)</span>
+          <span>Promokod: <strong style={{ color: '#ffffff' }}>AURA10</strong> (-10% VIP)</span>
         </span>
       </div>
 
@@ -107,13 +126,13 @@ export const Navbar = () => {
         <div className="navbar-container">
           
           {/* Brand Logo */}
-          <Link to="/" className="brand-logo">
+          <Link to="/" className="brand-logo" onClick={() => setMobileMenuOpen(false)}>
             <div className="brand-logo-icon">
               <Clock size={20} />
             </div>
             <div>
               <span className="brand-logo-text">CHRONOS</span>
-              <span style={{ display: 'block', fontSize: '0.5625rem', textTransform: 'uppercase', letterSpacing: '0.25em', color: 'var(--color-gold-400)', fontFamily: 'var(--font-sans)', fontWeight: 600 }}>
+              <span style={{ display: 'block', fontSize: '0.55rem', textTransform: 'uppercase', letterSpacing: '0.22em', color: 'var(--color-gold-400)', fontFamily: 'var(--font-sans)', fontWeight: 600 }}>
                 Haute Horlogerie
               </span>
             </div>
@@ -138,12 +157,12 @@ export const Navbar = () => {
           {/* Right Action Icons & Controls */}
           <div className="nav-actions">
             
-            {/* 1. Language Switcher Dropdown */}
-            <div className="relative">
+            {/* 1. Language Switcher Dropdown (Desktop only) */}
+            <div className="relative hide-on-mobile">
               <button
                 onClick={() => setLangDropdown(!langDropdown)}
                 className="glass-pill"
-                style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', padding: '0.4rem 0.65rem', fontSize: '0.75rem', fontFamily: 'var(--font-sans)', fontWeight: 600, color: 'var(--color-platinum-200)', cursor: 'pointer' }}
+                style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', padding: '0.4rem 0.65rem', fontSize: '0.75rem', fontFamily: 'var(--font-sans)', fontWeight: 600, color: 'var(--color-platinum-200)', cursor: 'pointer', minHeight: '38px' }}
                 title="Select Language"
               >
                 <span>{currentLangObj.flag}</span>
@@ -176,11 +195,11 @@ export const Navbar = () => {
               </AnimatePresence>
             </div>
 
-            {/* 2. Currency Switcher Button */}
+            {/* 2. Currency Switcher Button (Desktop only) */}
             <button
               onClick={() => dispatch(toggleCurrency())}
-              className="glass-pill"
-              style={{ padding: '0.4rem 0.65rem', fontSize: '0.75rem', fontFamily: 'var(--font-sans)', fontWeight: 700, color: 'var(--color-gold-300)', cursor: 'pointer' }}
+              className="glass-pill hide-on-mobile"
+              style={{ padding: '0.4rem 0.65rem', fontSize: '0.75rem', fontFamily: 'var(--font-sans)', fontWeight: 700, color: 'var(--color-gold-300)', cursor: 'pointer', minHeight: '38px' }}
               title="Toggle Currency"
             >
               {currency === 'UZS' ? "UZS (so'm)" : currency === 'EUR' ? 'EUR (€)' : 'USD ($)'}
@@ -192,16 +211,16 @@ export const Navbar = () => {
               className="icon-button"
               title="Qidiruv"
             >
-              <Search size={16} />
+              <Search size={17} />
             </button>
 
             {/* 4. Compare Trigger */}
             <button
               onClick={() => dispatch(toggleCompareModal(true))}
-              className="icon-button"
+              className="icon-button hide-on-mobile"
               title="Taqqoslash"
             >
-              <Scale size={16} />
+              <Scale size={17} />
               {compareCount > 0 && (
                 <span className="badge-count" style={{ background: 'var(--color-amber-500)' }}>
                   {compareCount}
@@ -215,9 +234,9 @@ export const Navbar = () => {
               className="icon-button"
               title="Istaklar ro‘yxati"
             >
-              <Heart size={16} />
+              <Heart size={17} />
               {wishlistCount > 0 && (
-                <span className="badge-count" style={{ background: '#e11d48' }}>
+                <span className="badge-count" style={{ background: '#e11d48', color: '#fff' }}>
                   {wishlistCount}
                 </span>
               )}
@@ -230,7 +249,7 @@ export const Navbar = () => {
               style={{ borderColor: 'var(--border-gold-medium)', color: 'var(--color-gold-300)', background: 'rgba(212, 164, 76, 0.15)' }}
               title="Savat"
             >
-              <ShoppingBag size={16} />
+              <ShoppingBag size={17} />
               {totalCartCount > 0 && (
                 <span className="badge-count" style={{ background: 'var(--color-gold-400)', color: '#000' }}>
                   {totalCartCount}
@@ -239,7 +258,7 @@ export const Navbar = () => {
             </button>
 
             {/* 7. User Authentication Dropdown */}
-            <div className="relative">
+            <div className="relative hide-on-mobile">
               {isAuthenticated ? (
                 <button
                   onClick={() => setUserDropdown(!userDropdown)}
@@ -247,13 +266,13 @@ export const Navbar = () => {
                   style={{ borderColor: 'var(--color-gold-400)', color: 'var(--color-gold-300)' }}
                   title="Mening hisobim"
                 >
-                  <User size={16} />
+                  <User size={17} />
                 </button>
               ) : (
                 <Link
                   to="/login"
                   className="btn-outline-gold"
-                  style={{ padding: '0.4rem 0.85rem' }}
+                  style={{ padding: '0.4rem 0.85rem', minHeight: '38px' }}
                 >
                   <User size={13} />
                   <span>{t('nav.login')}</span>
@@ -312,17 +331,225 @@ export const Navbar = () => {
               </AnimatePresence>
             </div>
 
-            {/* Mobile Menu Hamburger */}
+            {/* 8. Mobile Menu Hamburger Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="icon-button"
-              style={{ display: 'none' }}
+              className="icon-button show-on-mobile-flex"
+              style={{ borderColor: mobileMenuOpen ? 'var(--color-gold-400)' : 'var(--border-platinum-subtle)' }}
+              title="Menyu"
+              aria-label="Toggle navigation menu"
             >
-              {mobileMenuOpen ? <X size={19} /> : <Menu size={19} />}
+              {mobileMenuOpen ? <X size={20} style={{ color: 'var(--color-gold-400)' }} /> : <Menu size={20} />}
             </button>
           </div>
         </div>
       </header>
+
+      {/* Slide-in Mobile Drawer Navigation */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="mobile-nav-backdrop"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <motion.div
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ type: 'tween', duration: 0.25, ease: 'easeOut' }}
+              className="mobile-nav-drawer"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Drawer Header */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: '1.25rem', borderBottom: '1px solid var(--border-platinum-subtle)', marginBottom: '1.25rem' }}>
+                <Link to="/" onClick={() => setMobileMenuOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+                  <div className="brand-logo-icon" style={{ width: '36px', height: '36px' }}>
+                    <Clock size={18} />
+                  </div>
+                  <div>
+                    <span className="brand-logo-text" style={{ fontSize: '1.1rem' }}>CHRONOS</span>
+                    <span style={{ display: 'block', fontSize: '0.55rem', letterSpacing: '0.2em', color: 'var(--color-gold-400)' }}>Atelier Genève</span>
+                  </div>
+                </Link>
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="icon-button"
+                  style={{ minWidth: '40px', minHeight: '40px', width: '40px', height: '40px' }}
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              {/* Navigation Links */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', marginBottom: '1.5rem' }}>
+                {navLinks.map((link) => {
+                  const isActive = location.pathname === link.path;
+                  return (
+                    <Link
+                      key={link.name}
+                      to={link.path}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`mobile-nav-link ${isActive ? 'active' : ''}`}
+                    >
+                      <span>{link.name}</span>
+                      <ArrowRight size={15} style={{ opacity: isActive ? 1 : 0.4 }} />
+                    </Link>
+                  );
+                })}
+              </div>
+
+              {/* Compare Quick Link (Mobile) */}
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  dispatch(toggleCompareModal(true));
+                }}
+                className="mobile-nav-link"
+                style={{ marginBottom: '1rem', width: '100%', textAlign: 'left', background: 'transparent' }}
+              >
+                <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <Scale size={16} style={{ color: 'var(--color-gold-400)' }} />
+                  <span>{t('compare.title') || 'Taqqoslash'}</span>
+                </span>
+                {compareCount > 0 && (
+                  <span className="badge-count" style={{ position: 'static', background: 'var(--color-amber-500)', color: '#000' }}>
+                    {compareCount}
+                  </span>
+                )}
+              </button>
+
+              {/* User Account / Auth Section */}
+              <div className="glass-panel" style={{ padding: '1rem', marginBottom: '1.5rem', borderRadius: 'var(--radius-xl)' }}>
+                {isAuthenticated ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--color-gold-400), var(--color-amber-700))', color: '#000', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.875rem' }}>
+                        {currentUser?.name?.charAt(0) || 'U'}
+                      </div>
+                      <div style={{ overflow: 'hidden' }}>
+                        <div style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--color-platinum-100)', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {currentUser?.name}
+                        </div>
+                        <div style={{ fontSize: '0.7rem', color: 'var(--color-gold-400)', fontFamily: 'var(--font-mono)' }}>
+                          {currentUser?.email}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: isAdmin ? '1fr 1fr' : '1fr', gap: '0.5rem', marginTop: '0.25rem' }}>
+                      <Link
+                        to="/profile"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="btn-glass"
+                        style={{ fontSize: '0.75rem', padding: '0.5rem', textAlign: 'center' }}
+                      >
+                        {t('nav.profile')}
+                      </Link>
+                      {isAdmin && (
+                        <Link
+                          to="/admin/dashboard"
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="btn-glass"
+                          style={{ fontSize: '0.75rem', padding: '0.5rem', textAlign: 'center', color: 'var(--color-amber-400)', borderColor: 'rgba(245, 158, 11, 0.4)' }}
+                        >
+                          ⚡ Admin
+                        </Link>
+                      )}
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        dispatch(logout());
+                        setMobileMenuOpen(false);
+                      }}
+                      style={{ fontSize: '0.75rem', color: 'var(--color-red-400)', padding: '0.4rem 0', display: 'flex', alignItems: 'center', gap: '0.35rem', cursor: 'pointer' }}
+                    >
+                      <LogOut size={13} />
+                      <span>{t('nav.logout')}</span>
+                    </button>
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    <p style={{ fontSize: '0.75rem', color: 'var(--color-platinum-300)', margin: 0 }}>
+                      VIP xaridlar va buyurtmalar tarixini kuzatish uchun kiring:
+                    </p>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                      <Link
+                        to="/login"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="btn-gold"
+                        style={{ fontSize: '0.75rem', padding: '0.6rem 0.5rem', textAlign: 'center' }}
+                      >
+                        {t('nav.login')}
+                      </Link>
+                      <Link
+                        to="/register"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="btn-outline-gold"
+                        style={{ fontSize: '0.75rem', padding: '0.6rem 0.5rem', textAlign: 'center' }}
+                      >
+                        {t('nav.register')}
+                      </Link>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Language & Currency Controls inside Drawer */}
+              <div style={{ marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid var(--border-platinum-subtle)' }}>
+                <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--color-platinum-400)', marginBottom: '0.5rem', letterSpacing: '0.1em' }}>
+                  Til & Valyuta
+                </div>
+                <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                  {languages.map((lng) => (
+                    <button
+                      key={lng.code}
+                      onClick={() => handleLanguageChange(lng.code)}
+                      className="glass-pill"
+                      style={{
+                        flex: 1,
+                        padding: '0.45rem 0.25rem',
+                        fontSize: '0.75rem',
+                        textAlign: 'center',
+                        borderColor: (language || i18n.language) === lng.code ? 'var(--color-gold-400)' : 'var(--border-platinum-subtle)',
+                        background: (language || i18n.language) === lng.code ? 'rgba(212, 164, 76, 0.2)' : 'transparent',
+                        color: (language || i18n.language) === lng.code ? 'var(--color-gold-300)' : 'var(--color-platinum-300)'
+                      }}
+                    >
+                      <span>{lng.flag}</span> <span>{lng.code.toUpperCase()}</span>
+                    </button>
+                  ))}
+                </div>
+
+                <button
+                  onClick={() => dispatch(toggleCurrency())}
+                  className="glass-pill"
+                  style={{
+                    width: '100%',
+                    padding: '0.55rem',
+                    fontSize: '0.75rem',
+                    fontWeight: 700,
+                    textAlign: 'center',
+                    color: 'var(--color-gold-300)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.5rem'
+                  }}
+                >
+                  <span>Valyuta:</span>
+                  <strong style={{ color: '#fff' }}>
+                    {currency === 'UZS' ? "UZS (so'm)" : currency === 'EUR' ? 'EUR (€)' : 'USD ($)'}
+                  </strong>
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Real-time Search Modal */}
       <AnimatePresence>

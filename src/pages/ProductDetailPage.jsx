@@ -181,24 +181,27 @@ export const ProductDetailPage = () => {
 
       {/* Main Product Showcase Section */}
       <div className="site-container">
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '3rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 380px), 1fr))', gap: '2.5rem', alignItems: 'start' }}>
           
           {/* Left: 3D WebGL Realtime Canvas & Controls */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%', minWidth: 0 }}>
             <div
               className="glass-panel"
               style={{
                 position: 'relative',
                 width: '100%',
-                height: '560px',
+                aspectRatio: '1 / 1',
+                maxHeight: '520px',
+                minHeight: '280px',
                 borderRadius: 'var(--radius-3xl)',
                 border: '1px solid var(--border-gold-subtle)',
-                padding: '1.5rem',
+                padding: '1.25rem',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
                 overflow: 'hidden',
-                background: 'radial-gradient(circle at center, #12141a 0%, #06070a 100%)'
+                background: 'radial-gradient(circle at center, #12141a 0%, #06070a 100%)',
+                boxSizing: 'border-box'
               }}
             >
               {/* Top Status & Explode Toggle */}
@@ -828,14 +831,14 @@ export const ProductDetailPage = () => {
                     type="button"
                     onClick={() => setReviewModalOpen(false)}
                     className="btn-glass"
-                    style={{ flex: 1, padding: '0.6rem' }}
+                    style={{ flex: 1, padding: '0.6rem', minHeight: '44px' }}
                   >
                     {t('details.cancel') || 'Bekor qilish'}
                   </button>
                   <button
                     type="submit"
                     className="btn-gold"
-                    style={{ flex: 1, padding: '0.6rem' }}
+                    style={{ flex: 1, padding: '0.6rem', minHeight: '44px' }}
                   >
                     {t('details.publish') || 'Chop etish'}
                   </button>
@@ -845,6 +848,41 @@ export const ProductDetailPage = () => {
           </div>
         )}
       </AnimatePresence>
+
+      {/* Sticky Mobile Purchase Action Bar */}
+      <div className="sticky-mobile-bottom-bar">
+        <div>
+          <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)', textTransform: 'uppercase', display: 'block' }}>
+            NARX
+          </span>
+          <span className="gold-gradient-text" style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '1.15rem' }}>
+            {formatPrice(currentPrice)}
+          </span>
+        </div>
+        <button
+          onClick={handleAddToCart}
+          className="btn-gold tap-target-44"
+          style={{
+            padding: '0.6rem 1.25rem',
+            fontSize: '0.75rem',
+            fontWeight: 700,
+            backgroundColor: justAdded ? 'var(--color-emerald-500)' : undefined,
+            color: justAdded ? '#000' : undefined
+          }}
+        >
+          {justAdded ? (
+            <>
+              <Check size={15} />
+              <span>Savatga qo‘shildi</span>
+            </>
+          ) : (
+            <>
+              <ShoppingBag size={15} />
+              <span>Savatga Qo‘shish</span>
+            </>
+          )}
+        </button>
+      </div>
     </div>
   );
 };
