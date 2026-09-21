@@ -81,7 +81,7 @@ export const AdminLayout = () => {
           zIndex: 30,
           flexShrink: 0
         }}
-        className="hidden lg:flex"
+        className="admin-desktop-sidebar"
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           {/* Logo Brand Header */}
@@ -323,20 +323,20 @@ export const AdminLayout = () => {
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            {/* Mobile menu trigger */}
+            {/* Mobile menu trigger (Mobile only <= 1024px) */}
             <button
               onClick={() => setMobileSidebarOpen(true)}
-              className="btn-glass tap-target-44 flex lg:hidden"
+              className="btn-glass tap-target-44 admin-mobile-menu-btn"
               style={{ width: '44px', height: '44px', padding: 0, borderRadius: 'var(--radius-lg)', alignItems: 'center', justifyContent: 'center' }}
               title="Menu"
             >
               <Menu size={18} />
             </button>
 
-            {/* Desktop collapse trigger */}
+            {/* Desktop collapse trigger (Desktop only > 1024px) */}
             <button
               onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-              className="btn-glass tap-target-44 hidden lg:flex"
+              className="btn-glass tap-target-44 admin-desktop-toggle-btn"
               style={{ width: '2.5rem', height: '2.5rem', padding: 0, borderRadius: 'var(--radius-lg)', alignItems: 'center', justifyContent: 'center' }}
               title={sidebarCollapsed ? "Sidebar-ni ochish" : "Sidebar-ni yopish"}
             >

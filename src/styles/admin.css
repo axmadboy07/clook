@@ -169,7 +169,31 @@
   display: none;
 }
 
+.admin-desktop-sidebar {
+  display: flex;
+}
+
+.admin-desktop-toggle-btn {
+  display: flex;
+}
+
+.admin-mobile-menu-btn {
+  display: none;
+}
+
 @media (max-width: 1024px) {
+  .admin-desktop-sidebar {
+    display: none !important;
+  }
+
+  .admin-desktop-toggle-btn {
+    display: none !important;
+  }
+
+  .admin-mobile-menu-btn {
+    display: flex !important;
+  }
+
   .admin-header {
     padding: 0.75rem 1rem;
     min-height: 60px;
