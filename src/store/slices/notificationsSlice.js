@@ -28,6 +28,13 @@ const notificationsSlice = createSlice({
     markAllAsRead: (state) => {
       state.items = state.items.map((n) => ({ ...n, unread: false }));
     },
+    deleteNotification: (state, action) => {
+      const id = action.payload;
+      state.items = state.items.filter((n) => n.id !== id);
+    },
+    clearAllNotifications: (state) => {
+      state.items = [];
+    },
     togglePanel: (state, action) => {
       if (typeof action.payload === 'boolean') {
         state.isPanelOpen = action.payload;
@@ -38,8 +45,14 @@ const notificationsSlice = createSlice({
   },
 });
 
-export const { addNotification, markAsRead, markAllAsRead, togglePanel } =
-  notificationsSlice.actions;
+export const {
+  addNotification,
+  markAsRead,
+  markAllAsRead,
+  deleteNotification,
+  clearAllNotifications,
+  togglePanel
+} = notificationsSlice.actions;
 
 export const selectNotifications = (state) => state.notifications.items;
 export const selectUnreadCount = (state) =>

@@ -17,10 +17,13 @@ import {
   Bell,
   ChevronDown,
   Sparkles,
-  ChevronLeft
+  ChevronLeft,
+  Trash2,
+  CheckCheck
 } from 'lucide-react';
 import { logout } from '../../store/slices/authSlice';
 import { toggleCurrency, setLanguage } from '../../store/slices/localeSlice';
+import { deleteNotification, clearAllNotifications, markAllAsRead } from '../../store/slices/notificationsSlice';
 
 export const AdminLayout = () => {
   const { t, i18n } = useTranslation();
@@ -436,7 +439,9 @@ export const AdminLayout = () => {
                 title={t('admin.notifications') || 'Bildirishnomalar'}
               >
                 <Bell size={16} />
-                <span style={{ position: 'absolute', top: '10px', right: '10px', width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--color-amber-400)' }}></span>
+                {notifications.length > 0 && (
+                  <span style={{ position: 'absolute', top: '10px', right: '10px', width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--color-amber-400)' }}></span>
+                )}
               </button>
 
               <AnimatePresence>
@@ -451,46 +456,145 @@ export const AdminLayout = () => {
                       position: 'absolute',
                       right: 0,
                       marginTop: '0.5rem',
-                      width: 'min(90vw, 18rem)',
+                      width: 'min(92vw, 20rem)',
                       borderRadius: 'var(--radius-xl)',
                       padding: '1rem',
                       zIndex: 50,
                       border: '1px solid var(--border-gold-subtle)',
-                      backgroundColor: 'rgba(10, 11, 14, 0.95)',
+                      backgroundColor: 'rgba(10, 11, 14, 0.96)',
                       display: 'flex',
                       flexDirection: 'column',
-                      gap: '0.75rem'
+                      gap: '0.75rem',
+                      boxShadow: 'var(--shadow-gold)'
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.5rem' }}>
-                      <span style={{ fontWeight: 700, fontSize: '0.8rem', color: 'var(--text-primary)' }}>{t('admin.notifications') || 'Bildirishnomalar'}</span>
-                      <span style={{ fontSize: '0.65rem', color: 'var(--color-gold-400)' }}>{t('admin.newNotifications') || 'Yangi xabarlar'}</span>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxHeight: '15rem', overflowY: 'auto' }}>
-                      {notifications.map((n) => (
-                        <div
-                          key={n.id}
-                          className="glass-panel"
-                          style={{ padding: '0.6rem 0.75rem', borderRadius: 'var(--radius-lg)', fontSize: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.2rem' }}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                        <span style={{ fontWeight: 700, fontSize: '0.8rem', color: 'var(--text-primary)' }}>{t('admin.notifications') || 'Bildirishnomalar'}</span>
+                        <span style={{ fontSize: '0.65rem', padding: '0.1rem 0.4rem', borderRadius: 'var(--radius-full)', backgroundColor: 'rgba(212,175,55,0.15)', color: 'var(--color-gold-300)', fontWeight: 700 }}>
+                          {notifications.length}
+                        </span>
+                      </div>
+
+                      {notifications.length > 0 && (
+                        <button
+                          onClick={() => dispatch(clearAllNotifications())}
+                          style={{
+                            background: 'transparent',
+                            border: 'none',
+                            color: 'var(--color-ruby-400)',
+                            fontSize: '0.68rem',
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.25rem',
+                            padding: '0.2rem 0.4rem',
+                            borderRadius: 'var(--radius-md)'
+                          }}
+                          title="Barcha xabarlarni o‘chirish"
                         >
-                          <p style={{ margin: 0, color: 'var(--text-primary)' }}>{n.text}</p>
-                          <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>{n.time}</span>
+                          <Trash2 size={12} />
+                          <span>Tozalash</span>
+                        </button>
+                      )}
+                    </div>
+
+                    <div className="admin-table-scroll" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxHeight: '16rem', overflowY: 'auto', paddingRight: '2px' }}>
+                      {notifications.length === 0 ? (
+                        <div style={{ padding: '1.75rem 0.5rem', textAlign: 'center', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                          <Bell size={24} style={{ margin: '0 auto 0.5rem', color: 'var(--color-gold-400)', opacity: 0.4 }} />
+                          <p style={{ margin: 0 }}>Hech qanday bildirishnoma yo‘q</p>
                         </div>
-                      ))}
+                      ) : (
+                        notifications.map((n) => (
+                          <div
+                            key={n.id}
+                            className="glass-panel"
+                            style={{
+                              padding: '0.65rem 0.75rem',
+                              borderRadius: 'var(--radius-lg)',
+                              fontSize: '0.75rem',
+                              display: 'flex',
+                              alignItems: 'flex-start',
+                              justifyContent: 'space-between',
+                              gap: '0.5rem',
+                              border: '1px solid rgba(255,255,255,0.06)'
+                            }}
+                          >
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem', minWidth: 0, flex: 1 }}>
+                              <p style={{ margin: 0, color: 'var(--text-primary)', lineHeight: 1.4, wordBreak: 'break-word' }}>{n.text}</p>
+                              <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>{n.time}</span>
+                            </div>
+                            <button
+                              onClick={() => dispatch(deleteNotification(n.id))}
+                              style={{
+                                background: 'transparent',
+                                border: 'none',
+                                color: 'var(--text-muted)',
+                                cursor: 'pointer',
+                                padding: '0.2rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                borderRadius: 'var(--radius-sm)',
+                                flexShrink: 0
+                              }}
+                              onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-ruby-400)')}
+                              onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-muted)')}
+                              title="O‘chirish"
+                            >
+                              <Trash2 size={13} />
+                            </button>
+                          </div>
+                        ))
+                      )}
                     </div>
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
 
-            {/* Admin Profile Pill */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', paddingLeft: '0.35rem', borderLeft: '1px solid var(--border-subtle)' }}>
-              <div style={{ width: '2rem', height: '2rem', borderRadius: '50%', background: 'linear-gradient(135deg, var(--color-gold-500), var(--color-amber-700))', color: '#000', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem' }}>
-                AD
+            {/* Admin Profile Pill (Sleek Redesigned Gold Badge) */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.6rem',
+                padding: '0.3rem 0.65rem',
+                borderRadius: 'var(--radius-full)',
+                border: '1px solid var(--border-gold-subtle)',
+                background: 'radial-gradient(circle at center, rgba(212, 175, 55, 0.12) 0%, rgba(10, 11, 14, 0.85) 100%)',
+                boxShadow: '0 2px 10px rgba(0, 0, 0, 0.5)'
+              }}
+            >
+              <div
+                style={{
+                  width: '2.25rem',
+                  height: '2.25rem',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #fce7a4 0%, #d4af37 50%, #8c6d23 100%)',
+                  color: '#06070a',
+                  fontWeight: 800,
+                  fontFamily: 'var(--font-serif)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '0.8rem',
+                  boxShadow: '0 0 10px rgba(212, 175, 55, 0.45)',
+                  border: '1.5px solid rgba(255, 255, 255, 0.4)',
+                  flexShrink: 0
+                }}
+              >
+                {currentUser?.name ? currentUser.name.slice(0, 2).toUpperCase() : 'AD'}
               </div>
               <div className="hidden sm:flex" style={{ flexDirection: 'column' }}>
-                <span style={{ fontWeight: 700, fontSize: '0.75rem', color: 'var(--text-primary)' }}>{currentUser?.name || 'Admin'}</span>
-                <span style={{ fontSize: '0.65rem', color: 'var(--color-gold-400)' }}>{t('admin.superAdmin') || 'Bosh Boshqaruvchi'}</span>
+                <span style={{ fontWeight: 700, fontSize: '0.78rem', color: '#ffffff', lineHeight: 1.2 }}>
+                  {currentUser?.name || 'Admin'}
+                </span>
+                <span style={{ fontSize: '0.62rem', color: 'var(--color-gold-400)', fontWeight: 600, letterSpacing: '0.05em' }}>
+                  {t('admin.superAdmin') || 'Bosh Boshqaruvchi'}
+                </span>
               </div>
             </div>
           </div>
