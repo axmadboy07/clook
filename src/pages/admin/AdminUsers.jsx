@@ -43,17 +43,17 @@ export const AdminUsers = () => {
       </div>
 
       <div className="glass-panel" style={{ borderRadius: 'var(--radius-3xl)', overflow: 'hidden' }}>
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem', textAlign: 'left' }}>
+        <div className="admin-table-scroll">
+          <table style={{ width: '100%', minWidth: '650px', borderCollapse: 'collapse', fontSize: '0.8rem', textAlign: 'left' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid var(--border-subtle)', backgroundColor: 'var(--bg-obsidian-950)', color: 'var(--text-muted)' }}>
-                <th style={{ padding: '1rem' }}>{t('admin.tableUser') || 'Mijoz'}</th>
-                <th style={{ padding: '1rem' }}>{t('admin.tableEmail') || 'Email'}</th>
-                <th style={{ padding: '1rem' }}>{t('admin.tablePhone') || 'Telefon'}</th>
-                <th style={{ padding: '1rem' }}>{t('admin.tableRole') || 'Roli'}</th>
-                <th style={{ padding: '1rem' }}>{t('admin.tableJoinedDate') || 'A’zolik Sanasi'}</th>
-                <th style={{ padding: '1rem' }}>{t('admin.tableStatus') || 'Holat'}</th>
-                <th style={{ padding: '1rem', textAlign: 'right' }}>{t('admin.tableAction') || 'Amal'}</th>
+                <th style={{ padding: '1rem', whiteSpace: 'nowrap' }}>{t('admin.tableUser') || 'Mijoz'}</th>
+                <th style={{ padding: '1rem', whiteSpace: 'nowrap' }}>{t('admin.tableEmail') || 'Email'}</th>
+                <th style={{ padding: '1rem', whiteSpace: 'nowrap' }}>{t('admin.tablePhone') || 'Telefon'}</th>
+                <th style={{ padding: '1rem', whiteSpace: 'nowrap' }}>{t('admin.tableRole') || 'Roli'}</th>
+                <th style={{ padding: '1rem', whiteSpace: 'nowrap' }}>{t('admin.tableJoinedDate') || 'A’zolik Sanasi'}</th>
+                <th style={{ padding: '1rem', whiteSpace: 'nowrap' }}>{t('admin.tableStatus') || 'Holat'}</th>
+                <th style={{ padding: '1rem', textAlign: 'right', whiteSpace: 'nowrap' }}>{t('admin.tableAction') || 'Amal'}</th>
               </tr>
             </thead>
             <tbody>

@@ -266,8 +266,8 @@ export const AdminProducts = () => {
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="glass-panel" style={{ padding: '0.75rem 1rem', borderRadius: 'var(--radius-2xl)', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem' }}>
-        <div style={{ position: 'relative', flex: '1 1 240px', maxWidth: '360px' }}>
+      <div className="glass-panel" style={{ padding: '0.85rem 1rem', borderRadius: 'var(--radius-2xl)', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem' }}>
+        <div style={{ position: 'relative', flex: '1 1 240px', width: '100%', maxWidth: '360px' }}>
           <Search size={16} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
           <input
             type="text"
@@ -279,7 +279,7 @@ export const AdminProducts = () => {
           />
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', overflowX: 'auto' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '0.4rem' }}>
           <button
             onClick={() => setSelectedBrandFilter('All')}
             className={`btn ${selectedBrandFilter === 'All' ? 'btn-gold' : 'btn-outline'}`}
@@ -302,16 +302,16 @@ export const AdminProducts = () => {
 
       {/* Products Table */}
       <div className="glass-panel" style={{ borderRadius: 'var(--radius-3xl)', overflow: 'hidden' }}>
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem', textAlign: 'left' }}>
+        <div className="admin-table-scroll">
+          <table style={{ width: '100%', minWidth: '700px', borderCollapse: 'collapse', fontSize: '0.8rem', textAlign: 'left' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid var(--border-subtle)', backgroundColor: 'var(--bg-obsidian-950)', color: 'var(--text-muted)' }}>
-                <th style={{ padding: '1rem' }}>{t('admin.tableProduct') || 'Mahsulot'}</th>
-                <th style={{ padding: '1rem' }}>{t('admin.tableBrand') || 'Brend'}</th>
-                <th style={{ padding: '1rem' }}>{t('admin.tablePrice') || 'Narx'}</th>
-                <th style={{ padding: '1rem' }}>{t('admin.tableStock') || 'Ombor & Holat'}</th>
-                <th style={{ padding: '1rem' }}>{t('admin.tableMovement') || 'Mexanizm'}</th>
-                <th style={{ padding: '1rem', textAlign: 'right' }}>{t('admin.tableAction') || 'Amal'}</th>
+                <th style={{ padding: '1rem', whiteSpace: 'nowrap' }}>{t('admin.tableProduct') || 'Mahsulot'}</th>
+                <th style={{ padding: '1rem', whiteSpace: 'nowrap' }}>{t('admin.tableBrand') || 'Brend'}</th>
+                <th style={{ padding: '1rem', whiteSpace: 'nowrap' }}>{t('admin.tablePrice') || 'Narx'}</th>
+                <th style={{ padding: '1rem', whiteSpace: 'nowrap' }}>{t('admin.tableStock') || 'Ombor & Holat'}</th>
+                <th style={{ padding: '1rem', whiteSpace: 'nowrap' }}>{t('admin.tableMovement') || 'Mexanizm'}</th>
+                <th style={{ padding: '1rem', textAlign: 'right', whiteSpace: 'nowrap' }}>{t('admin.tableAction') || 'Amal'}</th>
               </tr>
             </thead>
             <tbody>

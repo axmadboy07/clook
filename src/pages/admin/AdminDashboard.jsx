@@ -383,16 +383,16 @@ export const AdminDashboard = () => {
           </Link>
         </div>
 
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem' }}>
+        <div className="admin-table-scroll">
+          <table style={{ width: '100%', minWidth: '650px', borderCollapse: 'collapse', fontSize: '0.8rem', textAlign: 'left' }}>
             <thead>
-              <tr style={{ borderBottom: '1px solid var(--border-subtle)', color: 'var(--text-muted)', textAlign: 'left' }}>
-                <th style={{ paddingBottom: '0.75rem', fontWeight: 600 }}>{t('admin.dashColOrderId') || 'ID'}</th>
-                <th style={{ paddingBottom: '0.75rem', fontWeight: 600 }}>{t('admin.dashColCustomer') || 'Mijoz'}</th>
-                <th style={{ paddingBottom: '0.75rem', fontWeight: 600 }}>{t('admin.dashColProduct') || 'Mahsulot'}</th>
-                <th style={{ paddingBottom: '0.75rem', fontWeight: 600 }}>{t('admin.dashColPaymentMethod') || 'To‘lov'}</th>
-                <th style={{ paddingBottom: '0.75rem', fontWeight: 600 }}>{t('admin.dashColTotal') || 'Summa'}</th>
-                <th style={{ paddingBottom: '0.75rem', fontWeight: 600 }}>{t('admin.dashColStatus') || 'Holat'}</th>
+              <tr style={{ borderBottom: '1px solid var(--border-subtle)', backgroundColor: 'var(--bg-obsidian-950)', color: 'var(--text-muted)' }}>
+                <th style={{ padding: '0.85rem 1rem', fontWeight: 600, whiteSpace: 'nowrap' }}>{t('admin.dashColOrderId') || 'ID'}</th>
+                <th style={{ padding: '0.85rem 1rem', fontWeight: 600, whiteSpace: 'nowrap' }}>{t('admin.dashColCustomer') || 'Mijoz'}</th>
+                <th style={{ padding: '0.85rem 1rem', fontWeight: 600 }}>{t('admin.dashColProduct') || 'Mahsulot'}</th>
+                <th style={{ padding: '0.85rem 1rem', fontWeight: 600, whiteSpace: 'nowrap' }}>{t('admin.dashColPaymentMethod') || 'To‘lov'}</th>
+                <th style={{ padding: '0.85rem 1rem', fontWeight: 600, whiteSpace: 'nowrap' }}>{t('admin.dashColTotal') || 'Summa'}</th>
+                <th style={{ padding: '0.85rem 1rem', fontWeight: 600, whiteSpace: 'nowrap' }}>{t('admin.dashColStatus') || 'Holat'}</th>
               </tr>
             </thead>
             <tbody>
@@ -400,16 +400,16 @@ export const AdminDashboard = () => {
                 const isPending = order.orderStatus === 'pending';
                 return (
                   <tr key={order.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                    <td style={{ padding: '0.85rem 0', color: 'var(--color-gold-400)', fontWeight: 700 }}>{order.id}</td>
-                    <td style={{ padding: '0.85rem 0', color: 'var(--text-primary)' }}>{order.customerName}</td>
-                    <td style={{ padding: '0.85rem 0', color: 'var(--text-secondary)' }}>
+                    <td style={{ padding: '0.85rem 1rem', color: 'var(--color-gold-400)', fontWeight: 700, whiteSpace: 'nowrap' }}>{order.id}</td>
+                    <td style={{ padding: '0.85rem 1rem', color: 'var(--text-primary)', whiteSpace: 'nowrap' }}>{order.customerName}</td>
+                    <td style={{ padding: '0.85rem 1rem', color: 'var(--text-secondary)', minWidth: '180px' }}>
                       {order.items[0]?.name} {order.items.length > 1 && `(+${order.items.length - 1})`}
                     </td>
-                    <td style={{ padding: '0.85rem 0', color: 'var(--text-muted)' }}>{order.paymentMethod}</td>
-                    <td style={{ padding: '0.85rem 0', fontFamily: 'var(--font-serif)', fontWeight: 700, color: 'var(--text-primary)' }}>
+                    <td style={{ padding: '0.85rem 1rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>{order.paymentMethod}</td>
+                    <td style={{ padding: '0.85rem 1rem', fontFamily: 'var(--font-serif)', fontWeight: 700, color: 'var(--text-primary)', whiteSpace: 'nowrap' }}>
                       {formatPrice(order.totalAmountUSD)}
                     </td>
-                    <td style={{ padding: '0.85rem 0' }}>
+                    <td style={{ padding: '0.85rem 1rem', whiteSpace: 'nowrap' }}>
                       <span className={isPending ? 'badge-amber' : order.orderStatus === 'delivered' ? 'badge-emerald' : 'badge-gold'}>
                         {getOrderStatusLabel(order.orderStatus)}
                       </span>

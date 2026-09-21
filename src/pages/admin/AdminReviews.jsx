@@ -36,16 +36,16 @@ export const AdminReviews = () => {
             <p>{t('admin.reviewsNoReviews') || 'Hozircha hech qanday sharhlar mavjud emas.'}</p>
           </div>
         ) : (
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem', textAlign: 'left' }}>
+          <div className="admin-table-scroll">
+            <table style={{ width: '100%', minWidth: '650px', borderCollapse: 'collapse', fontSize: '0.8rem', textAlign: 'left' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid var(--border-subtle)', backgroundColor: 'var(--bg-obsidian-950)', color: 'var(--text-muted)' }}>
-                  <th style={{ padding: '1rem' }}>{t('admin.reviewsColModel') || 'Model'}</th>
-                  <th style={{ padding: '1rem' }}>{t('admin.reviewsColAuthor') || 'Muallif'}</th>
-                  <th style={{ padding: '1rem' }}>{t('admin.reviewsColRating') || 'Baho'}</th>
+                  <th style={{ padding: '1rem', whiteSpace: 'nowrap' }}>{t('admin.reviewsColModel') || 'Model'}</th>
+                  <th style={{ padding: '1rem', whiteSpace: 'nowrap' }}>{t('admin.reviewsColAuthor') || 'Muallif'}</th>
+                  <th style={{ padding: '1rem', whiteSpace: 'nowrap' }}>{t('admin.reviewsColRating') || 'Baho'}</th>
                   <th style={{ padding: '1rem' }}>{t('admin.reviewsColComment') || 'Sharh'}</th>
-                  <th style={{ padding: '1rem' }}>{t('admin.reviewsColStatus') || 'Holat'}</th>
-                  <th style={{ padding: '1rem', textAlign: 'right' }}>{t('admin.reviewsColActions') || 'Amallar'}</th>
+                  <th style={{ padding: '1rem', whiteSpace: 'nowrap' }}>{t('admin.reviewsColStatus') || 'Holat'}</th>
+                  <th style={{ padding: '1rem', textAlign: 'right', whiteSpace: 'nowrap' }}>{t('admin.reviewsColActions') || 'Amallar'}</th>
                 </tr>
               </thead>
               <tbody>

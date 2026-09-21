@@ -146,16 +146,16 @@ export const AdminOrders = () => {
       <div
         className="glass-panel"
         style={{
-          padding: '1rem',
+          padding: '0.85rem 1rem',
           borderRadius: 'var(--radius-2xl)',
           display: 'flex',
           flexWrap: 'wrap',
           alignItems: 'center',
           justifyContent: 'space-between',
-          gap: '1rem'
+          gap: '0.75rem'
         }}
       >
-        <div style={{ position: 'relative', width: '100%', maxWidth: '20rem' }}>
+        <div style={{ position: 'relative', width: '100%', maxWidth: '20rem', flex: '1 1 220px' }}>
           <Search size={16} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
           <input
             type="text"
@@ -167,7 +167,7 @@ export const AdminOrders = () => {
           />
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', overflowX: 'auto' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '0.4rem' }}>
           {[
             { key: 'All', label: t('admin.ordersFilterAll') || 'Barchasi' },
             { key: 'pending', label: t('admin.statusPending') || 'Kutilmoqda' },
@@ -180,8 +180,8 @@ export const AdminOrders = () => {
               onClick={() => setSelectedStatusFilter(key)}
               className={`btn-glass ${selectedStatusFilter === key ? 'active-filter' : ''}`}
               style={{
-                padding: '0.35rem 0.75rem',
-                fontSize: '0.7rem',
+                padding: '0.4rem 0.75rem',
+                fontSize: '0.75rem',
                 whiteSpace: 'nowrap',
                 borderColor: selectedStatusFilter === key ? 'var(--color-gold-400)' : 'var(--border-subtle)',
                 color: selectedStatusFilter === key ? 'var(--color-gold-300)' : 'var(--text-secondary)'
@@ -225,7 +225,7 @@ export const AdminOrders = () => {
                 {/* Order Top Bar */}
                 <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '1rem' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
                       <span className="gold-gradient-text" style={{ fontWeight: 700, fontSize: '1rem' }}>{order.id}</span>
                       <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>({order.createdAt})</span>
                       <span className={isPending ? 'badge-amber' : order.orderStatus === 'delivered' ? 'badge-emerald' : 'badge-gold'}>
@@ -237,9 +237,9 @@ export const AdminOrders = () => {
                     </p>
                   </div>
 
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <div style={{ textAlign: 'right' }}>
-                      <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', display: 'block' }}>{t('admin.ordersTotalPayment') || 'Jami To‘lov'}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+                    <div style={{ textAlign: 'left' }}>
+                      <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', display: 'block' }}>{t('admin.ordersTotalPayment') || 'JAMI TO‘LOV'}</span>
                       <span className="gold-gradient-text" style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '1.25rem' }}>
                         {formatPrice(order.totalAmountUSD)}
                       </span>
@@ -248,16 +248,16 @@ export const AdminOrders = () => {
                     <div style={{ display: 'flex', gap: '0.5rem' }}>
                       <button
                         onClick={() => setSelectedOrderDetails(order)}
-                        className="btn-glass"
-                        style={{ padding: '0.5rem', borderRadius: 'var(--radius-lg)' }}
+                        className="btn-glass tap-target-44"
+                        style={{ width: '40px', height: '40px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 'var(--radius-lg)' }}
                         title={t('admin.ordersViewDetails') || 'Batafsil'}
                       >
                         <Eye size={16} />
                       </button>
                       <button
                         onClick={() => window.print()}
-                        className="btn-glass"
-                        style={{ padding: '0.5rem', borderRadius: 'var(--radius-lg)' }}
+                        className="btn-glass tap-target-44"
+                        style={{ width: '40px', height: '40px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 'var(--radius-lg)' }}
                         title={t('admin.ordersPrintReceipt') || 'Chek chiqarish'}
                       >
                         <Printer size={16} />
@@ -268,11 +268,19 @@ export const AdminOrders = () => {
 
                 {/* Stepper Progress Bar */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: 'var(--text-muted)' }}>
-                    <span style={{ color: order.orderStatus === 'pending' ? 'var(--color-amber-400)' : 'inherit', fontWeight: order.orderStatus === 'pending' ? 700 : 400 }}>{t('admin.ordersStepReceived') || 'Qabul qilindi'}</span>
-                    <span style={{ color: order.orderStatus === 'processing' ? 'var(--color-amber-400)' : 'inherit', fontWeight: order.orderStatus === 'processing' ? 700 : 400 }}>{t('admin.ordersStepProcessing') || 'Tayyorlanmoqda'}</span>
-                    <span style={{ color: order.orderStatus === 'shipped' ? 'var(--color-gold-300)' : 'inherit', fontWeight: order.orderStatus === 'shipped' ? 700 : 400 }}>{t('admin.ordersStepCourier') || 'Kuryerda'}</span>
-                    <span style={{ color: order.orderStatus === 'delivered' ? 'var(--color-emerald-400)' : 'inherit', fontWeight: order.orderStatus === 'delivered' ? 700 : 400 }}>{t('admin.ordersStepDelivered') || 'Yetkazildi'}</span>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', textAlign: 'center', gap: '0.25rem', fontSize: '0.68rem' }}>
+                    <span style={{ color: order.orderStatus === 'pending' ? 'var(--color-amber-400)' : 'var(--text-muted)', fontWeight: order.orderStatus === 'pending' ? 700 : 500 }}>
+                      1. {t('admin.ordersStepReceived') || 'Qabul'}
+                    </span>
+                    <span style={{ color: order.orderStatus === 'processing' ? 'var(--color-amber-400)' : 'var(--text-muted)', fontWeight: order.orderStatus === 'processing' ? 700 : 500 }}>
+                      2. {t('admin.ordersStepProcessing') || 'Tayyorlash'}
+                    </span>
+                    <span style={{ color: order.orderStatus === 'shipped' ? 'var(--color-gold-300)' : 'var(--text-muted)', fontWeight: order.orderStatus === 'shipped' ? 700 : 500 }}>
+                      3. {t('admin.ordersStepCourier') || 'Kuryerda'}
+                    </span>
+                    <span style={{ color: order.orderStatus === 'delivered' ? 'var(--color-emerald-400)' : 'var(--text-muted)', fontWeight: order.orderStatus === 'delivered' ? 700 : 500 }}>
+                      4. {t('admin.ordersStepDelivered') || 'Yetkazildi'}
+                    </span>
                   </div>
 
                   <div style={{ width: '100%', height: '6px', backgroundColor: 'var(--bg-obsidian-950)', borderRadius: '9999px', overflow: 'hidden', border: '1px solid var(--border-subtle)' }}>
@@ -307,18 +315,18 @@ export const AdminOrders = () => {
                   </div>
 
                   {/* Status Toggle Dropdown */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{t('admin.ordersChangeStatus') || 'Holatni o‘zgartirish:'}</span>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '0.5rem' }}>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>{t('admin.ordersChangeStatus') || 'Holatni o‘zgartirish:'}</span>
                     <select
                       value={order.orderStatus}
                       onChange={(e) => handleStatusChange(order.id, e.target.value)}
                       className="luxury-input"
-                      style={{ padding: '0.35rem 0.75rem', fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-gold-300)' }}
+                      style={{ padding: '0.35rem 0.75rem', fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-gold-300)', minWidth: '160px' }}
                     >
-                      <option value="pending">{t('admin.ordersStatusPendingOpt') || 'Kutilmoqda'}</option>
-                      <option value="processing">{t('admin.ordersStatusProcessingOpt') || 'Jarayonda'}</option>
-                      <option value="shipped">{t('admin.ordersStatusShippedOpt') || 'Yetkazilmoqda'}</option>
-                      <option value="delivered">{t('admin.ordersStatusDeliveredOpt') || 'Yetkazildi'}</option>
+                      <option value="pending">{t('admin.ordersStatusPendingOpt') || 'Kutilmoqda (Pending)'}</option>
+                      <option value="processing">{t('admin.ordersStatusProcessingOpt') || 'Tayyorlanmoqda (Processing)'}</option>
+                      <option value="shipped">{t('admin.ordersStatusShippedOpt') || 'Kuryerga berildi (Shipped)'}</option>
+                      <option value="delivered">{t('admin.ordersStatusDeliveredOpt') || 'Yetkazib berildi (Delivered)'}</option>
                     </select>
                   </div>
                 </div>

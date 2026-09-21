@@ -221,3 +221,36 @@
     transform: scale(1.1);
   }
 }
+
+/* Sleek Admin Table Custom Scrollbar */
+.admin-table-scroll,
+.admin-card-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(212, 175, 55, 0.4) rgba(10, 11, 15, 0.5);
+  width: 100%;
+}
+
+.admin-table-scroll::-webkit-scrollbar,
+.admin-card-scroll::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+
+.admin-table-scroll::-webkit-scrollbar-track,
+.admin-card-scroll::-webkit-scrollbar-track {
+  background: rgba(10, 11, 15, 0.8);
+  border-radius: 9999px;
+}
+
+.admin-table-scroll::-webkit-scrollbar-thumb,
+.admin-card-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, rgba(212, 175, 55, 0.6), rgba(217, 119, 6, 0.6));
+  border-radius: 9999px;
+}
+
+.admin-table-scroll::-webkit-scrollbar-thumb:hover,
+.admin-card-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gold-400);
+}
