@@ -1,4 +1,4 @@
-const { Product, Category, Review } = require("../models");
+const { Product, Category, Review, CartItem, WishlistItem, OrderItem } = require("../models");
 const { validateProduct } = require("../validation/productValidation");
 const { Op } = require("sequelize");
 
@@ -20,6 +20,9 @@ exports.getProducts = async (req, res) => {
             include: [
                 { model: Category, as: "category" },
                 { model: Review, as: "reviews" },
+                { model: CartItem, as: "cart_items" },
+                { model: WishlistItem, as: "wishlist_items" },
+                { model: OrderItem, as: "order_items" },
             ],
         });
         res.status(200).send(products);
@@ -34,6 +37,9 @@ exports.getProductById = async (req, res) => {
             include: [
                 { model: Category, as: "category" },
                 { model: Review, as: "reviews" },
+                { model: CartItem, as: "cart_items" },
+                { model: WishlistItem, as: "wishlist_items" },
+                { model: OrderItem, as: "order_items" },
             ],
         });
         if (!product) return res.status(404).send("Product not found");
@@ -84,7 +90,10 @@ exports.searchProducts = async (req, res) => {
                     { brand: { [Op.iLike]: `%${query}%` } },
                 ],
             },
-            include: [{ model: Category, as: "category" }],
+            include: [
+                { model: Category, as: "category" },
+                { model: Review, as: "reviews" },
+            ],
         });
         res.status(200).send(products);
     } catch (error) {

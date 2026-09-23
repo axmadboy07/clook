@@ -1,4 +1,4 @@
-const { User, Address, Order, Review } = require("../models");
+const { User, CartItem, WishlistItem, Review, Order, Address } = require("../models");
 const { validateUser } = require("../validation/userValidation");
 const { Op } = require("sequelize");
 
@@ -16,7 +16,15 @@ exports.createUser = async (req, res) => {
 
 exports.getUsers = async (req, res) => {
     try {
-        const users = await User.findAll({});
+        const users = await User.findAll({
+            include: [
+                { model: CartItem, as: "cart_items" },
+                { model: WishlistItem, as: "wishlist_items" },
+                { model: Review, as: "reviews" },
+                { model: Order, as: "orders" },
+                { model: Address, as: "addresses" },
+            ],
+        });
         res.status(200).send(users);
     } catch (error) {
         res.status(500).send(error.message);
@@ -27,9 +35,11 @@ exports.getUserById = async (req, res) => {
     try {
         const user = await User.findByPk(req.params.id, {
             include: [
-                { model: Address, as: "addresses" },
-                { model: Order, as: "orders" },
+                { model: CartItem, as: "cart_items" },
+                { model: WishlistItem, as: "wishlist_items" },
                 { model: Review, as: "reviews" },
+                { model: Order, as: "orders" },
+                { model: Address, as: "addresses" },
             ],
         });
         if (!user) return res.status(404).send("User not found");
@@ -81,6 +91,13 @@ exports.searchUsers = async (req, res) => {
                     { email: { [Op.iLike]: `%${query}%` } },
                 ],
             },
+            include: [
+                { model: CartItem, as: "cart_items" },
+                { model: WishlistItem, as: "wishlist_items" },
+                { model: Review, as: "reviews" },
+                { model: Order, as: "orders" },
+                { model: Address, as: "addresses" },
+            ],
         });
         res.status(200).send(users);
     } catch (error) {
