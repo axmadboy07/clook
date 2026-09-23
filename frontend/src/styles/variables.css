@@ -1,0 +1,77 @@
+:root {
+  /* Brand Color Palette: Obsidian Dark Luxury & Haute Horlogerie Golds */
+  --bg-obsidian-950: #06070a;
+  --bg-obsidian-900: #0a0b0f;
+  --bg-obsidian-850: #10121a;
+  --bg-obsidian-800: #161922;
+  --bg-obsidian-700: #222634;
+
+  --color-gold-300: #f5df93;
+  --color-gold-400: #e5be4e;
+  --color-gold-500: #d4a44c;
+  --color-gold-600: #b88628;
+  --color-gold-700: #966718;
+  --color-amber-400: #fbbf24;
+  --color-amber-500: #f59e0b;
+  --color-amber-600: #d97706;
+
+  --color-rosegold-300: #fce7e9;
+  --color-rosegold-400: #d9949a;
+  --color-rosegold-500: #b76e79;
+
+  --color-platinum-100: #f8fafc;
+  --color-platinum-200: #e2e8f0;
+  --color-platinum-300: #cbd5e1;
+  --color-platinum-400: #94a3b8;
+  --color-platinum-500: #64748b;
+  --color-platinum-600: #475569;
+
+  --color-emerald-400: #34d399;
+  --color-emerald-500: #10b981;
+  --color-emerald-600: #059669;
+
+  --color-red-400: #f87171;
+  --color-red-500: #ef4444;
+
+  /* Typography */
+  --font-serif: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+  --font-display: 'Cinzel', 'Playfair Display', serif;
+  --font-sans: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', Menlo, monospace;
+
+  /* Borders & Glows */
+  --border-gold-subtle: rgba(212, 164, 76, 0.2);
+  --border-gold-medium: rgba(212, 164, 76, 0.4);
+  --border-gold-strong: rgba(212, 164, 76, 0.7);
+  --border-platinum-subtle: rgba(255, 255, 255, 0.08);
+  --border-platinum-medium: rgba(255, 255, 255, 0.15);
+
+  --shadow-gold-glow: 0 0 25px rgba(212, 164, 76, 0.25);
+  --shadow-gold-subtle: 0 4px 20px rgba(212, 164, 76, 0.15);
+  --shadow-dark-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.5);
+
+  /* Glassmorphism */
+  --glass-bg: rgba(14, 17, 23, 0.75);
+  --glass-bg-hover: rgba(22, 27, 38, 0.85);
+  --glass-blur: blur(16px);
+  --glass-pill-bg: rgba(255, 255, 255, 0.04);
+  --glass-pill-border: rgba(255, 255, 255, 0.1);
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-slow: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Touch & Ergonomics */
+  --min-tap-target: 44px;
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-top: env(safe-area-inset-top, 0px);
+}

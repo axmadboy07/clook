@@ -1,0 +1,151 @@
+/* ==========================================================================
+   PAGE STYLES: Hero, ProductDetail, Cart, Checkout, Profile, Contact, Blog
+   ========================================================================== */
+
+/* Hero Section */
+.hero-section {
+  position: relative;
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: radial-gradient(circle at 75% 45%, rgba(30, 36, 52, 0.4) 0%, var(--bg-obsidian-950) 70%);
+  padding: 4rem 0;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 3rem;
+  align-items: center;
+  position: relative;
+  z-index: 10;
+}
+
+@media (max-width: 1024px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+}
+
+.hero-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2.5rem, 5vw, 4.25rem);
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--color-platinum-100);
+  margin-bottom: 1.5rem;
+}
+
+.hero-subtitle {
+  font-size: 1rem;
+  color: var(--color-platinum-400);
+  line-height: 1.7;
+  max-width: 540px;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 1024px) {
+  .hero-subtitle {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* Contact Salons Grid (2 or 3 columns, full width) */
+.salons-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+@media (max-width: 1024px) {
+  .salons-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .salons-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.salon-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--border-platinum-subtle);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  transition: all var(--transition-normal);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.salon-card:hover {
+  border-color: var(--border-gold-medium);
+  box-shadow: var(--shadow-gold-subtle);
+  transform: translateY(-2px);
+}
+
+/* Profile Page */
+.profile-header-card {
+  background: linear-gradient(135deg, var(--bg-obsidian-900), var(--bg-obsidian-850), var(--bg-obsidian-900));
+  border: 1px solid var(--border-gold-medium);
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  box-shadow: var(--shadow-dark-2xl), var(--shadow-gold-subtle);
+  margin-bottom: 2.5rem;
+}
+
+@media (min-width: 768px) {
+  .profile-header-card {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.profile-avatar-circle {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-gold-400), var(--color-amber-600), #78350f);
+  color: var(--bg-obsidian-950);
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 25px rgba(212, 164, 76, 0.35);
+  border: 2px solid var(--color-gold-300);
+  flex-shrink: 0;
+}
+
+/* Cart & Checkout Grid */
+.checkout-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 2.5rem;
+}
+
+@media (max-width: 992px) {
+  .checkout-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.order-summary-box {
+  background: var(--bg-obsidian-900);
+  border: 1px solid var(--border-platinum-subtle);
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  position: sticky;
+  top: 100px;
+}
