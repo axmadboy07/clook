@@ -73,19 +73,19 @@ export const InteractiveCustomizerBanner = () => {
   };
 
   return (
-    <section style={{ padding: 'clamp(3.5rem, 6vw, 6rem) 0', backgroundColor: 'var(--bg-primary)', position: 'relative', overflow: 'hidden' }}>
-      <div className="site-container" style={{ position: 'relative', zIndex: 10, width: '100%', maxWidth: '100%' }}>
+    <section style={{ padding: '6rem 0', backgroundColor: 'var(--bg-obsidian-950)', position: 'relative', overflow: 'hidden' }}>
+      <div className="site-container" style={{ position: 'relative', zIndex: 10 }}>
         <div
           className="glass-panel"
           style={{
             borderRadius: 'var(--radius-3xl)',
             border: '1px solid var(--border-gold-subtle)',
-            padding: 'clamp(1.25rem, 3vw, 3rem)',
+            padding: 'clamp(1.5rem, 4vw, 3rem)',
             position: 'relative',
             overflow: 'hidden'
           }}
         >
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: 'clamp(1.5rem, 3vw, 3rem)', alignItems: 'center' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '3rem', alignItems: 'center' }}>
             {/* Left Column: 3D Live Render Studio */}
             <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '380px' }}>
               <div style={{ width: '100%', height: '340px' }}>

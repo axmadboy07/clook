@@ -382,8 +382,26 @@ input, select, textarea {
   justify-content: center;
 }
 
-/* Mobile Responsive Utility Classes */
+/* Mobile Responsive Utility Classes & Global Smartphone Optimization */
 @media (max-width: 768px) {
+  html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+    width: 100%;
+  }
+
+  .site-container,
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  h1 { font-size: clamp(1.6rem, 5vw, 2.25rem); }
+  h2 { font-size: clamp(1.25rem, 4vw, 1.75rem); }
+  h3 { font-size: clamp(1.05rem, 3.2vw, 1.35rem); }
+
   .hide-on-mobile {
     display: none !important;
   }
@@ -397,11 +415,85 @@ input, select, textarea {
     grid-template-columns: 1fr !important;
     gap: 0.875rem !important;
   }
+
+  /* Responsive image scaling */
+  img, canvas, video, svg {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Responsive modal and drawer handling */
+  .modal-content,
+  .quick-view-modal {
+    width: 100% !important;
+    max-width: 100vw !important;
+    margin: 0 !important;
+  }
+
+  /* Smooth horizontal scrolling for tables and comparison cards */
+  .table-responsive-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 @media (min-width: 769px) {
   .show-on-mobile,
   .show-on-mobile-flex {
     display: none !important;
+  }
+}
+
+/* Small Smartphone Optimizations (320px - 480px: iPhone SE, Galaxy S, Pixel) */
+@media (max-width: 480px) {
+  .site-container,
+  .container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  h1 { font-size: clamp(1.45rem, 6vw, 1.85rem); }
+  h2 { font-size: clamp(1.15rem, 4.8vw, 1.45rem); }
+  p { font-size: 0.875rem; line-height: 1.5; }
+
+  .btn-gold,
+  .btn-outline-gold,
+  .btn-glass {
+    padding: 0.65rem 1rem;
+    font-size: 0.75rem;
+    min-height: 40px;
+  }
+
+  .luxury-input {
+    min-height: 42px;
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem; /* >= 16px to avoid iOS zoom */
+  }
+
+  /* Prevent text overflow in badges and pills */
+  .glass-pill {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.7rem;
+    max-width: 100%;
+  }
+}
+
+/* Ultra-Compact Phones (320px: iPhone SE 1st gen, older compacts) */
+@media (max-width: 340px) {
+  .site-container,
+  .container {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  h1 { font-size: 1.35rem; }
+  h2 { font-size: 1.1rem; }
+  
+  .btn-gold,
+  .btn-outline-gold,
+  .btn-glass {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.7rem;
   }
 }
