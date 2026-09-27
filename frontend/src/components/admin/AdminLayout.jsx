@@ -19,10 +19,12 @@ import {
   Sparkles,
   ChevronLeft,
   Trash2,
-  CheckCheck
+  CheckCheck,
+  Sun,
+  Moon
 } from 'lucide-react';
 import { logout } from '../../store/slices/authSlice';
-import { toggleCurrency, setLanguage } from '../../store/slices/localeSlice';
+import { toggleCurrency, setLanguage, toggleTheme } from '../../store/slices/localeSlice';
 import { deleteNotification, clearAllNotifications, markAllAsRead } from '../../store/slices/notificationsSlice';
 
 export const AdminLayout = () => {
@@ -33,6 +35,7 @@ export const AdminLayout = () => {
 
   const currentUser = useSelector((state) => state.auth.currentUser);
   const currentCurrency = useSelector((state) => state.locale.currency);
+  const currentTheme = useSelector((state) => state.locale.theme);
   const notifications = useSelector((state) => state.notifications.items);
 
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -68,15 +71,15 @@ export const AdminLayout = () => {
   ];
 
   return (
-    <div className="admin-layout" style={{ height: '100vh', width: '100vw', backgroundColor: 'var(--bg-obsidian-950)', color: 'var(--text-primary)', display: 'flex', flexDirection: 'row', overflow: 'hidden' }}>
+    <div className="admin-layout" style={{ height: '100vh', width: '100vw', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)', display: 'flex', flexDirection: 'row', overflow: 'hidden' }}>
       
       {/* Desktop Animated Sidebar */}
       <aside
         style={{
           width: sidebarCollapsed ? '5rem' : '17rem',
           padding: sidebarCollapsed ? '1rem 0.5rem' : '1.5rem',
-          backgroundColor: 'rgba(10, 11, 14, 0.95)',
-          borderRight: '1px solid var(--border-gold-subtle)',
+          backgroundColor: 'var(--bg-card)',
+          borderRight: '1px solid var(--border-subtle)',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
@@ -224,8 +227,8 @@ export const AdminLayout = () => {
               style={{
                 width: '80vw',
                 maxWidth: '300px',
-                backgroundColor: 'var(--bg-obsidian-900)',
-                borderRight: '1px solid var(--border-gold-subtle)',
+                backgroundColor: 'var(--modal-bg, var(--bg-card))',
+                borderRight: '1px solid var(--border-subtle)',
                 padding: '1.5rem',
                 display: 'flex',
                 flexDirection: 'column',
@@ -315,7 +318,7 @@ export const AdminLayout = () => {
           style={{
             padding: '0.75rem 1.25rem',
             borderBottom: '1px solid var(--border-subtle)',
-            backgroundColor: 'rgba(10, 11, 14, 0.85)',
+            backgroundColor: 'var(--bg-card)',
             backdropFilter: 'blur(16px)',
             display: 'flex',
             alignItems: 'center',
@@ -360,6 +363,16 @@ export const AdminLayout = () => {
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            {/* Theme toggle switcher */}
+            <button
+              onClick={() => dispatch(toggleTheme())}
+              className="btn-glass tap-target-44"
+              style={{ width: '44px', height: '44px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 'var(--radius-lg)' }}
+              title={currentTheme === 'dark' ? "Kunduzgi rejim (Light)" : "Tungi rejim (Dark)"}
+            >
+              {currentTheme === 'dark' ? <Sun size={17} style={{ color: 'var(--color-gold-400)' }} /> : <Moon size={17} style={{ color: 'var(--color-gold-400)' }} />}
+            </button>
+
             {/* Currency switcher */}
             <button
               onClick={() => dispatch(toggleCurrency())}
@@ -396,8 +409,8 @@ export const AdminLayout = () => {
                       padding: '0.25rem',
                       borderRadius: 'var(--radius-lg)',
                       zIndex: 50,
-                      border: '1px solid var(--border-gold-subtle)',
-                      backgroundColor: 'var(--bg-obsidian-900)'
+                      border: '1px solid var(--border-subtle)',
+                      backgroundColor: 'var(--modal-bg, var(--bg-card))'
                     }}
                   >
                     {languages.map((lng) => (
@@ -460,8 +473,8 @@ export const AdminLayout = () => {
                       borderRadius: 'var(--radius-xl)',
                       padding: '1rem',
                       zIndex: 50,
-                      border: '1px solid var(--border-gold-subtle)',
-                      backgroundColor: 'rgba(10, 11, 14, 0.96)',
+                      border: '1px solid var(--border-subtle)',
+                      backgroundColor: 'var(--modal-bg, var(--bg-card))',
                       display: 'flex',
                       flexDirection: 'column',
                       gap: '0.75rem',

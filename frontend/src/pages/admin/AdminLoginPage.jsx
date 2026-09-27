@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ShieldCheck, ArrowRight } from 'lucide-react';
 import { login } from '../../store/slices/authSlice';
 
@@ -10,6 +10,7 @@ export const AdminLoginPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const users = useSelector((state) => state.auth.users);
 
   const [email, setEmail] = useState('admin@chronos.uz');
   const [password, setPassword] = useState('admin123');
@@ -17,16 +18,37 @@ export const AdminLoginPage = () => {
 
   const handleAdminLogin = (e) => {
     e.preventDefault();
-    const actionResult = dispatch(login({ email, password }));
-    if (actionResult.payload && actionResult.payload.success) {
-      if (actionResult.payload.user.role === 'admin') {
-        navigate('/admin/dashboard');
-      } else {
-        setErrorMsg(t('admin.loginNoPermission') || 'Admin huquqi yo‘q');
-      }
-    } else {
-      setErrorMsg(actionResult.payload?.message || 'Login yoki parol xato');
+    setErrorMsg('');
+
+    if (!email.trim() || !password.trim()) {
+      setErrorMsg(t('auth.fillAllFields') || 'Iltimos, barcha maydonlarni to‘ldiring!');
+      return;
     }
+
+    const cleanEmail = email.trim().toLowerCase();
+    const user = users.find(
+      (u) =>
+        (u.email.toLowerCase() === cleanEmail || u.phone === cleanEmail) &&
+        u.password === password
+    );
+
+    if (!user) {
+      setErrorMsg(t('admin.invalidCredentials') || 'Email yoki parol noto‘g‘ri!');
+      return;
+    }
+
+    if (user.role !== 'admin') {
+      setErrorMsg(t('admin.loginNoPermission') || 'Ushbu hisobda administrator huquqi yo‘q!');
+      return;
+    }
+
+    if (user.isBanned) {
+      setErrorMsg(t('auth.bannedAccount') || 'Ushbu hisob bloklangan.');
+      return;
+    }
+
+    dispatch(login({ emailOrPhone: cleanEmail, password }));
+    navigate('/admin/dashboard', { replace: true });
   };
 
   return (
