@@ -383,3 +383,53 @@
     right: 1rem;
   }
 }
+
+/* ==========================================================================
+   LUXURY USER PROFILE DROPDOWN
+   ========================================================================== */
+.dropdown-item-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.55rem 0.65rem;
+  border-radius: 10px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dropdown-item-link:hover {
+  background: var(--bg-secondary) !important;
+  color: var(--color-gold-400) !important;
+  transform: translateX(3px);
+}
+
+.dropdown-item-link:hover .dropdown-icon-box {
+  background: rgba(212, 175, 55, 0.15) !important;
+  color: var(--color-gold-300) !important;
+}
+
+.dropdown-logout-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: 10px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-red-400, #ef4444);
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.15);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dropdown-logout-btn:hover {
+  background: rgba(239, 68, 68, 0.16) !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+  transform: translateX(3px);
+}
+

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -17,7 +17,10 @@ import {
   LogOut,
   ArrowRight,
   Sun,
-  Moon
+  Moon,
+  ChevronRight,
+  Package,
+  ShieldCheck
 } from 'lucide-react';
 
 import { selectCartTotalCount, toggleCartDrawer, addToCart } from '../../store/slices/cartSlice';
@@ -39,6 +42,7 @@ export const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [langDropdown, setLangDropdown] = useState(false);
   const [userDropdown, setUserDropdown] = useState(false);
+  const userMenuRef = useRef(null);
 
   // Redux state
   const totalCartCount = useSelector(selectCartTotalCount);
@@ -58,6 +62,21 @@ export const Navbar = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Close dropdown on click outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setUserDropdown(false);
+      }
+    };
+    if (userDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [userDropdown]);
 
   const handleLanguageChange = (lng) => {
     dispatch(setLanguage(lng));
@@ -278,15 +297,45 @@ export const Navbar = () => {
             </button>
 
             {/* 7. User Authentication Dropdown */}
-            <div className="relative hide-on-mobile">
+            <div className="relative hide-on-mobile" ref={userMenuRef}>
               {isAuthenticated ? (
                 <button
                   onClick={() => setUserDropdown(!userDropdown)}
                   className="icon-button"
-                  style={{ borderColor: 'var(--color-gold-400)', color: 'var(--color-gold-300)' }}
+                  style={{
+                    borderColor: userDropdown ? 'var(--color-gold-400)' : 'var(--border-subtle)',
+                    background: userDropdown ? 'var(--bg-secondary)' : 'transparent',
+                    color: 'var(--color-gold-400)',
+                    padding: '4px 6px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    borderRadius: '9999px',
+                    minWidth: '38px',
+                    height: '38px',
+                    boxShadow: userDropdown ? '0 0 12px rgba(212, 175, 55, 0.25)' : 'none',
+                    transition: 'all 0.25s ease'
+                  }}
                   title="Mening hisobim"
                 >
-                  <User size={17} />
+                  <div
+                    style={{
+                      width: '24px',
+                      height: '24px',
+                      borderRadius: '50%',
+                      background: 'linear-gradient(135deg, #d4af37, #996515)',
+                      color: '#0b0e14',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontWeight: 800,
+                      fontSize: '0.75rem',
+                      textTransform: 'uppercase'
+                    }}
+                  >
+                    {currentUser?.name?.charAt(0) || 'U'}
+                  </div>
+                  <ChevronDown size={13} style={{ transform: userDropdown ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s ease', opacity: 0.8 }} />
                 </button>
               ) : (
                 <Link
@@ -302,48 +351,214 @@ export const Navbar = () => {
               <AnimatePresence>
                 {userDropdown && isAuthenticated && (
                   <motion.div
-                    initial={{ opacity: 0, y: -6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -4 }}
-                    transition={{ duration: 0.15, ease: 'easeOut' }}
-                    className="glass-panel"
-                    style={{ position: 'absolute', right: 0, marginTop: '0.5rem', width: '200px', padding: '0.5rem', zIndex: 50, background: 'var(--bg-obsidian-900)' }}
+                    initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 6, scale: 0.96 }}
+                    transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                    style={{
+                      position: 'absolute',
+                      right: 0,
+                      top: 'calc(100% + 0.5rem)',
+                      width: '255px',
+                      padding: '0.6rem',
+                      zIndex: 100,
+                      background: 'var(--modal-bg, var(--bg-card))',
+                      backdropFilter: 'blur(24px)',
+                      WebkitBackdropFilter: 'blur(24px)',
+                      border: '1px solid var(--border-subtle)',
+                      borderRadius: '16px',
+                      boxShadow: '0 20px 45px -10px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(212, 175, 55, 0.18)',
+                    }}
                   >
-                    <div style={{ padding: '0.5rem 0.75rem', borderBottom: '1px solid var(--border-platinum-subtle)' }}>
-                      <p style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-platinum-100)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        {currentUser?.name}
-                      </p>
-                      <p style={{ fontSize: '0.6875rem', fontFamily: 'var(--font-mono)', color: 'var(--color-gold-400)' }}>
-                        {currentUser?.email}
-                      </p>
+                    {/* User Header Profile Card */}
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.75rem',
+                        padding: '0.7rem',
+                        background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.12), rgba(212, 175, 55, 0.03))',
+                        borderRadius: '12px',
+                        border: '1px solid rgba(212, 175, 55, 0.22)',
+                        marginBottom: '0.45rem',
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: '38px',
+                          height: '38px',
+                          borderRadius: '50%',
+                          background: 'linear-gradient(135deg, #d4af37, #996515)',
+                          color: '#0b0e14',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontWeight: 800,
+                          fontSize: '0.95rem',
+                          boxShadow: '0 3px 10px rgba(212, 175, 55, 0.35)',
+                          flexShrink: 0,
+                          textTransform: 'uppercase',
+                        }}
+                      >
+                        {currentUser?.name?.charAt(0) || 'U'}
+                      </div>
+                      <div style={{ minWidth: 0, flex: 1 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                          <p
+                            style={{
+                              fontSize: '0.8125rem',
+                              fontWeight: 700,
+                              color: 'var(--text-primary)',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
+                              margin: 0,
+                            }}
+                          >
+                            {currentUser?.name || 'Mijoz'}
+                          </p>
+                          {isAdmin ? (
+                            <span
+                              style={{
+                                fontSize: '0.5625rem',
+                                fontWeight: 700,
+                                padding: '0.1rem 0.35rem',
+                                borderRadius: '9999px',
+                                background: 'rgba(245, 158, 11, 0.2)',
+                                color: '#f59e0b',
+                                border: '1px solid rgba(245, 158, 11, 0.35)',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.04em',
+                              }}
+                            >
+                              Admin
+                            </span>
+                          ) : (
+                            <span
+                              style={{
+                                fontSize: '0.5625rem',
+                                fontWeight: 700,
+                                padding: '0.1rem 0.35rem',
+                                borderRadius: '9999px',
+                                background: 'rgba(212, 175, 55, 0.15)',
+                                color: 'var(--color-gold-400)',
+                                border: '1px solid rgba(212, 175, 55, 0.25)',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.04em',
+                              }}
+                            >
+                              VIP
+                            </span>
+                          )}
+                        </div>
+                        <p
+                          style={{
+                            fontSize: '0.6875rem',
+                            color: 'var(--text-muted)',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                            margin: '0.15rem 0 0 0',
+                          }}
+                        >
+                          {currentUser?.email}
+                        </p>
+                      </div>
                     </div>
 
-                    <Link
-                      to="/profile"
-                      onClick={() => setUserDropdown(false)}
-                      style={{ display: 'block', padding: '0.5rem 0.75rem', fontSize: '0.75rem', color: 'var(--color-platinum-300)' }}
-                    >
-                      {t('nav.profile')} & {t('nav.orders')}
-                    </Link>
-
-                    {isAdmin && (
+                    {/* Navigation Menu Items */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
                       <Link
-                        to="/admin/dashboard"
+                        to="/profile"
                         onClick={() => setUserDropdown(false)}
-                        style={{ display: 'block', padding: '0.5rem 0.75rem', fontSize: '0.75rem', color: 'var(--color-amber-400)', fontWeight: 700 }}
+                        className="dropdown-item-link"
                       >
-                        ⚡ {t('nav.adminPanel')}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                          <div
+                            className="dropdown-icon-box"
+                            style={{
+                              width: '26px',
+                              height: '26px',
+                              borderRadius: '8px',
+                              background: 'var(--bg-secondary)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              color: 'var(--color-gold-400)',
+                              transition: 'all 0.2s ease',
+                            }}
+                          >
+                            <User size={13} />
+                          </div>
+                          <span>{t('nav.profile')} & {t('nav.orders')}</span>
+                        </div>
+                        <ChevronRight size={13} style={{ opacity: 0.5 }} />
                       </Link>
-                    )}
 
+                      {isAdmin && (
+                        <Link
+                          to="/admin/dashboard"
+                          onClick={() => setUserDropdown(false)}
+                          className="dropdown-item-link"
+                          style={{
+                            color: 'var(--color-amber-400)',
+                            background: 'rgba(245, 158, 11, 0.08)',
+                            border: '1px solid rgba(245, 158, 11, 0.2)',
+                            fontWeight: 600,
+                          }}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                            <div
+                              style={{
+                                width: '26px',
+                                height: '26px',
+                                borderRadius: '8px',
+                                background: 'rgba(245, 158, 11, 0.2)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                color: '#f59e0b',
+                              }}
+                            >
+                              <Sparkles size={13} />
+                            </div>
+                            <span>{t('nav.adminPanel')}</span>
+                          </div>
+                          <ChevronRight size={13} style={{ opacity: 0.7 }} />
+                        </Link>
+                      )}
+                    </div>
+
+                    <div
+                      style={{
+                        margin: '0.35rem 0',
+                        height: '1px',
+                        background: 'var(--border-subtle)',
+                      }}
+                    />
+
+                    {/* Logout Action */}
                     <button
                       onClick={() => {
                         dispatch(logout());
                         setUserDropdown(false);
                       }}
-                      style={{ width: '100%', textAlign: 'left', padding: '0.5rem 0.75rem', fontSize: '0.75rem', color: 'var(--color-red-400)', display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}
+                      className="dropdown-logout-btn"
                     >
-                      <LogOut size={13} />
+                      <div
+                        style={{
+                          width: '26px',
+                          height: '26px',
+                          borderRadius: '8px',
+                          background: 'rgba(239, 68, 68, 0.15)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: 'var(--color-red-400, #ef4444)',
+                        }}
+                      >
+                        <LogOut size={13} />
+                      </div>
                       <span>{t('nav.logout')}</span>
                     </button>
                   </motion.div>
@@ -442,40 +657,125 @@ export const Navbar = () => {
               </button>
 
               {/* User Account / Auth Section */}
-              <div className="glass-panel" style={{ padding: '1rem', marginBottom: '1.5rem', borderRadius: 'var(--radius-xl)' }}>
+              <div
+                style={{
+                  padding: '1rem',
+                  marginBottom: '1.5rem',
+                  borderRadius: '16px',
+                  background: 'var(--bg-card)',
+                  border: '1px solid var(--border-subtle)',
+                  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.25)',
+                }}
+              >
                 {isAuthenticated ? (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                      <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--color-gold-400), var(--color-amber-700))', color: '#000', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.875rem' }}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.75rem',
+                        padding: '0.65rem',
+                        background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.02))',
+                        borderRadius: '12px',
+                        border: '1px solid rgba(212, 175, 55, 0.2)',
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: '40px',
+                          height: '40px',
+                          borderRadius: '50%',
+                          background: 'linear-gradient(135deg, #d4af37, #996515)',
+                          color: '#0b0e14',
+                          fontWeight: 800,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '0.95rem',
+                          boxShadow: '0 3px 10px rgba(212, 175, 55, 0.35)',
+                          flexShrink: 0,
+                          textTransform: 'uppercase',
+                        }}
+                      >
                         {currentUser?.name?.charAt(0) || 'U'}
                       </div>
-                      <div style={{ overflow: 'hidden' }}>
-                        <div style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--color-platinum-100)', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                          {currentUser?.name}
+                      <div style={{ minWidth: 0, flex: 1 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                          <div
+                            style={{
+                              fontWeight: 700,
+                              fontSize: '0.875rem',
+                              color: 'var(--text-primary)',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
+                              overflow: 'hidden',
+                            }}
+                          >
+                            {currentUser?.name}
+                          </div>
+                          {isAdmin ? (
+                            <span
+                              style={{
+                                fontSize: '0.5625rem',
+                                fontWeight: 700,
+                                padding: '0.1rem 0.35rem',
+                                borderRadius: '9999px',
+                                background: 'rgba(245, 158, 11, 0.2)',
+                                color: '#f59e0b',
+                                border: '1px solid rgba(245, 158, 11, 0.35)',
+                              }}
+                            >
+                              Admin
+                            </span>
+                          ) : (
+                            <span
+                              style={{
+                                fontSize: '0.5625rem',
+                                fontWeight: 700,
+                                padding: '0.1rem 0.35rem',
+                                borderRadius: '9999px',
+                                background: 'rgba(212, 175, 55, 0.15)',
+                                color: 'var(--color-gold-400)',
+                                border: '1px solid rgba(212, 175, 55, 0.25)',
+                              }}
+                            >
+                              VIP
+                            </span>
+                          )}
                         </div>
-                        <div style={{ fontSize: '0.7rem', color: 'var(--color-gold-400)', fontFamily: 'var(--font-mono)' }}>
+                        <div
+                          style={{
+                            fontSize: '0.7rem',
+                            color: 'var(--text-muted)',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                          }}
+                        >
                           {currentUser?.email}
                         </div>
                       </div>
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: isAdmin ? '1fr 1fr' : '1fr', gap: '0.5rem', marginTop: '0.25rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: isAdmin ? '1fr 1fr' : '1fr', gap: '0.5rem', marginTop: '0.15rem' }}>
                       <Link
                         to="/profile"
                         onClick={() => setMobileMenuOpen(false)}
                         className="btn-glass"
-                        style={{ fontSize: '0.75rem', padding: '0.5rem', textAlign: 'center' }}
+                        style={{ fontSize: '0.75rem', padding: '0.55rem', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem' }}
                       >
-                        {t('nav.profile')}
+                        <User size={13} />
+                        <span>{t('nav.profile')}</span>
                       </Link>
                       {isAdmin && (
                         <Link
                           to="/admin/dashboard"
                           onClick={() => setMobileMenuOpen(false)}
                           className="btn-glass"
-                          style={{ fontSize: '0.75rem', padding: '0.5rem', textAlign: 'center', color: 'var(--color-amber-400)', borderColor: 'rgba(245, 158, 11, 0.4)' }}
+                          style={{ fontSize: '0.75rem', padding: '0.55rem', textAlign: 'center', color: 'var(--color-amber-400)', borderColor: 'rgba(245, 158, 11, 0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem' }}
                         >
-                          ⚡ Admin
+                          <Sparkles size={13} />
+                          <span>Admin</span>
                         </Link>
                       )}
                     </div>
@@ -485,7 +785,8 @@ export const Navbar = () => {
                         dispatch(logout());
                         setMobileMenuOpen(false);
                       }}
-                      style={{ fontSize: '0.75rem', color: 'var(--color-red-400)', padding: '0.4rem 0', display: 'flex', alignItems: 'center', gap: '0.35rem', cursor: 'pointer' }}
+                      className="dropdown-logout-btn"
+                      style={{ marginTop: '0.25rem' }}
                     >
                       <LogOut size={13} />
                       <span>{t('nav.logout')}</span>
