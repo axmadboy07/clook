@@ -301,41 +301,66 @@ export const Navbar = () => {
               {isAuthenticated ? (
                 <button
                   onClick={() => setUserDropdown(!userDropdown)}
-                  className="icon-button"
+                  className="user-profile-nav-btn"
                   style={{
-                    borderColor: userDropdown ? 'var(--color-gold-400)' : 'var(--border-subtle)',
-                    background: userDropdown ? 'var(--bg-secondary)' : 'transparent',
-                    color: 'var(--color-gold-400)',
-                    padding: '4px 6px',
-                    display: 'flex',
+                    display: 'inline-flex',
                     alignItems: 'center',
-                    gap: '6px',
+                    gap: '0.45rem',
+                    height: '40px',
+                    padding: '0 0.65rem 0 0.35rem',
                     borderRadius: '9999px',
-                    minWidth: '38px',
-                    height: '38px',
-                    boxShadow: userDropdown ? '0 0 12px rgba(212, 175, 55, 0.25)' : 'none',
-                    transition: 'all 0.25s ease'
+                    border: userDropdown ? '1px solid var(--color-gold-400)' : '1px solid var(--border-subtle)',
+                    background: userDropdown ? 'var(--bg-secondary)' : 'var(--glass-pill-bg)',
+                    boxShadow: userDropdown ? '0 0 14px rgba(212, 175, 55, 0.25)' : 'none',
+                    cursor: 'pointer',
+                    userSelect: 'none',
                   }}
                   title="Mening hisobim"
                 >
                   <div
                     style={{
-                      width: '24px',
-                      height: '24px',
+                      width: '30px',
+                      height: '30px',
+                      minWidth: '30px',
+                      minHeight: '30px',
+                      aspectRatio: '1 / 1',
                       borderRadius: '50%',
-                      background: 'linear-gradient(135deg, #d4af37, #996515)',
+                      background: 'linear-gradient(135deg, #d4af37, #aa8214)',
                       color: '#0b0e14',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       fontWeight: 800,
-                      fontSize: '0.75rem',
-                      textTransform: 'uppercase'
+                      fontSize: '0.8125rem',
+                      textTransform: 'uppercase',
+                      boxShadow: '0 2px 6px rgba(212, 175, 55, 0.35)',
+                      flexShrink: 0,
                     }}
                   >
                     {currentUser?.name?.charAt(0) || 'U'}
                   </div>
-                  <ChevronDown size={13} style={{ transform: userDropdown ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s ease', opacity: 0.8 }} />
+                  <span
+                    style={{
+                      fontSize: '0.8125rem',
+                      fontWeight: 600,
+                      color: 'var(--text-primary)',
+                      maxWidth: '90px',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {currentUser?.name?.split(' ')[0] || 'Mijoz'}
+                  </span>
+                  <ChevronDown
+                    size={13}
+                    style={{
+                      color: 'var(--color-gold-400)',
+                      transform: userDropdown ? 'rotate(180deg)' : 'none',
+                      transition: 'transform 0.25s ease',
+                      flexShrink: 0,
+                    }}
+                  />
                 </button>
               ) : (
                 <Link
