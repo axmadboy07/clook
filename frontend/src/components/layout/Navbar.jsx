@@ -157,7 +157,7 @@ export const Navbar = () => {
             </div>
             <div>
               <span className="brand-logo-text">CHRONOS</span>
-              <span style={{ display: 'block', fontSize: '0.55rem', textTransform: 'uppercase', letterSpacing: '0.22em', color: 'var(--color-gold-400)', fontFamily: 'var(--font-sans)', fontWeight: 600 }}>
+              <span className="brand-logo-subtitle hide-on-mobile" style={{ display: 'block', fontSize: '0.55rem', textTransform: 'uppercase', letterSpacing: '0.22em', color: 'var(--color-gold-400)', fontFamily: 'var(--font-sans)', fontWeight: 600 }}>
                 Haute Horlogerie
               </span>
             </div>
@@ -233,7 +233,7 @@ export const Navbar = () => {
             {/* 2.5 Theme Switcher Button (Desktop & Mobile) */}
             <button
               onClick={() => dispatch(toggleTheme())}
-              className="icon-button"
+              className="icon-button nav-theme-btn"
               title={theme === 'dark' ? "Yorug' rejim (Light Mode)" : "Tungi rejim (Dark Mode)"}
               aria-label="Mavzuni almashtirish"
             >
@@ -247,7 +247,7 @@ export const Navbar = () => {
             {/* 3. Search Trigger */}
             <button
               onClick={() => setSearchOpen(true)}
-              className="icon-button"
+              className="icon-button nav-search-btn"
               title="Qidiruv"
             >
               <Search size={17} />
@@ -256,7 +256,7 @@ export const Navbar = () => {
             {/* 4. Compare Trigger */}
             <button
               onClick={() => dispatch(setCompareModalOpen(true))}
-              className="icon-button hide-on-mobile"
+              className="icon-button nav-compare-btn hide-on-mobile"
               title="Taqqoslash"
             >
               <Scale size={17} />
@@ -270,7 +270,7 @@ export const Navbar = () => {
             {/* 5. Wishlist Trigger */}
             <button
               onClick={() => dispatch(toggleWishlistDrawer(true))}
-              className="icon-button"
+              className="icon-button nav-wishlist-btn"
               title="Istaklar ro‘yxati"
             >
               <Heart size={17} />
@@ -284,7 +284,7 @@ export const Navbar = () => {
             {/* 6. Shopping Cart Trigger */}
             <button
               onClick={() => dispatch(toggleCartDrawer(true))}
-              className="icon-button"
+              className="icon-button nav-cart-btn"
               style={{ borderColor: 'var(--border-gold-medium)', color: 'var(--color-gold-300)', background: 'rgba(212, 164, 76, 0.15)' }}
               title="Savat"
             >
@@ -661,25 +661,46 @@ export const Navbar = () => {
                 })}
               </div>
 
-              {/* Compare Quick Link (Mobile) */}
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  dispatch(toggleCompareModal(true));
-                }}
-                className="mobile-nav-link"
-                style={{ marginBottom: '1rem', width: '100%', textAlign: 'left', background: 'transparent' }}
-              >
-                <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <Scale size={16} style={{ color: 'var(--color-gold-400)' }} />
-                  <span>{t('compare.title') || 'Taqqoslash'}</span>
-                </span>
-                {compareCount > 0 && (
-                  <span className="badge-count" style={{ position: 'static', background: 'var(--color-amber-500)', color: '#000' }}>
-                    {compareCount}
+              {/* Wishlist & Compare Quick Links (Mobile) */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', marginBottom: '1rem' }}>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    dispatch(toggleWishlistDrawer(true));
+                  }}
+                  className="mobile-nav-link"
+                  style={{ width: '100%', textAlign: 'left', background: 'transparent' }}
+                >
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <Heart size={16} style={{ color: '#e11d48' }} />
+                    <span>{t('wishlist.title') || 'Istaklar ro‘yxati'}</span>
                   </span>
-                )}
-              </button>
+                  {wishlistCount > 0 && (
+                    <span className="badge-count" style={{ position: 'static', background: '#e11d48', color: '#fff' }}>
+                      {wishlistCount}
+                    </span>
+                  )}
+                </button>
+
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    dispatch(toggleCompareModal(true));
+                  }}
+                  className="mobile-nav-link"
+                  style={{ width: '100%', textAlign: 'left', background: 'transparent' }}
+                >
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <Scale size={16} style={{ color: 'var(--color-gold-400)' }} />
+                    <span>{t('compare.title') || 'Taqqoslash'}</span>
+                  </span>
+                  {compareCount > 0 && (
+                    <span className="badge-count" style={{ position: 'static', background: 'var(--color-amber-500)', color: '#000' }}>
+                      {compareCount}
+                    </span>
+                  )}
+                </button>
+              </div>
 
               {/* User Account / Auth Section */}
               <div

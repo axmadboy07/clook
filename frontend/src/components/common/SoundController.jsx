@@ -25,7 +25,7 @@ export const SoundController = () => {
   }, []);
 
   return (
-    <div style={{ position: 'fixed', bottom: '1.5rem', left: '1.5rem', zIndex: 40, userSelect: 'none' }}>
+    <div className="floating-sound-controller">
       {/* Expanded Frequency Control Drawer */}
       <AnimatePresence>
         {menuOpen && (

@@ -368,6 +368,31 @@
   }
 }
 
+/* Floating Sound Controller */
+.floating-sound-controller {
+  position: fixed;
+  bottom: 2rem;
+  left: 2rem;
+  z-index: 40;
+  user-select: none;
+}
+
+@media (max-width: 768px) {
+  .floating-sound-controller {
+    bottom: calc(1rem + var(--safe-area-bottom, 12px));
+    left: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .floating-sound-controller {
+    bottom: calc(0.75rem + var(--safe-area-bottom, 12px));
+    left: 0.5rem;
+    transform: scale(0.9);
+    transform-origin: bottom left;
+  }
+}
+
 /* Floating Concierge Chat responsive */
 .floating-chat-container {
   position: fixed;
@@ -379,8 +404,17 @@
 
 @media (max-width: 768px) {
   .floating-chat-container {
-    bottom: calc(1rem + var(--safe-area-bottom));
-    right: 1rem;
+    bottom: calc(1rem + var(--safe-area-bottom, 12px));
+    right: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .floating-chat-container {
+    bottom: calc(0.75rem + var(--safe-area-bottom, 12px));
+    right: 0.5rem;
+    transform: scale(0.9);
+    transform-origin: bottom right;
   }
 }
 
