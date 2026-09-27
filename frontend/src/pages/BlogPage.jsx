@@ -228,7 +228,7 @@ export const BlogPage = () => {
               gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
               gap: '2.5rem',
               alignItems: 'center',
-              background: 'linear-gradient(145deg, rgba(16, 18, 26, 0.95), rgba(10, 11, 15, 0.98))'
+              background: 'var(--card-bg)'
             }}
           >
             <div style={{ width: '100%', height: '320px', borderRadius: 'var(--radius-xl)', overflow: 'hidden', border: '1px solid var(--border-platinum-subtle)' }}>

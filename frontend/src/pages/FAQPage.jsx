@@ -182,7 +182,7 @@ export const FAQPage = () => {
                 style={{
                   borderRadius: 'var(--radius-xl)',
                   border: isOpen ? '1px solid var(--border-gold-medium)' : '1px solid var(--border-platinum-subtle)',
-                  backgroundColor: isOpen ? 'rgba(16, 18, 25, 0.95)' : 'rgba(12, 14, 19, 0.8)',
+                  backgroundColor: isOpen ? 'var(--bg-secondary)' : 'var(--bg-card)',
                   overflow: 'hidden',
                   transition: 'all var(--transition-normal)'
                 }}
@@ -214,7 +214,7 @@ export const FAQPage = () => {
                       width: '32px',
                       height: '32px',
                       borderRadius: '50%',
-                      background: isOpen ? 'rgba(212,175,55,0.2)' : 'rgba(255,255,255,0.05)',
+                      background: isOpen ? 'rgba(212,175,55,0.2)' : 'var(--glass-pill-bg)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -282,7 +282,7 @@ export const FAQPage = () => {
             padding: '2.5rem 2rem',
             borderRadius: 'var(--radius-2xl)',
             border: '1px solid var(--border-gold-subtle)',
-            background: 'linear-gradient(135deg, rgba(212, 164, 76, 0.1) 0%, rgba(10, 11, 15, 0.95) 100%)',
+            background: 'var(--card-bg)',
             textAlign: 'center',
             display: 'flex',
             flexDirection: 'column',

@@ -42,7 +42,7 @@ export const SoundController = () => {
               display: 'flex',
               flexDirection: 'column',
               gap: '0.75rem',
-              backgroundColor: 'rgba(10, 11, 14, 0.95)',
+              backgroundColor: 'var(--modal-bg, var(--bg-obsidian-900))',
               border: '1px solid var(--border-gold-subtle)'
             }}
           >
@@ -101,7 +101,7 @@ export const SoundController = () => {
           padding: '0.375rem',
           borderRadius: '9999px',
           border: '1px solid var(--border-gold-subtle)',
-          backgroundColor: 'rgba(10, 11, 14, 0.9)'
+          backgroundColor: 'var(--modal-bg, var(--bg-obsidian-900))'
         }}
       >
         <button

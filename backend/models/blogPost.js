@@ -3,8 +3,8 @@ module.exports = (sequelize, DataTypes) => {
         "BlogPost",
         {
             id: {
-                type: DataTypes.UUID,
-                defaultValue: DataTypes.UUIDV4,
+                type: DataTypes.INTEGER,
+                autoIncrement: true,
                 primaryKey: true,
             },
             title: {
@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false,
             },
             content: {
-                type: DataTypes.TEXT,
+                type: DataTypes.STRING,
                 allowNull: false,
             },
             author: {

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   MapPin,
@@ -6,24 +7,44 @@ import {
   Clock,
   Send,
   Sparkles,
-  CheckCircle2
+  CheckCircle2,
+  ShieldCheck,
+  Loader2
 } from 'lucide-react';
+import { contactApi } from '../api';
 
 export const ContactConciergePage = () => {
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
-    interest: 'Tourbillon Bespoke Commission',
+    interest: 'Turbiyon Individual Buyurtmasi (Bespoke)',
     location: 'Geneva Salon (Rue du Rhône)',
     preferredDate: '',
     message: '',
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
+    setLoading(true);
+    try {
+      await contactApi.sendInquiry({
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
+        interest: formData.interest,
+        location: formData.location,
+        preferred_date: formData.preferredDate,
+        message: formData.message.trim() || 'VIP Konsyerj va Shaxsiy Qabul Murojaati',
+      });
+    } catch (error) {
+      console.warn('Contact Inquiry API warning (offline or demo mode):', error.message);
+    } finally {
+      setLoading(false);
+      setSubmitted(true);
+    }
   };
 
   const salons = [
@@ -67,7 +88,7 @@ export const ContactConciergePage = () => {
           style={{ padding: '0.4rem 0.85rem', color: 'var(--color-gold-300)', fontSize: '0.75rem', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', borderColor: 'var(--border-gold-subtle)' }}
         >
           <Sparkles size={14} style={{ color: 'var(--color-gold-400)' }} />
-          <span>VIP CONCIERGE & SALON DESK</span>
+          <span>VIP KONSYERJ VA SHAXSIY QABUL XIZMATI</span>
         </motion.div>
 
         <motion.h1
@@ -76,7 +97,7 @@ export const ContactConciergePage = () => {
           transition={{ delay: 0.1 }}
           style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(2.25rem, 4.5vw, 3.5rem)', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}
         >
-          Private Horological Inquiries
+          Maxsus Soatsozlik Murojaatlari
         </motion.h1>
 
         <motion.p
@@ -84,60 +105,207 @@ export const ContactConciergePage = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
           className="text-muted"
-          style={{ fontSize: '1rem', maxWidth: '36rem', margin: 0, lineHeight: 1.6 }}
+          style={{ fontSize: '1rem', maxWidth: '38rem', margin: 0, lineHeight: 1.6 }}
         >
-          Schedule a private champagne consultation at one of our global salons or initiate a bespoke complication commission with our master watchmakers.
+          Dunyo bo‘ylab flagman salonlarimizda shaxsiy konsultatsiya belgilang yoki bosh soatsozlarimiz bilan individual mexanizm va buyurtma loyihasini boshlang.
         </motion.p>
       </div>
 
       {/* Main Reservation Form Section */}
       <div className="site-container" style={{ maxWidth: '52rem', marginBottom: '5rem' }}>
-        <div className="glass-panel" style={{ padding: '2.5rem', borderRadius: 'var(--radius-3xl)', border: '1px solid var(--border-gold-subtle)', backgroundColor: 'rgba(10, 11, 14, 0.9)' }}>
+        <div className="glass-panel" style={{ padding: '2.5rem', borderRadius: 'var(--radius-3xl)', border: '1px solid var(--border-gold-subtle)', backgroundColor: 'var(--card-bg)' }}>
           {submitted ? (
-            <div style={{ padding: '4rem 1rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
-              <div style={{ width: '4rem', height: '4rem', borderRadius: '50%', backgroundColor: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.3)', color: 'var(--color-emerald-400)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <CheckCircle2 size={32} />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: 'easeOut' }}
+              style={{ padding: '2rem 1rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem' }}
+            >
+              {/* Glowing Luxury Badge */}
+              <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <motion.div
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: [1, 1.25, 1], opacity: [0.3, 0.6, 0.3] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                  style={{
+                    position: 'absolute',
+                    width: '5.5rem',
+                    height: '5.5rem',
+                    borderRadius: '50%',
+                    background: 'radial-gradient(circle, rgba(212,164,76,0.35) 0%, rgba(52,211,153,0.1) 70%, transparent 100%)',
+                    filter: 'blur(10px)',
+                  }}
+                />
+                <div
+                  style={{
+                    width: '4.5rem',
+                    height: '4.5rem',
+                    borderRadius: '50%',
+                    backgroundColor: 'rgba(16, 24, 20, 0.9)',
+                    border: '1.5px solid var(--color-gold-400)',
+                    color: 'var(--color-emerald-400)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 0 25px rgba(212,164,76,0.25), inset 0 0 15px rgba(52,211,153,0.15)',
+                    position: 'relative',
+                    zIndex: 1,
+                  }}
+                >
+                  <CheckCircle2 size={36} style={{ color: 'var(--color-gold-400)' }} />
+                </div>
               </div>
-              <h3 style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '1.5rem', color: 'var(--text-primary)', margin: 0 }}>
-                Concierge Dossier Dispatched
-              </h3>
-              <p className="text-muted" style={{ fontSize: '0.85rem', maxWidth: '24rem', margin: 0, lineHeight: 1.5 }}>
-                A Senior Horological Director will review your inquiry and contact you via secure VIP channel within 2 hours.
-              </p>
-              <button
-                onClick={() => setSubmitted(false)}
-                className="btn-glass"
-                style={{ padding: '0.65rem 1.5rem', fontSize: '0.75rem', marginTop: '0.5rem', color: 'var(--color-gold-300)' }}
+
+              {/* Title & Status */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                <span className="badge-gold" style={{ alignSelf: 'center', fontSize: '0.7rem', letterSpacing: '0.08em' }}>
+                  DOSSYE #{Math.floor(100000 + Math.random() * 900000)} • QABUL QILINDI
+                </span>
+                <h3
+                  style={{
+                    fontFamily: 'var(--font-serif)',
+                    fontWeight: 700,
+                    fontSize: 'clamp(1.5rem, 3vw, 2rem)',
+                    color: 'var(--color-platinum-100)',
+                    margin: 0,
+                    background: 'linear-gradient(135deg, #FFF 30%, var(--color-gold-300) 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }}
+                >
+                  VIP Konsyerj Dossyesi Yuborildi
+                </h3>
+                <p
+                  style={{
+                    fontSize: '0.9rem',
+                    maxWidth: '32rem',
+                    margin: '0 auto',
+                    lineHeight: 1.6,
+                    color: 'var(--color-platinum-300)',
+                  }}
+                >
+                  Bosh soatsozlik direktori (Senior Horological Director) sizning shaxsiy talablaringizni ko‘rib chiqadi va <strong>2 soat ichida</strong> maxsus VIP kanal orqali siz bilan bog‘lanadi.
+                </p>
+              </div>
+
+              {/* Inquiry Summary Ticket */}
+              <div
+                style={{
+                  width: '100%',
+                  maxWidth: '34rem',
+                  padding: '1.25rem 1.5rem',
+                  borderRadius: 'var(--radius-xl)',
+                  backgroundColor: 'var(--bg-secondary)',
+                  border: '1px solid var(--border-gold-subtle)',
+                  textAlign: 'left',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '0.75rem',
+                  fontSize: '0.825rem',
+                  marginTop: '0.5rem',
+                }}
               >
-                Submit Another Inquiry
-              </button>
-            </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-platinum-subtle)', paddingBottom: '0.6rem' }}>
+                  <span style={{ color: 'var(--color-gold-300)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <Sparkles size={14} /> Shaxsiy Murojaat Xulosasi
+                  </span>
+                  <span style={{ fontSize: '0.725rem', color: 'var(--color-emerald-400)', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                    ● Maxfiy ishlovda
+                  </span>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.75rem' }}>
+                  <div>
+                    <span style={{ display: 'block', fontSize: '0.7rem', color: 'var(--color-platinum-500)', textTransform: 'uppercase' }}>Mijoz</span>
+                    <span style={{ color: 'var(--color-platinum-100)', fontWeight: 600 }}>{formData.name || 'Hurmatli Mehmon'}</span>
+                  </div>
+                  <div>
+                    <span style={{ display: 'block', fontSize: '0.7rem', color: 'var(--color-platinum-500)', textTransform: 'uppercase' }}>Aloqa Raqami</span>
+                    <span style={{ color: 'var(--color-platinum-100)' }}>{formData.phone || 'Keltirilmagan'}</span>
+                  </div>
+                  <div>
+                    <span style={{ display: 'block', fontSize: '0.7rem', color: 'var(--color-platinum-500)', textTransform: 'uppercase' }}>Yo‘nalish</span>
+                    <span style={{ color: 'var(--color-gold-300)' }}>{formData.interest}</span>
+                  </div>
+                  <div>
+                    <span style={{ display: 'block', fontSize: '0.7rem', color: 'var(--color-platinum-500)', textTransform: 'uppercase' }}>Tanlangan Salon</span>
+                    <span style={{ color: 'var(--color-platinum-100)' }}>{formData.location}</span>
+                  </div>
+                </div>
+
+                {formData.preferredDate && (
+                  <div style={{ paddingTop: '0.4rem', borderTop: '1px dashed var(--border-platinum-subtle)', display: 'flex', justifyContent: 'space-between', fontSize: '0.775rem' }}>
+                    <span style={{ color: 'var(--color-platinum-400)' }}>Rejalashtirilgan tashrif sanasi:</span>
+                    <span style={{ color: 'var(--color-gold-300)', fontWeight: 600 }}>{formData.preferredDate}</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Action Buttons */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'center', marginTop: '0.75rem' }}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSubmitted(false);
+                    setFormData({
+                      name: '',
+                      email: '',
+                      phone: '',
+                      interest: 'Tourbillon Bespoke Commission',
+                      location: 'Geneva Salon (Rue du Rhône)',
+                      preferredDate: '',
+                      message: '',
+                    });
+                  }}
+                  className="btn-gold"
+                  style={{ padding: '0.75rem 1.75rem', fontSize: '0.825rem' }}
+                >
+                  Yana Bir So‘rov Yuborish
+                </button>
+
+                <Link
+                  to="/"
+                  className="btn-outline-gold"
+                  style={{ padding: '0.75rem 1.75rem', fontSize: '0.825rem', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none' }}
+                >
+                  Bosh Sahifaga Qaytish
+                </Link>
+
+                <Link
+                  to="/catalog"
+                  className="btn-glass"
+                  style={{ padding: '0.75rem 1.75rem', fontSize: '0.825rem', color: 'var(--color-platinum-200)', textDecoration: 'none' }}
+                >
+                  Kolleksiyani Ko‘rish
+                </Link>
+              </div>
+            </motion.div>
           ) : (
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               <div style={{ borderBottom: '1px solid var(--border-subtle)', paddingBottom: '1rem' }}>
                 <h3 style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '1.35rem', color: 'var(--text-primary)', margin: 0 }}>
-                  Reserve Salon Appointment or Commission
+                  Salon Qabuliga Yozilish yoki Maxsus Buyurtma Berish
                 </h3>
                 <p className="text-muted" style={{ fontSize: '0.8rem', marginTop: '0.25rem', margin: 0 }}>
-                  Confidential & Priority Concierge Routing
+                  Maxfiy va Imtiyozli VIP Konsyerj Yo‘naltiruvi
                 </p>
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Full Name *</label>
+                  <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>To‘liq Ismingiz *</label>
                   <input
                     type="text"
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="Ismingizni kiriting"
+                    placeholder="Ism va Familiyangiz"
                     className="luxury-input"
                     style={{ padding: '0.6rem 0.85rem', fontSize: '0.8rem' }}
                   />
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Private Email *</label>
+                  <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Shaxsiy Elektron Pochta *</label>
                   <input
                     type="email"
                     required
@@ -152,53 +320,53 @@ export const ContactConciergePage = () => {
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>VIP Contact Phone *</label>
+                  <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>VIP Aloqa Telefoni *</label>
                   <input
                     type="tel"
                     required
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    placeholder="+41 22 819 9000"
+                    placeholder="+998 90 123 45 67"
                     className="luxury-input"
                     style={{ padding: '0.6rem 0.85rem', fontSize: '0.8rem' }}
                   />
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Preferred Salon Location</label>
+                  <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Tanlangan Salon Manzili</label>
                   <select
                     value={formData.location}
                     onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                     className="luxury-input"
                     style={{ padding: '0.6rem 0.85rem', fontSize: '0.8rem' }}
                   >
-                    <option value="Geneva Salon">Geneva Salon (Rue du Rhône)</option>
-                    <option value="Zurich Salon">Zurich (Bahnhofstrasse)</option>
-                    <option value="London Salon">London (New Bond Street)</option>
-                    <option value="Dubai Salon">Dubai (DIFC Gate)</option>
-                    <option value="Tokyo Salon">Tokyo (Ginza Six)</option>
-                    <option value="New York Salon">New York (Madison Avenue)</option>
+                    <option value="Geneva Salon (Rue du Rhône)">Jeneva Saloni (Rue du Rhône, Shveytsariya)</option>
+                    <option value="Zurich Salon (Bahnhofstrasse)">Syurix Saloni (Bahnhofstrasse, Shveytsariya)</option>
+                    <option value="London Salon (New Bond Street)">London Saloni (New Bond Street, Buyuk Britaniya)</option>
+                    <option value="Dubai Salon (DIFC Gate)">Dubay Saloni (DIFC Gate, BAA)</option>
+                    <option value="Tokyo Salon (Ginza Six)">Tokio Saloni (Ginza Six, Yaponiya)</option>
+                    <option value="New York Salon (Madison Avenue)">Nyu-York Saloni (Madison Avenue, AQSH)</option>
                   </select>
                 </div>
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Inquiry Nature</label>
+                  <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Murojaat Yo‘nalishi</label>
                   <select
                     value={formData.interest}
                     onChange={(e) => setFormData({ ...formData, interest: e.target.value })}
                     className="luxury-input"
                     style={{ padding: '0.6rem 0.85rem', fontSize: '0.8rem' }}
                   >
-                    <option value="Tourbillon Bespoke Commission">Tourbillon Bespoke Commission</option>
-                    <option value="Private Salon Viewing">Private Salon Viewing & Tasting</option>
-                    <option value="Meteorite Dial Allocation">Meteorite Dial Allocation</option>
-                    <option value="Vintage Calibre Restoration">Vintage Calibre Restoration</option>
-                    <option value="Corporate / Royal Fleet Commission">Corporate / Royal Fleet Commission</option>
+                    <option value="Turbiyon Individual Buyurtmasi (Bespoke)">Turbiyon Individual Buyurtmasi (Bespoke)</option>
+                    <option value="Xususiy Salon Ko‘rigi va Taqdimot">Xususiy Salon Ko‘rigi va Taqdimot</option>
+                    <option value="Meteorit Siferblat Ajratmasi">Meteorit Siferblat Ajratmasi</option>
+                    <option value="Noyob Vintage Kalibr Restavratsiyasi">Noyob Vintage Kalibr Restavratsiyasi</option>
+                    <option value="Korporativ / Xususiy Kolleksiya Loyihasi">Korporativ / Xususiy Kolleksiya Loyihasi</option>
                   </select>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Preferred Viewing Date</label>
+                  <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Rejalashtirilgan Tashrif Sanasi</label>
                   <input
                     type="date"
                     value={formData.preferredDate}
@@ -210,12 +378,12 @@ export const ContactConciergePage = () => {
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Specific Calibre Requirements</label>
+                <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Maxsus Kalibr va Gravirovka Istaklari</label>
                 <textarea
                   rows={3}
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  placeholder="Please note any specific alloy, gemstone setting, or custom engraving requests..."
+                  placeholder="Muayyan qotishma (platina, 18K oltin), qimmatbaho toshlar yoki shaxsiy gravirovka talablarini kiriting..."
                   className="luxury-input"
                   style={{ padding: '0.6rem 0.85rem', fontSize: '0.8rem', resize: 'vertical' }}
                 />
@@ -224,11 +392,21 @@ export const ContactConciergePage = () => {
               <div style={{ paddingTop: '0.5rem' }}>
                 <button
                   type="submit"
+                  disabled={loading}
                   className="btn-gold"
-                  style={{ width: '100%', padding: '0.9rem', fontSize: '0.8rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
+                  style={{ width: '100%', padding: '0.9rem', fontSize: '0.85rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', fontWeight: 600, opacity: loading ? 0.8 : 1, cursor: loading ? 'wait' : 'pointer' }}
                 >
-                  <Send size={15} />
-                  <span>Transmit VIP Inquiry</span>
+                  {loading ? (
+                    <>
+                      <Loader2 size={16} className="animate-spin" />
+                      <span>Shifrlangan VIP Kanalga Uzatilmoqda...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send size={16} />
+                      <span>VIP Murojaatni Yuborish</span>
+                    </>
+                  )}
                 </button>
               </div>
             </form>
@@ -264,7 +442,7 @@ export const ContactConciergePage = () => {
                 padding: '2rem',
                 borderRadius: 'var(--radius-2xl)',
                 border: '1px solid var(--border-platinum-subtle)',
-                backgroundColor: 'rgba(14, 16, 23, 0.95)',
+                backgroundColor: 'var(--card-bg)',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',

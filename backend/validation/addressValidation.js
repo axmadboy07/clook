@@ -2,7 +2,7 @@ const Joi = require("joi");
 
 const validateAddress = (address) => {
     const Schema = Joi.object({
-        user_id: Joi.string().guid({ version: ["uuidv4"] }).required(),
+        user_id: Joi.number().integer().required(),
         city: Joi.string().min(2).required(),
         street: Joi.string().min(3).required(),
         phone: Joi.string().min(5).required()

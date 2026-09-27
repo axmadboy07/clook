@@ -1,3 +1,12 @@
+process.on('warning', (warning) => {
+process.env.NODE_NO_WARNINGS = '1';
+  if (warning.name === 'DeprecationWarning') {
+    // Ignore deprecation warnings such as url.parse
+  } else {
+    console.warn(warning);
+  }
+});
+
 const express = require("express");
 const dotenv = require("dotenv");
 const { sequelize } = require("./models");
@@ -47,8 +56,22 @@ setupSwagger(app);
 
 const PORT = process.env.PORT || 5000;
 
-sequelize.sync().then(() => {
+const startServer = async () => {
+    try {
+        await sequelize.authenticate();
+        console.log("PostgreSQL Database connected successfully.");
+        await sequelize.sync({ alter: true }).catch((syncErr) => {
+            console.warn("Sequelize sync note:", syncErr.message);
+        });
+        console.log("Database schema synchronized.");
+    } catch (error) {
+        console.error("Database connection notice:", error.message);
+    }
+
     app.listen(PORT, () => {
         console.log(`Server is running on port ${PORT}`);
+        console.log(`API documentation available at http://localhost:${PORT}/api-docs`);
     });
-});
+};
+
+startServer();

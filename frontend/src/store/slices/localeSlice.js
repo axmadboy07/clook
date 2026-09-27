@@ -5,9 +5,17 @@ const loadInitialLocale = () => {
   try {
     const savedLang = localStorage.getItem('chronos_language') || 'uz';
     const savedCurrency = localStorage.getItem('chronos_currency') || 'USD';
+    const savedTheme = localStorage.getItem('chronos_theme') || 'dark';
+
+    // Apply attribute on initial script run
+    if (typeof document !== 'undefined') {
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    }
+
     return {
       language: savedLang,
       currency: savedCurrency, // 'USD' | 'EUR' | 'UZS'
+      theme: savedTheme, // 'dark' | 'light'
       exchangeRates: {
         USD: 1,
         EUR: 0.92,
@@ -20,6 +28,7 @@ const loadInitialLocale = () => {
   return {
     language: 'uz',
     currency: 'USD',
+    theme: 'dark',
     exchangeRates: {
       USD: 1,
       EUR: 0.92,
@@ -63,10 +72,36 @@ const localeSlice = createSlice({
         // Safe catch
       }
     },
+
+    setTheme: (state, action) => {
+      const newTheme = action.payload;
+      state.theme = newTheme;
+      try {
+        localStorage.setItem('chronos_theme', newTheme);
+        if (typeof document !== 'undefined') {
+          document.documentElement.setAttribute('data-theme', newTheme);
+        }
+      } catch (e) {
+        // Safe catch
+      }
+    },
+
+    toggleTheme: (state) => {
+      const newTheme = state.theme === 'dark' ? 'light' : 'dark';
+      state.theme = newTheme;
+      try {
+        localStorage.setItem('chronos_theme', newTheme);
+        if (typeof document !== 'undefined') {
+          document.documentElement.setAttribute('data-theme', newTheme);
+        }
+      } catch (e) {
+        // Safe catch
+      }
+    },
   },
 });
 
-export const { setLanguage, setCurrency, toggleCurrency } = localeSlice.actions;
+export const { setLanguage, setCurrency, toggleCurrency, setTheme, toggleTheme } = localeSlice.actions;
 
 // Currency Formatter Helper
 export const formatPriceWithCurrency = (amountInUSD, currency = 'USD', rates = { USD: 1, EUR: 0.92, UZS: 12850 }) => {

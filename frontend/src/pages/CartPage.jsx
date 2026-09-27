@@ -220,7 +220,7 @@ export const CartPage = () => {
 
           {/* Right: Order Summary */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-            <div className="glass-panel" style={{ padding: '1.75rem', borderRadius: 'var(--radius-3xl)', border: '1px solid var(--border-gold-subtle)', display: 'flex', flexDirection: 'column', gap: '1.5rem', backgroundColor: 'rgba(10, 11, 14, 0.95)' }}>
+            <div className="glass-panel" style={{ padding: '1.75rem', borderRadius: 'var(--radius-3xl)', border: '1px solid var(--border-gold-subtle)', display: 'flex', flexDirection: 'column', gap: '1.5rem', backgroundColor: 'var(--card-bg)' }}>
               <h3 style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '1.25rem', color: 'var(--text-primary)', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.75rem', margin: 0 }}>
                 Acquisition Summary
               </h3>

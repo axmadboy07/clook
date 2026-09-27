@@ -9,9 +9,17 @@
 
 html {
   scroll-behavior: smooth;
-  color-scheme: dark;
   -webkit-text-size-adjust: 100%;
   font-size: 16px;
+}
+
+html[data-theme="dark"],
+:root {
+  color-scheme: dark;
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
 }
 
 body {
@@ -27,6 +35,7 @@ body {
   width: 100%;
   max-width: 100vw;
   touch-action: manipulation;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
 }
 
 /* Custom Scrollbar */
@@ -269,8 +278,23 @@ input, select, textarea {
   -webkit-text-fill-color: transparent;
 }
 
+[data-theme="light"] .text-gold-gradient,
+[data-theme="light"] .gold-gradient-text {
+  background: linear-gradient(135deg, #966718 0%, #b88628 50%, #d4a44c 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 .text-silver-gradient {
   background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #94a3b8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+[data-theme="light"] .text-silver-gradient {
+  background: linear-gradient(135deg, #0f172a 0%, #334155 50%, #64748b 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;

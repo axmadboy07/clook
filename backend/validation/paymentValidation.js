@@ -2,7 +2,7 @@ const Joi = require("joi");
 
 const validatePayment = (payment) => {
     const Schema = Joi.object({
-        order_id: Joi.string().guid({ version: ["uuidv4"] }).required(),
+        order_id: Joi.number().integer().required(),
         method: Joi.string().required(),
         status: Joi.string(),
         amount: Joi.number().required(),

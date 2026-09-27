@@ -1,4 +1,5 @@
-:root {
+:root,
+[data-theme="dark"] {
   /* Brand Color Palette: Obsidian Dark Luxury & Haute Horlogerie Golds */
   --bg-obsidian-950: #06070a;
   --bg-obsidian-900: #0a0b0f;
@@ -26,18 +27,22 @@
   --color-platinum-500: #64748b;
   --color-platinum-600: #475569;
 
+  /* Semantic Aliases */
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --bg-card: #0a0b0f;
+  --bg-secondary: #10121a;
+  --bg-elevated: #161922;
+  --input-bg: #06070a;
+
   --color-emerald-400: #34d399;
   --color-emerald-500: #10b981;
   --color-emerald-600: #059669;
 
   --color-red-400: #f87171;
   --color-red-500: #ef4444;
-
-  /* Typography */
-  --font-serif: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
-  --font-display: 'Cinzel', 'Playfair Display', serif;
-  --font-sans: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', Menlo, monospace;
 
   /* Borders & Glows */
   --border-gold-subtle: rgba(212, 164, 76, 0.2);
@@ -52,17 +57,32 @@
   --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.5);
 
   /* Glassmorphism */
-  --glass-bg: rgba(14, 17, 23, 0.75);
-  --glass-bg-hover: rgba(22, 27, 38, 0.85);
+  --glass-bg: rgba(14, 17, 23, 0.82);
+  --glass-bg-hover: rgba(22, 27, 38, 0.9);
   --glass-blur: blur(16px);
-  --glass-pill-bg: rgba(255, 255, 255, 0.04);
+  --glass-pill-bg: rgba(255, 255, 255, 0.05);
   --glass-pill-border: rgba(255, 255, 255, 0.1);
+
+  /* Surface and Background mappings */
+  --navbar-bg: rgba(6, 7, 10, 0.88);
+  --card-bg: linear-gradient(145deg, rgba(14, 17, 23, 0.95), rgba(10, 12, 16, 0.98));
+  --product-img-bg: radial-gradient(circle at center, rgba(30, 36, 50, 0.5) 0%, rgba(6, 7, 10, 0.9) 100%);
+  --modal-bg: linear-gradient(145deg, rgba(16, 19, 26, 0.98), rgba(10, 11, 15, 0.99));
+  --footer-bg: #040507;
+
+  /* Typography */
+  --font-serif: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+  --font-display: 'Cinzel', 'Playfair Display', serif;
+  --font-sans: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', Menlo, monospace;
 
   /* Radii */
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
   --radius-xl: 24px;
+  --radius-2xl: 28px;
+  --radius-3xl: 32px;
   --radius-full: 9999px;
 
   /* Transitions */
@@ -74,4 +94,76 @@
   --min-tap-target: 44px;
   --safe-area-bottom: env(safe-area-inset-bottom, 0px);
   --safe-area-top: env(safe-area-inset-top, 0px);
+}
+
+[data-theme="light"] {
+  /* Brand Color Palette: Pearl Light Luxury & Warm Royal Gold */
+  --bg-obsidian-950: #f4f6f9;
+  --bg-obsidian-900: #ffffff;
+  --bg-obsidian-850: #edf2f7;
+  --bg-obsidian-800: #e2e8f0;
+  --bg-obsidian-700: #cbd5e1;
+
+  --color-gold-300: #966718;
+  --color-gold-400: #b88628;
+  --color-gold-500: #d4a44c;
+  --color-gold-600: #8c600d;
+  --color-gold-700: #6b4705;
+  --color-amber-400: #d97706;
+  --color-amber-500: #b45309;
+  --color-amber-600: #92400e;
+
+  --color-rosegold-300: #9f1239;
+  --color-rosegold-400: #be123c;
+  --color-rosegold-500: #e11d48;
+
+  --color-platinum-100: #090d16;
+  --color-platinum-200: #1e293b;
+  --color-platinum-300: #334155;
+  --color-platinum-400: #64748b;
+  --color-platinum-500: #94a3b8;
+  --color-platinum-600: #cbd5e1;
+
+  /* Semantic Aliases */
+  --text-primary: #090d16;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --border-subtle: rgba(15, 23, 42, 0.08);
+  --bg-card: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-elevated: #f1f5f9;
+  --input-bg: #ffffff;
+
+  --color-emerald-400: #059669;
+  --color-emerald-500: #047857;
+  --color-emerald-600: #065f46;
+
+  --color-red-400: #dc2626;
+  --color-red-500: #b91c1c;
+
+  /* Borders & Glows */
+  --border-gold-subtle: rgba(184, 134, 11, 0.25);
+  --border-gold-medium: rgba(184, 134, 11, 0.5);
+  --border-gold-strong: rgba(184, 134, 11, 0.8);
+  --border-platinum-subtle: rgba(15, 23, 42, 0.08);
+  --border-platinum-medium: rgba(15, 23, 42, 0.16);
+
+  --shadow-gold-glow: 0 4px 20px rgba(184, 134, 11, 0.2);
+  --shadow-gold-subtle: 0 4px 15px rgba(184, 134, 11, 0.12);
+  --shadow-dark-2xl: 0 20px 40px -15px rgba(15, 23, 42, 0.1);
+  --shadow-card: 0 4px 20px rgba(15, 23, 42, 0.06);
+
+  /* Glassmorphism */
+  --glass-bg: rgba(255, 255, 255, 0.94);
+  --glass-bg-hover: rgba(248, 250, 252, 0.98);
+  --glass-blur: blur(16px);
+  --glass-pill-bg: rgba(15, 23, 42, 0.04);
+  --glass-pill-border: rgba(15, 23, 42, 0.1);
+
+  /* Surface and Background mappings */
+  --navbar-bg: rgba(255, 255, 255, 0.92);
+  --card-bg: #ffffff;
+  --product-img-bg: radial-gradient(circle at center, #ffffff 0%, #f1f5f9 100%);
+  --modal-bg: #ffffff;
+  --footer-bg: #edf2f7;
 }

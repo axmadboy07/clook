@@ -12,7 +12,11 @@ import {
   ArrowRight,
   ShieldCheck,
   Gift,
-  CheckCircle2
+  CheckCircle2,
+  Sparkles,
+  Truck,
+  Lock,
+  Award
 } from 'lucide-react';
 
 import {
@@ -25,8 +29,10 @@ import {
   removeFromCart,
   updateQuantity,
   applyDiscount,
+  addToCart,
 } from '../../store/slices/cartSlice';
 import { formatPriceWithCurrency } from '../../store/slices/localeSlice';
+import { selectAllProducts } from '../../store/slices/productsSlice';
 
 export const CartDrawer = () => {
   const navigate = useNavigate();
@@ -44,6 +50,9 @@ export const CartDrawer = () => {
 
   const [couponInput, setCouponInput] = useState('');
   const [couponMessage, setCouponMessage] = useState('');
+
+  const allProducts = useSelector(selectAllProducts);
+  const recommendedWatches = allProducts.slice(0, 2);
 
   const formatPrice = (amount) => formatPriceWithCurrency(amount, currency, exchangeRates);
 
@@ -70,67 +79,170 @@ export const CartDrawer = () => {
             transition={{ type: 'spring', damping: 26, stiffness: 220 }}
             className="drawer-panel"
             onClick={(e) => e.stopPropagation()}
+            style={{
+              backgroundColor: 'rgba(10, 12, 17, 0.98)',
+              backdropFilter: 'blur(20px)',
+              borderLeft: '1px solid var(--border-gold-subtle)'
+            }}
           >
             {/* Drawer Header */}
-            <div className="drawer-header">
+            <div className="drawer-header" style={{ borderBottom: '1px solid var(--border-gold-subtle)', backgroundColor: 'var(--bg-obsidian-950)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: 'rgba(212, 164, 76, 0.15)', color: 'var(--color-gold-400)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <ShoppingBag size={18} />
+                <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(212, 164, 76, 0.25) 0%, rgba(10,12,17,0.8) 100%)', border: '1px solid var(--border-gold-medium)', color: 'var(--color-gold-400)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <ShoppingBag size={19} />
                 </div>
                 <div>
-                  <h3 style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '1.125rem', color: 'var(--color-platinum-100)' }}>
-                    {t('cart.title')} ({items.length})
+                  <h3 style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '1.125rem', color: 'var(--color-platinum-100)', margin: 0 }}>
+                    Sizning savatingiz ({items.length})
                   </h3>
-                  <p style={{ fontSize: '0.6875rem', fontFamily: 'var(--font-mono)', color: 'var(--color-platinum-400)' }}>
-                    CHRONOS Vault
+                  <p style={{ fontSize: '0.6875rem', fontFamily: 'var(--font-mono)', color: 'var(--color-gold-400)', margin: '0.1rem 0 0 0' }}>
+                    CHRONOS Vault & Allocation
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => dispatch(toggleCartDrawer(false))}
                 className="icon-button"
-                style={{ minWidth: '44px', minHeight: '44px', width: '44px', height: '44px' }}
+                style={{ minWidth: '40px', minHeight: '40px', width: '40px', height: '40px' }}
                 title="Yopish"
               >
-                <X size={20} />
+                <X size={18} />
               </button>
             </div>
 
             {/* Free Courier & Security Guarantee Banner */}
-            <div style={{ background: 'var(--bg-obsidian-950)', padding: '0.6rem 1.5rem', borderBottom: '1px solid var(--border-platinum-subtle)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.6875rem', fontFamily: 'var(--font-mono)' }}>
+            <div style={{ background: 'rgba(5, 7, 10, 0.95)', padding: '0.65rem 1.25rem', borderBottom: '1px solid var(--border-platinum-subtle)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.7rem', fontFamily: 'var(--font-mono)' }}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', color: 'var(--color-gold-400)' }}>
                 <ShieldCheck size={14} />
-                {t('cart.freeShipping')}
+                Bepul (O‘zbekiston bo‘ylab)
               </span>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: 'var(--color-emerald-400)' }}>
-                <CheckCircle2 size={12} />
-                {t('details.globalWarranty')}
+              <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', color: 'var(--color-emerald-400)' }}>
+                <CheckCircle2 size={13} />
+                5 yillik xalqaro kafolat
               </span>
             </div>
 
             {/* Items List */}
-            <div className="drawer-body">
+            <div className="drawer-body" style={{ padding: '1.25rem' }}>
               {items.length === 0 ? (
-                <div style={{ padding: '4rem 0', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
-                  <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(212, 164, 76, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-gold-400)' }}>
-                    <ShoppingBag size={28} />
+                <div style={{ padding: '2rem 0', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.25rem' }}>
+                  
+                  {/* Glowing Vault Icon */}
+                  <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div
+                      style={{
+                        position: 'absolute',
+                        width: '80px',
+                        height: '80px',
+                        borderRadius: '50%',
+                        background: 'radial-gradient(circle, rgba(212,164,76,0.3) 0%, transparent 70%)',
+                        filter: 'blur(8px)'
+                      }}
+                    />
+                    <div
+                      style={{
+                        width: '68px',
+                        height: '68px',
+                        borderRadius: '50%',
+                        background: 'linear-gradient(145deg, rgba(24, 28, 40, 0.9), rgba(10, 12, 17, 0.95))',
+                        border: '1.5px solid var(--border-gold-medium)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'var(--color-gold-400)',
+                        boxShadow: '0 0 20px rgba(212,164,76,0.2)',
+                        position: 'relative',
+                        zIndex: 1
+                      }}
+                    >
+                      <ShoppingBag size={30} />
+                    </div>
                   </div>
-                  <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.125rem', color: 'var(--color-platinum-200)' }}>
-                    {t('cart.empty')}
-                  </h4>
-                  <p style={{ fontSize: '0.75rem', color: 'var(--color-platinum-400)', maxWidth: '240px' }}>
-                    {t('cart.emptySub')}
-                  </p>
+
+                  <div>
+                    <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.35rem', fontWeight: 700, color: 'var(--color-platinum-100)', margin: '0 0 0.4rem 0' }}>
+                      Savatingiz hozircha bo‘sh
+                    </h4>
+                    <p style={{ fontSize: '0.8rem', color: 'var(--color-platinum-400)', maxWidth: '280px', margin: '0 auto', lineHeight: 1.5 }}>
+                      Katalogimizdan o‘zingizga mos ajoyib xalqaro va Shveytsariya soatlarini tanlang.
+                    </p>
+                  </div>
+
+                  {/* VIP Guarantee Pills */}
+                  <div style={{ width: '100%', maxWidth: '320px', padding: '0.85rem', borderRadius: 'var(--radius-xl)', backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-platinum-subtle)', display: 'flex', flexDirection: 'column', gap: '0.5rem', textAlign: 'left', fontSize: '0.72rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-platinum-300)' }}>
+                      <Truck size={14} style={{ color: 'var(--color-gold-400)', flexShrink: 0 }} />
+                      <span>Maxsus inkassator orqali xavfsiz yetkazish</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-platinum-300)' }}>
+                      <Award size={14} style={{ color: 'var(--color-gold-400)', flexShrink: 0 }} />
+                      <span>100% rasmiy pasport va ishlab chiqaruvchi kafolati</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-platinum-300)' }}>
+                      <Lock size={14} style={{ color: 'var(--color-emerald-400)', flexShrink: 0 }} />
+                      <span>Shifrlangan xavfsiz to‘lov tizimi</span>
+                    </div>
+                  </div>
+
+                  {/* Browse Catalog CTA */}
                   <button
                     onClick={() => {
                       dispatch(toggleCartDrawer(false));
                       navigate('/catalog');
                     }}
                     className="btn-gold"
-                    style={{ marginTop: '0.5rem' }}
+                    style={{ padding: '0.8rem 2.25rem', fontSize: '0.85rem', width: '100%', maxWidth: '320px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
                   >
-                    {t('cart.browseBtn')}
+                    <Sparkles size={16} />
+                    <span>KATALOGGA O‘TISH</span>
                   </button>
+
+                  {/* Quick Suggested Watches */}
+                  {recommendedWatches.length > 0 && (
+                    <div style={{ width: '100%', marginTop: '0.5rem', textAlign: 'left' }}>
+                      <p style={{ fontSize: '0.72rem', color: 'var(--color-gold-400)', fontFamily: 'var(--font-mono)', marginBottom: '0.5rem' }}>
+                        TAVSIYA ETILADIGAN MODELLAR:
+                      </p>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        {recommendedWatches.map((w) => (
+                          <div
+                            key={w.id}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              padding: '0.5rem 0.75rem',
+                              borderRadius: 'var(--radius-lg)',
+                              backgroundColor: 'rgba(255,255,255,0.03)',
+                              border: '1px solid var(--border-platinum-subtle)',
+                              gap: '0.75rem'
+                            }}
+                          >
+                            <img
+                              src={w.images?.[0]}
+                              alt={w.name}
+                              style={{ width: '40px', height: '40px', objectFit: 'contain', borderRadius: 'var(--radius-sm)', backgroundColor: '#000' }}
+                            />
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <p style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--color-platinum-100)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                {w.name}
+                              </p>
+                              <span style={{ fontSize: '0.72rem', color: 'var(--color-gold-400)', fontFamily: 'var(--font-serif)', fontWeight: 700 }}>
+                                {formatPrice(w.price)}
+                              </span>
+                            </div>
+                            <button
+                              onClick={() => dispatch(addToCart({ watch: w, quantity: 1 }))}
+                              className="btn-outline-gold"
+                              style={{ padding: '0.3rem 0.6rem', fontSize: '0.68rem', whiteSpace: 'nowrap' }}
+                            >
+                              + Savatga
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>

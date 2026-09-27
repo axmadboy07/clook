@@ -18,22 +18,22 @@ export const ComparePage = () => {
   const formatPrice = (amount) => formatPriceWithCurrency(amount, currency, exchangeRates);
 
   const specRows = [
-    { label: 'Collection', key: 'collection' },
-    { label: 'Movement', key: 'movement' },
-    { label: 'Price', render: (w) => formatPrice(w.price) },
-    { label: 'Case Material', key: 'caseMaterial' },
-    { label: 'Strap Material', key: 'strapMaterial' },
-    { label: 'Dial Finish', key: 'dialColor' },
-    { label: 'Case Diameter', render: (w) => w.specs?.caseDiameter || '40.0 mm' },
-    { label: 'Case Thickness', render: (w) => w.specs?.caseThickness || '12.0 mm' },
-    { label: 'Water Resistance', render: (w) => w.specs?.waterResistance || '100 m' },
-    { label: 'Power Reserve', render: (w) => w.specs?.powerReserve || '48 Hours' },
-    { label: 'Frequency', render: (w) => w.specs?.frequency || '28,800 vph' },
-    { label: 'Calibre Code', render: (w) => w.specs?.caliber || 'Swiss Calibre' },
-    { label: 'Jewels Count', render: (w) => `${w.specs?.jewels ?? 24} Synthetic Rubies` },
-    { label: 'Crystal', render: (w) => w.specs?.crystal || 'Sapphire Crystal' },
-    { label: 'Tourbillon', render: (w) => (w.threeDConfig?.hasTourbillon ? 'Yes (Flying 60s)' : 'Standard Gyromax Balance') },
-    { label: 'Limited Edition', render: (w) => (w.limitedEdition ? `Yes (${w.editionCount} pcs)` : 'Open Atelier Production') },
+    { label: 'Kolleksiya / Brend', key: 'brand' },
+    { label: 'Mexanizm turi', key: 'movement' },
+    { label: 'Narxi', render: (w) => formatPrice(w.price) },
+    { label: 'Korpus materiali', key: 'caseMaterial' },
+    { label: 'Tasma materiali', key: 'strapMaterial' },
+    { label: 'Siferblat qoplamasi', key: 'dialColor' },
+    { label: 'Korpus diametri', render: (w) => w.specs?.caseDiameter || '40.0 mm' },
+    { label: 'Korpus qalinligi', render: (w) => w.specs?.caseThickness || '12.0 mm' },
+    { label: 'Suvga chidamlilik', render: (w) => w.specs?.waterResistance || '100 m' },
+    { label: 'Quvvat zaxirasi', render: (w) => w.specs?.powerReserve || '48 Soat' },
+    { label: 'Chastota', render: (w) => w.specs?.frequency || '28,800 vph' },
+    { label: 'Kalibr kodi', render: (w) => w.specs?.caliber || 'Swiss Calibre' },
+    { label: 'Toshlar soni (Jewels)', render: (w) => `${w.specs?.jewels ?? 24} Sintetik Yoqut` },
+    { label: 'Shisha', render: (w) => w.specs?.crystal || 'Safir billur' },
+    { label: 'Turbiyon', render: (w) => (w.threeDConfig?.hasTourbillon ? 'Bor (Flying 60s)' : 'Standart Gyromax balans') },
+    { label: 'Cheklangan nashr (Limited)', render: (w) => (w.limitedEdition ? `Ha (${w.editionCount} dona)` : 'Doimiy ishlab chiqarish') },
   ];
 
   const allAvailable = products.length > 0 ? products : WATCHES;
@@ -48,10 +48,10 @@ export const ComparePage = () => {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', color: 'var(--color-gold-400)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
               <Scale size={14} />
-              <span>Comparative Calibre Matrix</span>
+              <span>HOROLOGIK TAQQOSLASH MATRITSASI</span>
             </div>
             <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.75rem, 4vw, 2.5rem)', fontWeight: 700, color: 'var(--text-primary)', margin: '0.25rem 0 0 0' }}>
-              Timepiece Specification Comparison
+              Soatlar Texnik Xususiyatlarini Taqqoslash
             </h1>
           </div>
 
@@ -62,7 +62,7 @@ export const ComparePage = () => {
               style={{ padding: '0.5rem 1rem', fontSize: '0.75rem', color: 'var(--color-ruby-400)', display: 'flex', alignItems: 'center', gap: '0.375rem' }}
             >
               <Trash2 size={14} />
-              <span>Clear Matrix</span>
+              <span>Matritsani Tozalash</span>
             </button>
           )}
         </div>
@@ -72,10 +72,10 @@ export const ComparePage = () => {
             <Scale size={48} style={{ color: 'var(--text-muted)' }} />
             <div>
               <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.5rem', fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 0.5rem 0' }}>
-                No Calibres in Comparison
+                Taqqoslanuvchi Soatlar Tanlanmagan
               </h2>
               <p className="text-muted" style={{ fontSize: '0.85rem', lineHeight: 1.5, margin: 0 }}>
-                Add up to 4 master timepieces to compare case dimensions, tourbillon complications, power reserves, and precious alloy compositions side-by-side.
+                Katalogdan 4 tagacha soatni tanlab, korpus o‘lchamlari, turbiyon murakkabliklari, quvvat zaxirasi va qimmatbaho qotishmalarini yonma-yon solishtiring.
               </p>
             </div>
             <Link
@@ -83,7 +83,7 @@ export const ComparePage = () => {
               className="btn-gold"
               style={{ padding: '0.85rem 2rem', fontSize: '0.75rem', textDecoration: 'none' }}
             >
-              Explore Collections
+              Kolleksiyalarni Ko‘rish
             </Link>
           </div>
         ) : (
@@ -92,7 +92,7 @@ export const ComparePage = () => {
             {items.length < 4 && availableToAdd.length > 0 && (
               <div className="glass-pill" style={{ padding: '1rem 1.5rem', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', fontSize: '0.75rem' }}>
                 <span className="text-secondary">
-                  You can compare up to {4 - items.length} more timepieces:
+                  Yana {4 - items.length} tagacha soat qo‘shishingiz mumkin:
                 </span>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
                   {availableToAdd.slice(0, 3).map((w) => (

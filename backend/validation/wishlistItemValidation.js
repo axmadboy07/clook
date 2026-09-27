@@ -2,8 +2,8 @@ const Joi = require("joi");
 
 const validateWishlistItem = (wishlistItem) => {
     const Schema = Joi.object({
-        user_id: Joi.string().guid({ version: ["uuidv4"] }).required(),
-        product_id: Joi.string().guid({ version: ["uuidv4"] }).required()
+        user_id: Joi.number().integer().required(),
+        product_id: Joi.number().integer().required()
     });
     return Schema.validate(wishlistItem);
 };

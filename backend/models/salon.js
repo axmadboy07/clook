@@ -3,8 +3,8 @@ module.exports = (sequelize, DataTypes) => {
         "Salon",
         {
             id: {
-                type: DataTypes.UUID,
-                defaultValue: DataTypes.UUIDV4,
+                type: DataTypes.INTEGER,
+                autoIncrement: true,
                 primaryKey: true,
             },
             city: {

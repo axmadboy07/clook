@@ -3,16 +3,16 @@ module.exports = (sequelize, DataTypes) => {
         "Review",
         {
             id: {
-                type: DataTypes.UUID,
-                defaultValue: DataTypes.UUIDV4,
+                type: DataTypes.INTEGER,
+                autoIncrement: true,
                 primaryKey: true,
             },
             user_id: {
-                type: DataTypes.UUID,
+                type: DataTypes.INTEGER,
                 allowNull: false,
             },
             product_id: {
-                type: DataTypes.UUID,
+                type: DataTypes.INTEGER,
                 allowNull: false,
             },
             rating: {
@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
                 validate: { min: 1, max: 5 },
             },
             comment: {
-                type: DataTypes.TEXT,
+                type: DataTypes.STRING,
                 allowNull: true,
             },
         },

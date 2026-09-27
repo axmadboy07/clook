@@ -4,7 +4,7 @@
 
 /* Product Card */
 .product-card {
-  background: linear-gradient(145deg, rgba(14, 17, 23, 0.9), rgba(10, 12, 16, 0.95));
+  background: var(--card-bg, linear-gradient(145deg, rgba(14, 17, 23, 0.9), rgba(10, 12, 16, 0.95)));
   border: 1px solid var(--border-platinum-subtle);
   border-radius: var(--radius-xl);
   overflow: hidden;
@@ -16,7 +16,7 @@
 
 .product-card:hover {
   border-color: var(--border-gold-medium);
-  box-shadow: 0 12px 35px -10px rgba(0, 0, 0, 0.8), var(--shadow-gold-subtle);
+  box-shadow: 0 12px 35px -10px rgba(0, 0, 0, 0.4), var(--shadow-gold-subtle);
   transform: translateY(-4px);
 }
 
@@ -24,7 +24,7 @@
   position: relative;
   width: 100%;
   aspect-ratio: 1 / 1;
-  background: radial-gradient(circle at center, rgba(30, 36, 50, 0.5) 0%, rgba(6, 7, 10, 0.9) 100%);
+  background: var(--product-img-bg, radial-gradient(circle at center, rgba(30, 36, 50, 0.5) 0%, rgba(6, 7, 10, 0.9) 100%));
   overflow: hidden;
 }
 
@@ -123,7 +123,7 @@
 }
 
 .modal-content {
-  background: linear-gradient(145deg, rgba(16, 19, 26, 0.98), rgba(10, 11, 15, 0.99));
+  background: var(--modal-bg, linear-gradient(145deg, rgba(16, 19, 26, 0.98), rgba(10, 11, 15, 0.99)));
   border: 1px solid var(--border-gold-medium);
   border-radius: var(--radius-2xl);
   box-shadow: var(--shadow-dark-2xl), var(--shadow-gold-subtle);

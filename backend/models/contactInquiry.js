@@ -3,13 +3,13 @@ module.exports = (sequelize, DataTypes) => {
         "ContactInquiry",
         {
             id: {
-                type: DataTypes.UUID,
-                defaultValue: DataTypes.UUIDV4,
+                type: DataTypes.INTEGER,
+                autoIncrement: true,
                 primaryKey: true,
             },
             salon_id: {
-                type: DataTypes.UUID,
-                allowNull: false,
+                type: DataTypes.INTEGER,
+                allowNull: true,
             },
             name: {
                 type: DataTypes.STRING,
@@ -20,9 +20,25 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false,
                 validate: { isEmail: true },
             },
+            phone: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            interest: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            location: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            preferred_date: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
             message: {
-                type: DataTypes.TEXT,
-                allowNull: false,
+                type: DataTypes.STRING,
+                allowNull: true,
             },
         },
         {

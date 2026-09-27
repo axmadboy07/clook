@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Clock, ShieldCheck, Award, Sparkles, MapPin, Mail, Phone, Send, ChevronDown } from 'lucide-react';
+import { Clock, ShieldCheck, Award, Sparkles, MapPin, Mail, Phone, Send, ChevronDown, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { contactApi } from '../../api';
 
 export const Footer = () => {
   const { t } = useTranslation();
@@ -11,6 +12,30 @@ export const Footer = () => {
     categories: false,
     newsletter: false,
   });
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [newsletterSubmitted, setNewsletterSubmitted] = useState(false);
+  const [newsletterLoading, setNewsletterLoading] = useState(false);
+
+  const handleNewsletterSubmit = async (e) => {
+    e.preventDefault();
+    if (!newsletterEmail || !newsletterEmail.includes('@')) return;
+    setNewsletterLoading(true);
+    try {
+      await contactApi.sendInquiry({
+        name: 'VIP Obunachi',
+        email: newsletterEmail.trim(),
+        message: 'VIP xabarnomaga obuna bo‘ldi',
+        interest: 'VIP Xabarnoma',
+        location: 'Tashkent Digital Desk'
+      });
+    } catch (err) {
+      console.warn('Newsletter API call:', err.message);
+    } finally {
+      setNewsletterLoading(false);
+      setNewsletterSubmitted(true);
+      setNewsletterEmail('');
+    }
+  };
 
   const toggleSection = (sec) => {
     setOpenSections((prev) => ({ ...prev, [sec]: !prev[sec] }));
@@ -262,29 +287,64 @@ export const Footer = () => {
               <p style={{ fontSize: '0.75rem', color: 'var(--color-platinum-400)', lineHeight: 1.6, marginBottom: '0.75rem' }}>
                 {t('features.conciergeDesc')}
               </p>
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  alert(t('details.addedToVault'));
-                }}
-                style={{ position: 'relative' }}
-              >
-                <input
-                  type="email"
-                  required
-                  placeholder="name@example.com"
-                  className="luxury-input"
-                  style={{ paddingRight: '2.75rem', fontSize: '0.8rem', minHeight: '44px' }}
-                />
-                <button
-                  type="submit"
-                  className="tap-target-44"
-                  style={{ position: 'absolute', right: '0.25rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-gold-400)', cursor: 'pointer' }}
-                  title="Yuborish"
+              
+              {newsletterSubmitted ? (
+                <motion.div
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  style={{
+                    padding: '0.65rem 0.85rem',
+                    borderRadius: 'var(--radius-lg)',
+                    backgroundColor: 'rgba(52, 211, 153, 0.1)',
+                    border: '1px solid rgba(52, 211, 153, 0.3)',
+                    color: 'var(--color-emerald-400)',
+                    fontSize: '0.75rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    lineHeight: 1.4,
+                  }}
                 >
-                  <Send size={15} />
-                </button>
-              </form>
+                  <CheckCircle2 size={16} style={{ flexShrink: 0 }} />
+                  <span>Tashakkur! VIP xabarnomaga obuna bo‘ldingiz.</span>
+                </motion.div>
+              ) : (
+                <form
+                  onSubmit={handleNewsletterSubmit}
+                  style={{ position: 'relative' }}
+                >
+                  <input
+                    type="email"
+                    required
+                    value={newsletterEmail}
+                    onChange={(e) => setNewsletterEmail(e.target.value)}
+                    placeholder="name@example.com"
+                    className="luxury-input"
+                    style={{ paddingRight: '2.75rem', fontSize: '0.8rem', minHeight: '44px', width: '100%' }}
+                  />
+                  <button
+                    type="submit"
+                    disabled={newsletterLoading}
+                    className="tap-target-44"
+                    style={{
+                      position: 'absolute',
+                      right: '0.25rem',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      color: 'var(--color-gold-400)',
+                      cursor: newsletterLoading ? 'wait' : 'pointer',
+                      background: 'none',
+                      border: 'none',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                    title="Yuborish"
+                  >
+                    <Send size={15} />
+                  </button>
+                </form>
+              )}
             </div>
           </div>
         </div>

@@ -15,13 +15,15 @@ import {
   Clock,
   User,
   LogOut,
-  ArrowRight
+  ArrowRight,
+  Sun,
+  Moon
 } from 'lucide-react';
 
-import { selectCartTotalCount, toggleCartDrawer } from '../../store/slices/cartSlice';
+import { selectCartTotalCount, toggleCartDrawer, addToCart } from '../../store/slices/cartSlice';
 import { selectWishlistItems, toggleWishlistDrawer } from '../../store/slices/wishlistSlice';
-import { selectCompareItems, toggleCompareModal } from '../../store/slices/compareSlice';
-import { setLanguage, toggleCurrency, formatPriceWithCurrency } from '../../store/slices/localeSlice';
+import { selectCompareItems, setCompareModalOpen, toggleCompareModal } from '../../store/slices/compareSlice';
+import { setLanguage, toggleCurrency, toggleTheme, formatPriceWithCurrency } from '../../store/slices/localeSlice';
 import { logout } from '../../store/slices/authSlice';
 import { selectAllProducts } from '../../store/slices/productsSlice';
 
@@ -43,7 +45,7 @@ export const Navbar = () => {
   const wishlistItems = useSelector(selectWishlistItems);
   const compareItems = useSelector(selectCompareItems);
   const { currentUser, isAuthenticated, isAdmin } = useSelector((state) => state.auth);
-  const { language, currency, exchangeRates } = useSelector((state) => state.locale);
+  const { language, currency, theme, exchangeRates } = useSelector((state) => state.locale);
   const products = useSelector(selectAllProducts);
 
   const wishlistCount = wishlistItems.length;
@@ -71,14 +73,18 @@ export const Navbar = () => {
   const currentLangObj = languages.find((l) => l.code === (language || i18n.language)) || languages[0];
 
   const searchResults = searchQuery.trim()
-    ? products
-        .filter(
-          (p) =>
-            p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            p.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            p.category.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-        .slice(0, 5)
+    ? products.filter((p) => {
+        const q = searchQuery.toLowerCase().trim();
+        return (
+          (p.name && p.name.toLowerCase().includes(q)) ||
+          (p.brand && p.brand.toLowerCase().includes(q)) ||
+          (p.category && p.category.toLowerCase().includes(q)) ||
+          (p.caseMaterial && p.caseMaterial.toLowerCase().includes(q)) ||
+          (p.movement && p.movement.toLowerCase().includes(q)) ||
+          (p.description && p.description.toLowerCase().includes(q)) ||
+          (p.collection && p.collection.toLowerCase().includes(q))
+        );
+      })
     : [];
 
   const navLinks = [
@@ -205,6 +211,20 @@ export const Navbar = () => {
               {currency === 'UZS' ? "UZS (so'm)" : currency === 'EUR' ? 'EUR (€)' : 'USD ($)'}
             </button>
 
+            {/* 2.5 Theme Switcher Button (Desktop & Mobile) */}
+            <button
+              onClick={() => dispatch(toggleTheme())}
+              className="icon-button"
+              title={theme === 'dark' ? "Yorug' rejim (Light Mode)" : "Tungi rejim (Dark Mode)"}
+              aria-label="Mavzuni almashtirish"
+            >
+              {theme === 'dark' ? (
+                <Sun size={17} style={{ color: 'var(--color-gold-400)' }} />
+              ) : (
+                <Moon size={17} style={{ color: 'var(--color-platinum-100)' }} />
+              )}
+            </button>
+
             {/* 3. Search Trigger */}
             <button
               onClick={() => setSearchOpen(true)}
@@ -216,7 +236,7 @@ export const Navbar = () => {
 
             {/* 4. Compare Trigger */}
             <button
-              onClick={() => dispatch(toggleCompareModal(true))}
+              onClick={() => dispatch(setCompareModalOpen(true))}
               className="icon-button hide-on-mobile"
               title="Taqqoslash"
             >
@@ -541,10 +561,43 @@ export const Navbar = () => {
                   }}
                 >
                   <span>Valyuta:</span>
-                  <strong style={{ color: '#fff' }}>
+                  <strong style={{ color: 'var(--color-platinum-100)' }}>
                     {currency === 'UZS' ? "UZS (so'm)" : currency === 'EUR' ? 'EUR (€)' : 'USD ($)'}
                   </strong>
                 </button>
+
+                {/* Theme Mode Toggle in Drawer */}
+                <div style={{ marginTop: '0.65rem' }}>
+                  <button
+                    onClick={() => dispatch(toggleTheme())}
+                    className="glass-pill"
+                    style={{
+                      width: '100%',
+                      padding: '0.55rem',
+                      fontSize: '0.75rem',
+                      fontWeight: 600,
+                      textAlign: 'center',
+                      color: 'var(--color-platinum-200)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.5rem',
+                      border: '1px solid var(--border-gold-subtle)'
+                    }}
+                  >
+                    {theme === 'dark' ? (
+                      <>
+                        <Sun size={15} style={{ color: 'var(--color-gold-400)' }} />
+                        <span>Yorug‘ rejim (Light Mode)</span>
+                      </>
+                    ) : (
+                      <>
+                        <Moon size={15} style={{ color: 'var(--color-gold-600)' }} />
+                        <span>Tungi rejim (Dark Mode)</span>
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
             </motion.div>
           </motion.div>
@@ -559,87 +612,272 @@ export const Navbar = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="modal-backdrop"
-            style={{ alignItems: 'flex-start', paddingTop: '6rem' }}
+            style={{ alignItems: 'flex-start', paddingTop: '4.5rem', zIndex: 120 }}
             onClick={() => setSearchOpen(false)}
           >
             <motion.div
-              initial={{ scale: 0.95, y: -20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.95, y: -20 }}
+              initial={{ scale: 0.95, y: -20, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.95, y: -20, opacity: 0 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
               onClick={(e) => e.stopPropagation()}
-              className="modal-content"
-              style={{ maxWidth: '640px', padding: '1.5rem' }}
+              className="modal-content glass-panel"
+              style={{
+                maxWidth: '720px',
+                padding: '1.5rem',
+                borderRadius: 'var(--radius-3xl)',
+                border: '1px solid var(--border-gold-medium)',
+                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.85), 0 0 30px rgba(212, 164, 76, 0.15)',
+                background: 'var(--modal-bg, var(--bg-obsidian-900))',
+                backdropFilter: 'blur(20px)'
+              }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: '1rem', borderBottom: '1px solid var(--border-platinum-subtle)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', width: '100%' }}>
-                  <Search size={22} style={{ color: 'var(--color-gold-400)', flexShrink: 0 }} />
-                  <input
-                    type="text"
-                    autoFocus
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder={t('filters.search')}
-                    style={{ width: '100%', background: 'transparent', border: 'none', color: '#fff', fontSize: '1.125rem' }}
-                  />
-                </div>
-                <button onClick={() => setSearchOpen(false)} style={{ color: 'var(--color-platinum-400)', cursor: 'pointer' }}>
+              {/* Search Bar Input */}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '0.65rem 1rem',
+                  borderRadius: 'var(--radius-2xl)',
+                  backgroundColor: 'var(--glass-pill-bg)',
+                  border: '1px solid var(--border-gold-subtle)',
+                  gap: '0.75rem'
+                }}
+              >
+                <Search size={22} style={{ color: 'var(--color-gold-400)', flexShrink: 0 }} />
+                <input
+                  type="text"
+                  autoFocus
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Soat nomi, brendi, materiali yoki mexanizmi bo‘yicha qidiring..."
+                  style={{
+                    width: '100%',
+                    background: 'transparent',
+                    border: 'none',
+                    outline: 'none',
+                    color: 'var(--color-platinum-100)',
+                    fontSize: '1rem',
+                    fontFamily: 'var(--font-sans)',
+                  }}
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.08)',
+                      border: 'none',
+                      borderRadius: '50%',
+                      width: '26px',
+                      height: '26px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: 'var(--color-platinum-300)',
+                      cursor: 'pointer'
+                    }}
+                    title="Tozalash"
+                  >
+                    <X size={14} />
+                  </button>
+                )}
+                <button
+                  onClick={() => setSearchOpen(false)}
+                  style={{
+                    background: 'transparent',
+                    border: 'none',
+                    color: 'var(--color-platinum-400)',
+                    cursor: 'pointer',
+                    padding: '0.25rem'
+                  }}
+                  title="Yopish"
+                >
                   <X size={20} />
                 </button>
               </div>
 
-              {/* Quick Results */}
-              <div style={{ marginTop: '1rem', maxHeight: '50vh', overflowY: 'auto' }}>
+              {/* Quick Tags / Trending Filters */}
+              <div style={{ marginTop: '1rem', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '0.4rem' }}>
+                <span style={{ fontSize: '0.72rem', color: 'var(--color-gold-400)', fontFamily: 'var(--font-mono)', marginRight: '0.25rem' }}>
+                  TEZKOR FILTR:
+                </span>
+                {['Rolex', 'Tissot', 'Seiko', 'Casio', 'Citizen', 'Turbiyon', 'Titanium', 'Avtomatik'].map((tag) => (
+                  <button
+                    key={tag}
+                    onClick={() => setSearchQuery(tag)}
+                    className="glass-pill"
+                    style={{
+                      padding: '0.25rem 0.65rem',
+                      fontSize: '0.72rem',
+                      color: searchQuery.toLowerCase() === tag.toLowerCase() ? 'var(--color-gold-400)' : 'var(--color-platinum-300)',
+                      borderColor: searchQuery.toLowerCase() === tag.toLowerCase() ? 'var(--color-gold-400)' : 'var(--border-platinum-subtle)',
+                      background: searchQuery.toLowerCase() === tag.toLowerCase() ? 'rgba(212, 164, 76, 0.15)' : 'transparent',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    {tag}
+                  </button>
+                ))}
+              </div>
+
+              {/* Results Container */}
+              <div style={{ marginTop: '1.25rem', maxHeight: '55vh', overflowY: 'auto', paddingRight: '0.25rem' }}>
+                {searchQuery.trim() !== '' && (
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem', padding: '0 0.25rem' }}>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--color-platinum-400)' }}>
+                      Qidiruv natijalari: <strong style={{ color: 'var(--color-gold-300)' }}>{searchResults.length} ta soat topildi</strong>
+                    </span>
+                    <button
+                      onClick={() => {
+                        setSearchOpen(false);
+                        navigate(`/catalog?search=${encodeURIComponent(searchQuery)}`);
+                      }}
+                      style={{
+                        background: 'transparent',
+                        border: 'none',
+                        color: 'var(--color-gold-400)',
+                        fontSize: '0.75rem',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.25rem'
+                      }}
+                    >
+                      <span>Katalogda to‘liq ko‘rish</span>
+                      <ArrowRight size={12} />
+                    </button>
+                  </div>
+                )}
+
                 {searchQuery.trim() === '' ? (
-                  <div style={{ padding: '1.5rem 0', textAlign: 'center', fontSize: '0.875rem' }}>
-                    <p style={{ fontStyle: 'italic', color: 'var(--color-platinum-400)', marginBottom: '0.75rem' }}>Trenddagi qidiruvlar</p>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '0.5rem' }}>
-                      {['Rolex Daytona', 'Tissot PRX', 'Seiko Diver', 'G-Shock Carbon'].map((tag) => (
-                        <button
-                          key={tag}
-                          onClick={() => setSearchQuery(tag)}
-                          className="glass-pill"
-                          style={{ padding: '0.35rem 0.85rem', fontSize: '0.75rem', color: 'var(--color-gold-300)', cursor: 'pointer' }}
+                  <div>
+                    <p style={{ fontSize: '0.75rem', color: 'var(--color-platinum-400)', marginBottom: '0.75rem', paddingLeft: '0.25rem' }}>
+                      🔥 Ommabop modellarni ko‘rish:
+                    </p>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                      {products.slice(0, 4).map((watch) => (
+                        <div
+                          key={watch.id}
+                          onClick={() => {
+                            setSearchOpen(false);
+                            navigate(`/watch/${watch.id}`);
+                          }}
+                          className="glass-panel-hover"
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            padding: '0.65rem 0.85rem',
+                            borderRadius: 'var(--radius-xl)',
+                            cursor: 'pointer',
+                            backgroundColor: 'rgba(255, 255, 255, 0.02)',
+                            border: '1px solid var(--border-platinum-subtle)',
+                            gap: '1rem'
+                          }}
                         >
-                          {tag}
-                        </button>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+                            <img
+                              src={watch.images?.[0] || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1200&q=80'}
+                              alt={watch.name}
+                              style={{ width: '48px', height: '48px', objectFit: 'contain', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-platinum-subtle)', backgroundColor: '#000' }}
+                            />
+                            <div>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                                <span className="badge-gold" style={{ fontSize: '0.65rem', padding: '0.1rem 0.4rem' }}>{watch.brand}</span>
+                                <h4 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-platinum-100)', margin: 0 }}>{watch.name}</h4>
+                              </div>
+                              <p style={{ fontSize: '0.72rem', color: 'var(--color-platinum-400)', margin: '0.2rem 0 0 0' }}>
+                                {watch.movement} • {watch.caseMaterial}
+                              </p>
+                            </div>
+                          </div>
+                          <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                            <span style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, color: 'var(--color-gold-400)', fontSize: '0.95rem' }}>
+                              {formatPrice(watch.price)}
+                            </span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.68rem', color: 'var(--color-platinum-400)', justifyContent: 'flex-end', marginTop: '0.15rem' }}>
+                              <span>Ko‘rish</span>
+                              <ArrowRight size={10} />
+                            </div>
+                          </div>
+                        </div>
                       ))}
                     </div>
                   </div>
                 ) : searchResults.length > 0 ? (
-                  searchResults.map((watch) => (
-                    <div
-                      key={watch.id}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    {searchResults.map((watch) => (
+                      <div
+                        key={watch.id}
+                        onClick={() => {
+                          setSearchOpen(false);
+                          navigate(`/watch/${watch.id}`);
+                        }}
+                        className="glass-panel-hover"
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          padding: '0.75rem 1rem',
+                          borderRadius: 'var(--radius-xl)',
+                          cursor: 'pointer',
+                          backgroundColor: 'rgba(255, 255, 255, 0.02)',
+                          border: '1px solid var(--border-platinum-subtle)',
+                          gap: '1rem',
+                          transition: 'all 0.2s ease'
+                        }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+                          <img
+                            src={watch.images?.[0] || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1200&q=80'}
+                            alt={watch.name}
+                            style={{ width: '52px', height: '52px', objectFit: 'contain', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-platinum-subtle)', backgroundColor: '#000' }}
+                          />
+                          <div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}>
+                              <span className="badge-gold" style={{ fontSize: '0.65rem', padding: '0.1rem 0.4rem' }}>{watch.brand}</span>
+                              <h4 style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--color-platinum-100)', margin: 0 }}>{watch.name}</h4>
+                            </div>
+                            <p style={{ fontSize: '0.72rem', color: 'var(--color-platinum-400)', margin: '0.2rem 0 0 0' }}>
+                              {watch.movement} • {watch.caseMaterial} • {watch.category}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                          <span style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, color: 'var(--color-gold-400)', fontSize: '0.95rem' }}>
+                            {formatPrice(watch.price)}
+                          </span>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.68rem', color: 'var(--color-platinum-400)', justifyContent: 'flex-end', marginTop: '0.15rem' }}>
+                            <span>Batafsil</span>
+                            <ArrowRight size={10} />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div style={{ padding: '3rem 1rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem' }}>
+                    <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'rgba(255, 255, 255, 0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-platinum-400)' }}>
+                      <Search size={22} />
+                    </div>
+                    <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.1rem', color: 'var(--color-platinum-200)', margin: 0 }}>
+                      "{searchQuery}" bo‘yicha hech qanday soat topilmadi
+                    </h4>
+                    <p style={{ fontSize: '0.75rem', color: 'var(--color-platinum-400)', maxWidth: '320px', margin: 0 }}>
+                      Iltimos, so‘rovni boshqacha yozib ko‘ring yoki barcha modellarni ko‘rish uchun katalog sahifasiga o‘ting.
+                    </p>
+                    <button
                       onClick={() => {
                         setSearchOpen(false);
-                        navigate(`/watch/${watch.id}`);
+                        navigate('/catalog');
                       }}
-                      style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.75rem', borderRadius: 'var(--radius-lg)', cursor: 'pointer', transition: 'background 0.2s', borderBottom: '1px solid var(--border-platinum-subtle)' }}
+                      className="btn-gold"
+                      style={{ padding: '0.5rem 1.25rem', fontSize: '0.75rem', marginTop: '0.25rem' }}
                     >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                        <img
-                          src={watch.images[0]}
-                          alt={watch.name}
-                          style={{ width: '48px', height: '48px', objectFit: 'cover', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-platinum-subtle)' }}
-                        />
-                        <div>
-                          <h4 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-platinum-100)' }}>{watch.name}</h4>
-                          <p style={{ fontSize: '0.75rem', fontFamily: 'var(--font-mono)', color: 'var(--color-platinum-400)' }}>{watch.brand} • {watch.caseMaterial}</p>
-                        </div>
-                      </div>
-                      <div style={{ textAlign: 'right' }}>
-                        <span style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, color: 'var(--color-gold-400)', fontSize: '0.9375rem' }}>
-                          {formatPrice(watch.price)}
-                        </span>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.6875rem', color: 'var(--color-platinum-400)', justifyContent: 'flex-end' }}>
-                          <span>Ko‘rish</span>
-                          <ArrowRight size={10} />
-                        </div>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <div style={{ padding: '2rem 0', textAlign: 'center', fontSize: '0.875rem', color: 'var(--color-platinum-400)' }}>
-                    "{searchQuery}" bo‘yicha soatlar topilmadi.
+                      Barcha Soatlarni Ko‘rish
+                    </button>
                   </div>
                 )}
               </div>
