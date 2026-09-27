@@ -607,7 +607,7 @@ export const AdminLayout = () => {
         </header>
 
         {/* Page Content Viewport */}
-        <main className="admin-main-scroll" style={{ padding: '1.5rem', flex: 1, overflowY: 'auto', overflowX: 'hidden' }}>
+        <main className="admin-main-scroll" style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden' }}>
           <Outlet />
         </main>
 
