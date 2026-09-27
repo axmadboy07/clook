@@ -32,15 +32,15 @@ export const TestimonialsSection = () => {
   ];
 
   return (
-    <section style={{ padding: '6rem 0', background: 'linear-gradient(180deg, var(--bg-obsidian-950) 0%, var(--bg-obsidian-900) 50%, var(--bg-obsidian-950) 100%)', position: 'relative', overflow: 'hidden', borderTop: '1px solid var(--border-gold-subtle)' }}>
-      <div className="site-container" style={{ position: 'relative', zIndex: 10 }}>
+    <section style={{ padding: 'clamp(3.5rem, 6vw, 6rem) 0', background: 'var(--bg-secondary)', position: 'relative', overflow: 'hidden', borderTop: '1px solid var(--border-subtle)' }}>
+      <div className="site-container" style={{ position: 'relative', zIndex: 10, width: '100%', maxWidth: '100%' }}>
         <SectionHeading
           subtitle="Collector Accolades"
           title="Voice of Haute Connoisseurs"
           description="Read accounts from collectors and horology patrons who entrust their most cherished moments to AURA mechanical calibres."
         />
 
-        <div style={{ marginTop: '4rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+        <div style={{ marginTop: 'clamp(2rem, 4vw, 4rem)', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: 'clamp(1.25rem, 2.5vw, 2rem)' }}>
           {testimonials.map((item, idx) => (
             <motion.div
               key={item.author}

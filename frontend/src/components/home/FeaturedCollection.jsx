@@ -22,11 +22,11 @@ export const FeaturedCollection = () => {
       : displayList.filter((w) => w.collection === selectedCollection || w.category === selectedCollection);
 
   return (
-    <section id="collection-section" style={{ padding: '6rem 0', backgroundColor: 'var(--bg-obsidian-950)', position: 'relative', overflow: 'hidden' }}>
+    <section id="collection-section" style={{ padding: 'clamp(3.5rem, 6vw, 6rem) 0', backgroundColor: 'var(--bg-primary)', position: 'relative', overflow: 'hidden' }}>
       {/* Background Accent Gradients */}
       <div style={{ position: 'absolute', top: '50%', right: 0, width: '24rem', height: '24rem', backgroundColor: 'rgba(212,175,55,0.04)', borderRadius: '50%', filter: 'blur(80px)', pointerEvents: 'none' }} />
 
-      <div className="site-container" style={{ position: 'relative', zIndex: 10 }}>
+      <div className="site-container" style={{ position: 'relative', zIndex: 10, width: '100%', maxWidth: '100%' }}>
         <SectionHeading
           subtitle={t('featured.badge') || 'Haute Timepieces'}
           title={t('featured.title') || 'Featured Creations'}
@@ -34,7 +34,7 @@ export const FeaturedCollection = () => {
         />
 
         {/* Product Grid */}
-        <div style={{ marginTop: '3rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '2rem' }}>
+        <div style={{ marginTop: '2.5rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))', gap: 'clamp(1.25rem, 2.5vw, 2rem)' }}>
           {filteredWatches.map((watch) => (
             <ProductCard
               key={watch.id}

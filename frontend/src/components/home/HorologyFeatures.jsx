@@ -31,15 +31,15 @@ export const HorologyFeatures = () => {
   ];
 
   return (
-    <section style={{ padding: '6rem 0', backgroundColor: 'var(--bg-obsidian-950)', position: 'relative', overflow: 'hidden' }}>
-      <div className="site-container" style={{ position: 'relative', zIndex: 10 }}>
+    <section style={{ padding: 'clamp(3.5rem, 6vw, 6rem) 0', backgroundColor: 'var(--bg-primary)', position: 'relative', overflow: 'hidden' }}>
+      <div className="site-container" style={{ position: 'relative', zIndex: 10, width: '100%', maxWidth: '100%' }}>
         <SectionHeading
           subtitle={t('features.title') || 'AURA Guarantee'}
           title={t('features.subtitle') || 'Standards of Haute Horlogerie'}
           description={t('hero.subtitle') || 'Unrivaled excellence in modern high watchmaking.'}
         />
 
-        <div style={{ marginTop: '4rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '2rem' }}>
+        <div style={{ marginTop: 'clamp(2rem, 4vw, 4rem)', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))', gap: 'clamp(1rem, 2.5vw, 2rem)' }}>
           {features.map((feat, idx) => (
             <motion.div
               key={idx}

@@ -95,17 +95,17 @@ export const HeroSection = () => {
       <div style={{ position: 'absolute', top: '25%', left: '50%', transform: 'translate(-50%, -50%)', width: '700px', height: '700px', background: 'radial-gradient(circle, rgba(212,175,55,0.12) 0%, rgba(212,175,55,0.02) 50%, transparent 80%)', borderRadius: '50%', filter: 'blur(100px)', pointerEvents: 'none' }} />
       <div style={{ position: 'absolute', bottom: '2.5rem', left: '2.5rem', width: '320px', height: '320px', background: 'radial-gradient(circle, rgba(183,110,121,0.1) 0%, transparent 70%)', borderRadius: '50%', filter: 'blur(80px)', pointerEvents: 'none' }} />
 
-      <div className="site-container" style={{ position: 'relative', zIndex: 10, width: '100%' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '3.5rem', alignItems: 'center' }}>
+      <div className="site-container" style={{ position: 'relative', zIndex: 10, width: '100%', maxWidth: '100%', overflow: 'hidden' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))', gap: 'clamp(2rem, 4vw, 3.5rem)', alignItems: 'center' }}>
           
           {/* Left Hero Content */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', textAlign: 'left' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', textAlign: 'left', minWidth: 0 }}>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               className="glass-pill"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', width: 'fit-content', padding: '0.4rem 0.85rem', color: 'var(--color-gold-300)', fontSize: '0.75rem', fontFamily: 'var(--font-sans)', fontWeight: 600, borderColor: 'var(--border-gold-subtle)' }}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', width: 'fit-content', padding: '0.35rem 0.75rem', color: 'var(--color-gold-300)', fontSize: '0.75rem', fontFamily: 'var(--font-sans)', fontWeight: 600, borderColor: 'var(--border-gold-subtle)' }}
             >
               <Sparkles size={14} style={{ color: 'var(--color-gold-400)' }} />
               <span>{t('hero.badge') || 'GENÈVE HAUTE HORLOGERIE'}</span>
@@ -117,12 +117,14 @@ export const HeroSection = () => {
               transition={{ duration: 0.7, delay: 0.1 }}
               style={{
                 fontFamily: 'var(--font-serif)',
-                fontSize: 'clamp(2.4rem, 4.5vw, 4.25rem)',
+                fontSize: 'clamp(1.75rem, 5.2vw, 4rem)',
                 fontWeight: 700,
                 letterSpacing: '-0.02em',
-                lineHeight: 1.12,
-                color: 'var(--color-platinum-100)',
-                margin: 0
+                lineHeight: 1.15,
+                color: 'var(--text-primary)',
+                margin: 0,
+                overflowWrap: 'break-word',
+                wordBreak: 'normal',
               }}
             >
               {t('hero.title1') || 'Timeless Precision.'} <br />
@@ -133,7 +135,7 @@ export const HeroSection = () => {
               initial={{ opacity: 0, y: 25 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2 }}
-              style={{ fontSize: '1.05rem', lineHeight: 1.6, maxWidth: '34rem', margin: 0, color: 'var(--color-platinum-400)' }}
+              style={{ fontSize: 'clamp(0.875rem, 1.8vw, 1.05rem)', lineHeight: 1.6, maxWidth: '34rem', margin: 0, color: 'var(--text-secondary)' }}
             >
               {t('hero.subtitle') || 'Explore our hand-chamfered mechanical tourbillons and high-complication calibres, individually crafted in Geneva ateliers.'}
             </motion.p>
@@ -143,12 +145,12 @@ export const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.3 }}
-              style={{ paddingTop: '0.5rem' }}
+              style={{ paddingTop: '0.25rem' }}
             >
-              <span style={{ fontSize: '0.75rem', fontFamily: 'var(--font-sans)', textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: '0.6rem', color: 'var(--color-platinum-400)' }}>
+              <span style={{ fontSize: '0.75rem', fontFamily: 'var(--font-sans)', textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>
                 {t('hero.previewAlloy') || 'Precious Metal Variant:'} <strong className="gold-gradient-text" style={{ fontWeight: 700 }}>{activeConfig.name}</strong>
               </span>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
                 {Object.keys(materialConfigs).map((key) => {
                   const cfg = materialConfigs[key];
                   const isSelected = activeMaterial === key;
@@ -158,29 +160,30 @@ export const HeroSection = () => {
                       onClick={() => setActiveMaterial(key)}
                       className={`glass-pill ${isSelected ? 'active-filter' : ''}`}
                       style={{
-                        padding: '0.45rem 0.85rem',
-                        fontSize: '0.78125rem',
+                        padding: '0.35rem 0.65rem',
+                        fontSize: '0.75rem',
                         fontFamily: 'var(--font-sans)',
                         fontWeight: isSelected ? 600 : 500,
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '0.5rem',
+                        gap: '0.4rem',
                         borderRadius: 'var(--radius-full)',
                         borderColor: isSelected ? 'var(--color-gold-400)' : 'var(--border-platinum-subtle)',
                         backgroundColor: isSelected ? 'rgba(212,175,55,0.18)' : 'rgba(255,255,255,0.03)',
-                        color: isSelected ? 'var(--color-gold-300)' : 'var(--color-platinum-300)',
+                        color: isSelected ? 'var(--color-gold-300)' : 'var(--text-secondary)',
                         cursor: 'pointer',
                         transition: 'all var(--transition-fast)'
                       }}
                     >
                       <span
                         style={{
-                          width: '10px',
-                          height: '10px',
+                          width: '8px',
+                          height: '8px',
                           borderRadius: '50%',
                           backgroundColor: cfg.caseColor,
                           boxShadow: isSelected ? `0 0 8px ${cfg.caseColor}` : 'none',
-                          border: '1px solid rgba(255,255,255,0.4)'
+                          border: '1px solid rgba(255,255,255,0.4)',
+                          flexShrink: 0
                         }}
                       />
                       <span>{cfg.name}</span>
@@ -195,12 +198,12 @@ export const HeroSection = () => {
               initial={{ opacity: 0, y: 25 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.4 }}
-              style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '1rem', paddingTop: '0.5rem' }}
+              style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '0.75rem', paddingTop: '0.25rem' }}
             >
               <button
                 onClick={() => scrollToSection('collection-section')}
                 className="btn-gold"
-                style={{ padding: '0.85rem 2rem', fontSize: '0.8125rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                style={{ padding: '0.8rem 1.75rem', fontSize: '0.8125rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
               >
                 <span>{t('hero.shopNow') || 'Explore Collection'}</span>
                 <ArrowRight size={16} />
@@ -209,7 +212,7 @@ export const HeroSection = () => {
               <button
                 onClick={() => navigate('/watch/rolex-submariner-gold')}
                 className="btn-glass"
-                style={{ padding: '0.85rem 1.75rem', fontSize: '0.8125rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                style={{ padding: '0.8rem 1.5rem', fontSize: '0.8125rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
               >
                 <Maximize2 size={15} />
                 <span>{t('hero.customizer') || 'Atelier Customizer'}</span>
@@ -224,29 +227,29 @@ export const HeroSection = () => {
               style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(3, 1fr)',
-                gap: '1.5rem',
-                paddingTop: '1.5rem',
-                borderTop: '1px solid var(--border-platinum-subtle)',
-                marginTop: '0.5rem'
+                gap: 'clamp(0.5rem, 2vw, 1.5rem)',
+                paddingTop: '1.25rem',
+                borderTop: '1px solid var(--border-subtle)',
+                marginTop: '0.25rem'
               }}
             >
               <div>
-                <div className="gold-gradient-text" style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '1.35rem' }}>380+</div>
-                <div style={{ fontSize: '0.725rem', fontFamily: 'var(--font-sans)', color: 'var(--color-platinum-400)', marginTop: '0.2rem' }}>{t('hero.hoursFinish') || 'Hours per Calibre'}</div>
+                <div className="gold-gradient-text" style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: 'clamp(1.1rem, 3.2vw, 1.35rem)' }}>380+</div>
+                <div style={{ fontSize: '0.7rem', fontFamily: 'var(--font-sans)', color: 'var(--text-muted)', marginTop: '0.2rem' }}>{t('hero.hoursFinish') || 'Hours per Calibre'}</div>
               </div>
               <div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '1.25rem', color: 'var(--color-platinum-100)' }}>±1s/day</div>
-                <div style={{ fontSize: '0.725rem', fontFamily: 'var(--font-sans)', color: 'var(--color-platinum-400)', marginTop: '0.2rem' }}>{t('hero.precision') || 'Chronometer Precision'}</div>
+                <div style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 'clamp(1rem, 3vw, 1.25rem)', color: 'var(--text-primary)' }}>±1s/day</div>
+                <div style={{ fontSize: '0.7rem', fontFamily: 'var(--font-sans)', color: 'var(--text-muted)', marginTop: '0.2rem' }}>{t('hero.precision') || 'Chronometer Precision'}</div>
               </div>
               <div>
-                <div className="gold-gradient-text" style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '1.35rem' }}>5 Yrs</div>
-                <div style={{ fontSize: '0.725rem', fontFamily: 'var(--font-sans)', color: 'var(--color-platinum-400)', marginTop: '0.2rem' }}>{t('hero.warranty') || 'Geneva Warranty'}</div>
+                <div className="gold-gradient-text" style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: 'clamp(1.1rem, 3.2vw, 1.35rem)' }}>5 Yrs</div>
+                <div style={{ fontSize: '0.7rem', fontFamily: 'var(--font-sans)', color: 'var(--text-muted)', marginTop: '0.2rem' }}>{t('hero.warranty') || 'Geneva Warranty'}</div>
               </div>
             </motion.div>
           </div>
 
           {/* Right Hero 3D Interactive Stage */}
-          <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '520px', height: '100%' }}>
+          <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 'clamp(300px, 48vh, 520px)', height: '100%', width: '100%' }}>
             
             {/* Ambient circular frame rings */}
             <div style={{ position: 'absolute', width: '380px', height: '380px', borderRadius: '50%', border: '1px solid rgba(212,175,55,0.2)', animation: 'spin 40s linear infinite', pointerEvents: 'none' }} />
