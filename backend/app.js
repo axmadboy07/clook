@@ -68,9 +68,17 @@ const startServer = async () => {
         console.error("Database connection notice:", error.message);
     }
 
-    app.listen(PORT, () => {
+    const server = app.listen(PORT, () => {
         console.log(`Server is running on port ${PORT}`);
         console.log(`API documentation available at http://localhost:${PORT}/api-docs`);
+    });
+
+    server.on('error', (err) => {
+        if (err.code === 'EADDRINUSE') {
+            console.error(`Xatolik: ${PORT}-port allaqachon band. Avvalgi ishlayotgan jarayonni to'xtating.`);
+        } else {
+            console.error(`Server xatosi:`, err.message);
+        }
     });
 };
 
