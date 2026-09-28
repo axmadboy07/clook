@@ -2,17 +2,18 @@ const Joi = require("joi");
 
 const validateContactInquiry = (contactInquiry) => {
     const Schema = Joi.object({
-        salon_id: Joi.number().integer().allow(null, ""),
-        name: Joi.string().min(2).required(),
+        salon_id: Joi.number().integer().allow(null, "").optional(),
+        name: Joi.string().min(3).required(),
         email: Joi.string().email().required(),
-        phone: Joi.string().allow(null, ""),
-        interest: Joi.string().allow(null, ""),
-        location: Joi.string().allow(null, ""),
-        preferred_date: Joi.string().allow(null, ""),
-        preferredDate: Joi.string().allow(null, ""),
-        message: Joi.string().allow(null, "")
-    });
+        phone: Joi.string().min(9).required(),
+        interest: Joi.string().allow(null, "").optional(),
+        location: Joi.string().allow(null, "").optional(),
+        preferred_date: Joi.string().allow(null, "").optional(),
+        preferredDate: Joi.string().allow(null, "").optional(),
+        message: Joi.string().allow(null, "").optional()
+    }).unknown(true);
     return Schema.validate(contactInquiry);
 };
 
 module.exports = { validateContactInquiry };
+

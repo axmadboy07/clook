@@ -16,6 +16,7 @@ import { contactApi } from '../api';
 export const ContactConciergePage = () => {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -26,8 +27,32 @@ export const ContactConciergePage = () => {
     message: '',
   });
 
+  const validateEmail = (email) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const validatePhone = (phone) => {
+    const digits = (phone || '').replace(/\D/g, '');
+    return digits.length >= 9 && digits.length <= 15 && /^(\+?[0-9\s\-()]+)$/.test(phone);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMsg('');
+
+    if (!formData.name.trim() || formData.name.trim().length < 3) {
+      setErrorMsg('Iltimos, to‘liq ism-sharifingizni kiriting (kamida 3 ta belgi)!');
+      return;
+    }
+    if (!formData.email.trim() || !validateEmail(formData.email.trim())) {
+      setErrorMsg('Iltimos, to‘g‘ri elektron pochta manzilini kiriting!');
+      return;
+    }
+    if (!formData.phone.trim() || !validatePhone(formData.phone.trim())) {
+      setErrorMsg('Iltimos, haqiqiy telefon raqamingizni kiriting (kamida 9 ta raqam, faqat raqamlar qabul qilinadi)!');
+      return;
+    }
+
     setLoading(true);
     try {
       await contactApi.sendInquiry({
@@ -36,14 +61,16 @@ export const ContactConciergePage = () => {
         phone: formData.phone.trim(),
         interest: formData.interest,
         location: formData.location,
-        preferred_date: formData.preferredDate,
+        preferred_date: formData.preferredDate || null,
+        preferredDate: formData.preferredDate || null,
         message: formData.message.trim() || 'VIP Konsyerj va Shaxsiy Qabul Murojaati',
       });
+      setSubmitted(true);
     } catch (error) {
       console.warn('Contact Inquiry API warning (offline or demo mode):', error.message);
+      setSubmitted(true);
     } finally {
       setLoading(false);
-      setSubmitted(true);
     }
   };
 
@@ -291,12 +318,19 @@ export const ContactConciergePage = () => {
                 </p>
               </div>
 
+              {errorMsg && (
+                <div style={{ padding: '0.85rem 1rem', borderRadius: 'var(--radius-lg)', backgroundColor: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#f87171', fontSize: '0.825rem', textAlign: 'center' }}>
+                  {errorMsg}
+                </div>
+              )}
+
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>To‘liq Ismingiz *</label>
+                  <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>To‘liq Ismingiz * (kamida 3 ta belgi)</label>
                   <input
                     type="text"
                     required
+                    minLength={3}
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     placeholder="Ism va Familiyangiz"
