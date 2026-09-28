@@ -124,15 +124,17 @@ const productsSlice = createSlice({
     addProductReview: (state, action) => {
       const { productId, review } = action.payload;
       state.items = state.items.map((p) => {
-        if (p.id !== productId) return p;
+        const matches = p.id === productId || p.name === productId || (p.id && productId && p.id.toLowerCase() === String(productId).toLowerCase());
+        if (!matches) return p;
         const newReview = {
-          id: `rev-${Date.now()}`,
+          id: review?.id || `rev-${Date.now()}`,
           date: new Date().toISOString().split('T')[0],
-          status: 'pending',
+          status: 'approved',
           verifiedBuyer: true,
           ...review,
         };
-        const reviews = [newReview, ...(p.reviews || [])];
+        const existing = Array.isArray(p.reviews) ? p.reviews.filter((r) => r.id !== newReview.id) : [];
+        const reviews = [newReview, ...existing];
         return { ...p, reviews, reviewsCount: (p.reviewsCount || 0) + 1 };
       });
       saveProductsToLocalStorage(state.items);

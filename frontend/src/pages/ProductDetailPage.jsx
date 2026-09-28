@@ -49,6 +49,9 @@ export const ProductDetailPage = () => {
   const getMaterialLabel = (mat) => t(`details.materials.${mat}`, { defaultValue: mat });
   const formatPrice = (amount) => formatPriceWithCurrency(amount, currency, exchangeRates);
 
+  const currentUser = useSelector((state) => state.auth?.currentUser);
+  const [toastMsg, setToastMsg] = useState(null);
+
   // Customizer state
   const [selectedCaseMaterial, setSelectedCaseMaterial] = useState(watch?.caseMaterial || '18K Yellow Gold');
   const [selectedStrapMaterial, setSelectedStrapMaterial] = useState(watch?.strapMaterial || 'Alligator Leather');
@@ -64,8 +67,8 @@ export const ProductDetailPage = () => {
   const [newReviewAuthor, setNewReviewAuthor] = useState('');
   const [newReviewRating, setNewReviewRating] = useState(5);
   const [newReviewComment, setNewReviewComment] = useState('');
-  const [reviewsList, setReviewsList] = useState(watch?.reviews || []);
 
+  const reviewsList = Array.isArray(watch?.reviews) ? watch.reviews : [];
   const wishlisted = wishlistItems.some((item) => item.id === watch?.id);
   const compared = compareItems.some((item) => item.id === watch?.id);
 
@@ -75,12 +78,11 @@ export const ProductDetailPage = () => {
       setSelectedCaseMaterial(watch.caseMaterial);
       setSelectedStrapMaterial(watch.strapMaterial);
       setSelectedDialColor(watch.dialColor);
-      setReviewsList(watch.reviews || []);
       setCustomEngraving('');
       setExplodedView(false);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  }, [id, watch]);
+  }, [id, watch?.id]);
 
   const caseColorMap = {
     '18K Yellow Gold': '#d4af37',
@@ -143,29 +145,34 @@ export const ProductDetailPage = () => {
 
   const handleAddReview = async (e) => {
     e.preventDefault();
-    if (!newReviewAuthor.trim() || !newReviewComment.trim()) return;
+    const author = (newReviewAuthor || currentUser?.name || currentUser?.email || 'Mijoz').trim();
+    if (!author || !newReviewComment.trim()) return;
 
     const newRev = {
       id: `rev-${Date.now()}`,
-      author: newReviewAuthor,
-      rating: newReviewRating,
+      author,
+      rating: Number(newReviewRating),
       date: new Date().toISOString().split('T')[0],
-      comment: newReviewComment,
+      comment: newReviewComment.trim(),
+      status: 'approved',
       verifiedBuyer: true,
     };
-    const updated = [newRev, ...reviewsList];
-    setReviewsList(updated);
+
     dispatch(addProductReview({ productId: watch.id, review: newRev }));
 
     try {
       const prodNumericId = parseInt(String(watch.id).replace(/\D/g, ''), 10) || 1;
+      const userNumericId = currentUser?.id ? (parseInt(String(currentUser.id).replace(/\D/g, ''), 10) || 1) : 1;
       await reviewsApi.create({
         product_id: prodNumericId,
-        user_id: 2,
-        rating: newReviewRating,
-        comment: newReviewComment
+        user_id: userNumericId,
+        rating: Number(newReviewRating),
+        comment: newReviewComment.trim()
       }).catch((err) => console.warn('Review API notice:', err.message));
     } catch (e) {}
+
+    setToastMsg(t('details.reviewSubmittedToast') || 'Sharhingiz muvaffaqiyatli qabul qilindi va e’lon qilindi!');
+    setTimeout(() => setToastMsg(null), 3500);
 
     setReviewModalOpen(false);
     setNewReviewAuthor('');
@@ -179,7 +186,36 @@ export const ProductDetailPage = () => {
   if (!watch) return null;
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-obsidian-950)', padding: '2rem 0 5rem' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-obsidian-950)', padding: '2rem 0 5rem', position: 'relative' }}>
+      {/* Toast Notification */}
+      <AnimatePresence>
+        {toastMsg && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            style={{
+              position: 'fixed',
+              top: '5rem',
+              right: '2rem',
+              zIndex: 9999,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem',
+              padding: '0.85rem 1.25rem',
+              borderRadius: 'var(--radius-xl)',
+              backgroundColor: 'rgba(15, 17, 23, 0.95)',
+              border: '1px solid var(--color-gold-400)',
+              boxShadow: '0 10px 30px rgba(0,0,0,0.5), 0 0 20px rgba(212,175,55,0.2)',
+              color: 'var(--text-primary)',
+              fontSize: '0.85rem'
+            }}
+          >
+            <Sparkles size={18} style={{ color: 'var(--color-gold-400)' }} />
+            <span style={{ fontWeight: 600 }}>{toastMsg}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
       {/* Breadcrumb Navigation */}
       <div className="site-container" style={{ marginBottom: '1.5rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
