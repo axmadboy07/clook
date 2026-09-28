@@ -91,7 +91,9 @@ export const AdminDashboard = () => {
   ];
 
   const getOrderStatusLabel = (status) => {
-    switch (status) {
+    if (!status) return t('admin.statusPending') || 'Kutilmoqda';
+    const s = String(status).toLowerCase();
+    switch (s) {
       case 'pending':
         return t('admin.statusPending') || 'Kutilmoqda';
       case 'processing':
@@ -103,7 +105,7 @@ export const AdminDashboard = () => {
       case 'cancelled':
         return t('admin.statusCancelled') || 'Bekor qilindi';
       default:
-        return status.toUpperCase();
+        return String(status).toUpperCase();
     }
   };
 
@@ -397,21 +399,23 @@ export const AdminDashboard = () => {
             </thead>
             <tbody>
               {orders.slice(0, 5).map((order) => {
-                const isPending = order.orderStatus === 'pending';
+                const status = order?.orderStatus || order?.status || 'pending';
+                const isPending = status === 'pending';
+                const itemsList = Array.isArray(order?.items) ? order.items : [];
                 return (
-                  <tr key={order.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                    <td style={{ padding: '0.85rem 1rem', color: 'var(--color-gold-400)', fontWeight: 700, whiteSpace: 'nowrap' }}>{order.id}</td>
-                    <td style={{ padding: '0.85rem 1rem', color: 'var(--text-primary)', whiteSpace: 'nowrap' }}>{order.customerName}</td>
+                  <tr key={order?.id || Math.random()} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                    <td style={{ padding: '0.85rem 1rem', color: 'var(--color-gold-400)', fontWeight: 700, whiteSpace: 'nowrap' }}>{order?.id || '—'}</td>
+                    <td style={{ padding: '0.85rem 1rem', color: 'var(--text-primary)', whiteSpace: 'nowrap' }}>{order?.customerName || '—'}</td>
                     <td style={{ padding: '0.85rem 1rem', color: 'var(--text-secondary)', minWidth: '180px' }}>
-                      {order.items[0]?.name} {order.items.length > 1 && `(+${order.items.length - 1})`}
+                      {itemsList[0]?.name || 'CHRONOS Exclusive Timepiece'} {itemsList.length > 1 && `(+${itemsList.length - 1})`}
                     </td>
-                    <td style={{ padding: '0.85rem 1rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>{order.paymentMethod}</td>
+                    <td style={{ padding: '0.85rem 1rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>{order?.paymentMethod || 'Card'}</td>
                     <td style={{ padding: '0.85rem 1rem', fontFamily: 'var(--font-serif)', fontWeight: 700, color: 'var(--text-primary)', whiteSpace: 'nowrap' }}>
-                      {formatPrice(order.totalAmountUSD)}
+                      {formatPrice(order?.totalAmountUSD || 0)}
                     </td>
                     <td style={{ padding: '0.85rem 1rem', whiteSpace: 'nowrap' }}>
-                      <span className={isPending ? 'badge-amber' : order.orderStatus === 'delivered' ? 'badge-emerald' : 'badge-gold'}>
-                        {getOrderStatusLabel(order.orderStatus)}
+                      <span className={isPending ? 'badge-amber' : status === 'delivered' ? 'badge-emerald' : 'badge-gold'}>
+                        {getOrderStatusLabel(status)}
                       </span>
                     </td>
                   </tr>

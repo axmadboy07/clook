@@ -36,11 +36,13 @@ export const AdminOrders = () => {
 
   const handleStatusChange = (orderId, newStatus) => {
     dispatch(updateOrderStatus({ orderId, status: newStatus }));
-    showToast(t('admin.ordersToastUpdated', { id: orderId, status: newStatus.toUpperCase() }) || `Buyurtma ${orderId} holati: ${newStatus.toUpperCase()}`);
+    const formattedStatus = String(newStatus || 'pending').toUpperCase();
+    showToast(t('admin.ordersToastUpdated', { id: orderId, status: formattedStatus }) || `Buyurtma ${orderId} holati: ${formattedStatus}`);
   };
 
   const getStatusProgress = (status) => {
-    switch (status) {
+    const s = String(status || '').toLowerCase();
+    switch (s) {
       case 'pending':
         return 15;
       case 'processing':
@@ -55,7 +57,9 @@ export const AdminOrders = () => {
   };
 
   const getOrderStatusBadgeLabel = (status) => {
-    switch (status) {
+    if (!status) return t('admin.statusPending') || 'Kutilmoqda';
+    const s = String(status).toLowerCase();
+    switch (s) {
       case 'pending':
         return t('admin.statusPending') || 'Kutilmoqda';
       case 'processing':
@@ -64,8 +68,10 @@ export const AdminOrders = () => {
         return t('admin.statusShipped') || 'Yetkazilmoqda';
       case 'delivered':
         return t('admin.statusDelivered') || 'Yetkazildi';
+      case 'cancelled':
+        return t('admin.statusCancelled') || 'Bekor qilindi';
       default:
-        return status.toUpperCase();
+        return String(status).toUpperCase();
     }
   };
 
