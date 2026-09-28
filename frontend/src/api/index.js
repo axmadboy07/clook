@@ -40,6 +40,7 @@ async function request(endpoint, options = {}) {
 
 // 1. Auth & Users API
 export const authApi = {
+    login: (credentials) => request("/users/login", { method: "POST", body: JSON.stringify(credentials) }),
     register: (userData) => request("/users", { method: "POST", body: JSON.stringify(userData) }),
     getAllUsers: () => request("/users"),
     getUserById: (id) => request(`/users/${id}`),

@@ -42,6 +42,7 @@ const userController = require("../controller/userController");
  *         description: Invalid user data
  */
 router.post("/users", userController.createUser);
+router.post("/users/login", userController.loginUser);
 
 /**
  * @swagger

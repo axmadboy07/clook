@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { UserPlus, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { register } from '../store/slices/authSlice';
+import { authApi } from '../api';
 
 export const RegisterPage = () => {
   const { t } = useTranslation();
@@ -24,6 +25,7 @@ export const RegisterPage = () => {
   });
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const redirectPath = location.state?.from?.pathname || '/profile';
 
@@ -31,29 +33,29 @@ export const RegisterPage = () => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     setErrorMsg('');
     setSuccessMsg('');
 
-    if (!formData.name.trim()) {
-      setErrorMsg(t('auth.enterName') || 'Iltimos, to‘liq ismingizni kiriting!');
+    if (!formData.name.trim() || formData.name.trim().length < 3) {
+      setErrorMsg(t('auth.enterName', 'Iltimos, to‘liq ismingizni kiriting (kamida 3 ta belgi)!'));
       return;
     }
     if (!formData.email.trim() || !validateEmail(formData.email.trim())) {
-      setErrorMsg(t('auth.invalidEmail') || 'Iltimos, to‘g‘ri elektron pochta manzilini (email) kiriting!');
+      setErrorMsg(t('auth.invalidEmail', 'Iltimos, to‘g‘ri elektron pochta manzilini (email) kiriting!'));
       return;
     }
     if (!formData.phone.trim() || formData.phone.length < 9) {
-      setErrorMsg(t('auth.invalidPhone') || 'Iltimos, to‘g‘ri telefon raqamingizni kiriting!');
+      setErrorMsg(t('auth.invalidPhone', 'Iltimos, to‘g‘ri telefon raqamingizni kiriting!'));
       return;
     }
     if (!formData.password || formData.password.length < 6) {
-      setErrorMsg(t('auth.passwordLength') || 'Parol kamida 6 ta belgidan iborat bo‘lishi shart!');
+      setErrorMsg(t('auth.passwordLength', 'Parol kamida 6 ta belgidan iborat bo‘lishi shart!'));
       return;
     }
     if (formData.password !== formData.confirmPassword) {
-      setErrorMsg(t('auth.passwordsMismatch') || 'Kiritilgan parollar bir-biriga mos kelmadi!');
+      setErrorMsg(t('auth.passwordsMismatch', 'Kiritilgan parollar bir-biriga mos kelmadi!'));
       return;
     }
 
@@ -62,13 +64,31 @@ export const RegisterPage = () => {
       (u) => u.email.toLowerCase() === cleanEmail || u.phone === formData.phone.trim()
     );
     if (existing) {
-      setErrorMsg(t('auth.userExists') || 'Bu email yoki telefon raqami bilan hisob allaqachon mavjud!');
+      setErrorMsg(t('auth.userExists', 'Bu email yoki telefon raqami bilan hisob allaqachon mavjud!'));
       return;
     }
 
     const { confirmPassword, ...dataToSave } = formData;
+
+    // Backend ga yuborish
+    setLoading(true);
+    try {
+      await authApi.register({
+        full_name: formData.name.trim(),
+        email: cleanEmail,
+        phone: formData.phone.trim(),
+        password_hash: formData.password,
+        role: 'customer'
+      }).catch((apiErr) => {
+        console.warn('Backend register note:', apiErr.message);
+      });
+    } catch (err) {
+      console.warn('Backend error:', err);
+    }
+    setLoading(false);
+
     dispatch(register(dataToSave));
-    setSuccessMsg(t('auth.regSuccess') || "Muvaffaqiyatli ro'yxatdan o'tdingiz! Yo'naltirilmoqda...");
+    setSuccessMsg(t('auth.regSuccess', "Muvaffaqiyatli ro'yxatdan o'tdingiz! Yo'naltirilmoqda..."));
     
     setTimeout(() => {
       navigate(redirectPath, { replace: true });
@@ -90,10 +110,10 @@ export const RegisterPage = () => {
             <UserPlus size={22} />
           </div>
           <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.75rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
-            {t('nav.register') || 'Ro‘yxatdan o‘tish'}
+            {t('nav.register', 'Ro‘yxatdan o‘tish')}
           </h2>
           <p className="text-muted" style={{ fontSize: '0.8rem', margin: 0 }}>
-            {t('auth.regSubtitle') || 'CHRONOS Haute Horlogerie a’zolari klubiga qo‘shiling'}
+            {t('auth.regSubtitle', 'CHRONOS Haute Horlogerie a’zolari klubiga qo‘shiling')}
           </p>
         </div>
 
@@ -114,10 +134,11 @@ export const RegisterPage = () => {
         {/* Form */}
         <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <div>
-            <label className="luxury-label">{t('auth.fullName') || 'To‘liq ism-sharifingiz *'}</label>
+            <label className="luxury-label">{t('auth.fullName', 'To‘liq ism-sharifingiz')} *</label>
             <input
               type="text"
               required
+              minLength={3}
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               placeholder="Ismingizni kiriting"
@@ -129,7 +150,7 @@ export const RegisterPage = () => {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 210px), 1fr))', gap: '0.75rem' }}>
             <div>
               <label className="luxury-label" style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.35rem' }}>
-                {t('auth.email') || 'Email manzil *'}
+                {t('auth.email', 'Email manzil')} *
               </label>
               <input
                 type="email"
@@ -143,7 +164,7 @@ export const RegisterPage = () => {
             </div>
             <div>
               <label className="luxury-label" style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.35rem' }}>
-                {t('auth.phone') || 'Telefon raqam *'}
+                {t('auth.phone', 'Telefon raqam')} *
               </label>
               <input
                 type="tel"
@@ -160,7 +181,7 @@ export const RegisterPage = () => {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 210px), 1fr))', gap: '0.75rem' }}>
             <div>
               <label className="luxury-label" style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.35rem' }}>
-                {t('auth.city') || 'Shahar / Viloyat'}
+                {t('auth.city', 'Shahar / Viloyat')}
               </label>
               <select
                 value={formData.city}
@@ -184,7 +205,7 @@ export const RegisterPage = () => {
             </div>
             <div>
               <label className="luxury-label" style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.35rem' }}>
-                {t('auth.address') || 'Yetkazish manzili *'}
+                {t('auth.address', 'Yetkazish manzili')} *
               </label>
               <input
                 type="text"
@@ -200,11 +221,12 @@ export const RegisterPage = () => {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 210px), 1fr))', gap: '0.75rem' }}>
             <div>
               <label className="luxury-label" style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.35rem' }}>
-                {t('auth.password') || 'Maxfiy parol *'}
+                {t('auth.password', 'Maxfiy parol')} *
               </label>
               <input
                 type="password"
                 required
+                minLength={6}
                 autoComplete="new-password"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
@@ -214,11 +236,12 @@ export const RegisterPage = () => {
             </div>
             <div>
               <label className="luxury-label" style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.35rem' }}>
-                {t('auth.confirmPassword') || 'Parolni tasdiqlang *'}
+                {t('auth.confirmPassword', 'Parolni tasdiqlang')} *
               </label>
               <input
                 type="password"
                 required
+                minLength={6}
                 autoComplete="new-password"
                 value={formData.confirmPassword}
                 onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
@@ -230,19 +253,20 @@ export const RegisterPage = () => {
 
           <button
             type="submit"
+            disabled={loading}
             className="btn btn-gold"
             style={{ width: '100%', padding: '0.85rem', marginTop: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
           >
-            <span>{t('nav.register') || 'Ro‘yxatdan o‘tish'}</span>
+            <span>{loading ? t('common.loading', 'Yuklanmoqda...') : t('nav.register', 'Ro‘yxatdan o‘tish')}</span>
             <ArrowRight size={14} />
           </button>
         </form>
 
         {/* Footer Link */}
         <div style={{ textAlign: 'center', fontSize: '0.8rem', color: 'var(--text-muted)', paddingTop: '1rem', borderTop: '1px solid var(--border-subtle)' }}>
-          <span>{t('auth.haveAccount') || 'Profilingiz bormi?'} </span>
+          <span>{t('auth.alreadyHaveAccount', 'Profilingiz bormi?')} </span>
           <Link to="/login" style={{ color: 'var(--color-gold-400)', fontWeight: 600, textDecoration: 'none' }}>
-            {t('nav.login') || 'Kirish'}
+            {t('nav.login', 'Kirish')}
           </Link>
         </div>
       </motion.div>

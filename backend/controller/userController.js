@@ -1,6 +1,41 @@
 const { User, CartItem, WishlistItem, Review, Order, Address } = require("../models");
 const { validateUser } = require("../validation/userValidation");
 const { Op } = require("sequelize");
+const bcrypt = require("bcrypt");
+
+exports.loginUser = async (req, res) => {
+    try {
+        const { email, emailOrPhone, password } = req.body;
+        const identifier = (emailOrPhone || email || "").trim().toLowerCase();
+        if (!identifier || !password) {
+            return res.status(400).send("Email/telefon va parol kiritilishi shart");
+        }
+
+        const user = await User.findOne({
+            where: {
+                [Op.or]: [
+                    { email: identifier },
+                    { phone: identifier }
+                ]
+            }
+        });
+
+        if (!user) {
+            return res.status(401).send("Foydalanuvchi topilmadi yoki parol noto'g'ri");
+        }
+
+        const isValid = await bcrypt.compare(password, user.password_hash).catch(() => false);
+        if (!isValid && user.password_hash !== password) {
+            return res.status(401).send("Noto'g'ri parol");
+        }
+
+        const userData = user.toJSON();
+        delete userData.password_hash;
+        res.status(200).send({ user: userData, token: `chronos_auth_token_${user.id}` });
+    } catch (error) {
+        res.status(500).send(error.message || error);
+    }
+};
 
 exports.createUser = async (req, res) => {
     const { error } = validateUser(req.body);
@@ -8,7 +43,9 @@ exports.createUser = async (req, res) => {
 
     try {
         const user = await User.create(req.body);
-        res.status(201).send(user);
+        const userData = user.toJSON();
+        delete userData.password_hash;
+        res.status(201).send(userData);
     } catch (error) {
         res.status(500).send(error.message || error);
     }

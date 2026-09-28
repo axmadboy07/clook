@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { Lock, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { login } from '../store/slices/authSlice';
+import { authApi } from '../api';
 
 export const LoginPage = () => {
   const { t } = useTranslation();
@@ -17,38 +18,57 @@ export const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const redirectPath = location.state?.from?.pathname || '/profile';
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setErrorMsg('');
     setSuccessMsg('');
 
     if (!identifier.trim() || !password.trim()) {
-      setErrorMsg(t('auth.fillAllFields') || 'Iltimos, email/telefon va parolni kiriting!');
+      setErrorMsg(t('auth.fillAllFields', 'Iltimos, email/telefon va parolni kiriting!'));
       return;
     }
 
     const cleanIdentifier = identifier.trim().toLowerCase();
+
+    // 1. Try Backend API first
+    setLoading(true);
+    let backendUser = null;
+    try {
+      const response = await authApi.login({ emailOrPhone: cleanIdentifier, password });
+      if (response && response.user) {
+        backendUser = response.user;
+        if (response.token) {
+          localStorage.setItem('token', response.token);
+        }
+      }
+    } catch (apiErr) {
+      console.warn('Backend login note:', apiErr.message);
+    }
+    setLoading(false);
+
+    // 2. Check local users or backend user
     const user = users.find(
       (u) =>
         (u.email.toLowerCase() === cleanIdentifier || u.phone === cleanIdentifier) &&
         u.password === password
-    );
+    ) || (backendUser ? { ...backendUser, password } : null);
 
     if (!user) {
-      setErrorMsg(t('auth.invalidCredentials') || 'Email/telefon yoki parol noto‘g‘ri!');
+      setErrorMsg(t('auth.invalidCredentials', 'Email/telefon yoki parol noto‘g‘ri!'));
       return;
     }
 
     if (user.isBanned) {
-      setErrorMsg(t('auth.bannedAccount') || 'Sizning hisobingiz bloklangan. Administrator bilan bog‘laning.');
+      setErrorMsg(t('auth.bannedAccount', 'Sizning hisobingiz bloklangan. Administrator bilan bog‘laning.'));
       return;
     }
 
     dispatch(login({ emailOrPhone: cleanIdentifier, password }));
-    setSuccessMsg(t('auth.loginSuccess') || 'Tizimga muvaffaqiyatli kirdingiz! Yo‘naltirilmoqda...');
+    setSuccessMsg(t('auth.loginSuccess', 'Tizimga muvaffaqiyatli kirdingiz! Yo‘naltirilmoqda...'));
     
     setTimeout(() => {
       if (user.role === 'admin') {
@@ -74,10 +94,10 @@ export const LoginPage = () => {
             <Lock size={22} />
           </div>
           <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.75rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
-            {t('nav.login') || 'Kirish'}
+            {t('nav.login', 'Kirish')}
           </h2>
           <p className="text-muted" style={{ fontSize: '0.8rem', margin: 0 }}>
-            {t('auth.loginSubtitle') || 'CHRONOS shaxsiy kabinetingizga kiring'}
+            {t('auth.loginSubtitle', 'CHRONOS shaxsiy kabinetingizga kiring')}
           </p>
         </div>
 
@@ -99,7 +119,7 @@ export const LoginPage = () => {
         <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <div>
             <label className="luxury-label" style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.35rem' }}>
-              {t('auth.emailOrPhone') || 'Email yoki Telefon raqam'}
+              {t('auth.emailOrPhone', 'Email yoki Telefon raqam')}
             </label>
             <input
               type="text"
@@ -115,7 +135,7 @@ export const LoginPage = () => {
 
           <div>
             <label className="luxury-label" style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.35rem' }}>
-              {t('auth.password') || 'Maxfiy parol'}
+              {t('auth.password', 'Maxfiy parol')}
             </label>
             <input
               type="password"
@@ -130,19 +150,20 @@ export const LoginPage = () => {
 
           <button
             type="submit"
+            disabled={loading}
             className="btn btn-gold tap-target-44"
             style={{ width: '100%', padding: '0.75rem', marginTop: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', minHeight: '44px' }}
           >
-            <span>{t('nav.login') || 'Kirish'}</span>
+            <span>{loading ? t('common.loading', 'Yuklanmoqda...') : t('nav.login', 'Kirish')}</span>
             <ArrowRight size={14} />
           </button>
         </form>
 
         {/* Footer Link */}
         <div style={{ textAlign: 'center', fontSize: '0.8rem', color: 'var(--text-muted)', paddingTop: '0.85rem', borderTop: '1px solid var(--border-subtle)' }}>
-          <span>{t('auth.noAccount') || 'Hisobingiz yo‘qmi?'} </span>
+          <span>{t('auth.noAccount', 'Hisobingiz yo‘qmi?')} </span>
           <Link to="/register" style={{ color: 'var(--color-gold-400)', fontWeight: 600, textDecoration: 'none', display: 'inline-block', padding: '0.25rem 0.5rem' }}>
-            {t('nav.register') || 'Ro‘yxatdan o‘tish'}
+            {t('nav.register', 'Ro‘yxatdan o‘tish')}
           </Link>
         </div>
       </motion.div>
