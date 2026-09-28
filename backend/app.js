@@ -9,7 +9,7 @@ process.env.NODE_NO_WARNINGS = '1';
 
 const express = require("express");
 const dotenv = require("dotenv");
-const { sequelize } = require("./models");
+const { sequelize, User } = require("./models");
 const userRoutes = require("./routes/userRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
 const productRoutes = require("./routes/productRoutes");
@@ -64,6 +64,27 @@ const startServer = async () => {
             console.warn("Sequelize sync note:", syncErr.message);
         });
         console.log("Database schema synchronized.");
+
+        const userCount = await User.count().catch(() => 0);
+        if (userCount === 0) {
+            await User.bulkCreate([
+                {
+                    full_name: "Admin Director",
+                    email: "admin@chronos.uz",
+                    phone: "+998901234567",
+                    password_hash: "admin123",
+                    role: "admin"
+                },
+                {
+                    full_name: "Alisher Navoiy",
+                    email: "alisher@aura.uz",
+                    phone: "+998909876543",
+                    password_hash: "user123",
+                    role: "customer"
+                }
+            ], { individualHooks: true });
+            console.log("PostgreSQL Initial users seeded successfully.");
+        }
     } catch (error) {
         console.error("Database connection notice:", error.message);
     }

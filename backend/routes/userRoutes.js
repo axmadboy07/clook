@@ -42,6 +42,37 @@ const userController = require("../controller/userController");
  *         description: Invalid user data
  */
 router.post("/users", userController.createUser);
+
+/**
+ * @swagger
+ * /users/login:
+ *   post:
+ *     summary: User login authentication
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - password
+ *             properties:
+ *               emailOrPhone:
+ *                 type: string
+ *                 example: admin@chronos.uz
+ *               email:
+ *                 type: string
+ *                 example: admin@chronos.uz
+ *               password:
+ *                 type: string
+ *                 example: admin123
+ *     responses:
+ *       200:
+ *         description: Login successful with JWT token and user data
+ *       401:
+ *         description: Invalid credentials
+ */
 router.post("/users/login", userController.loginUser);
 
 /**
