@@ -8,7 +8,8 @@ import { authApi } from '../../api';
 export const AdminUsers = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const users = useSelector((state) => state.auth.users);
+  const rawUsers = useSelector((state) => state.auth.users);
+  const users = Array.isArray(rawUsers) ? rawUsers : [];
   const [searchTerm, setSearchTerm] = useState('');
   const [deleteConfirmUser, setDeleteConfirmUser] = useState(null);
   const [toastMsg, setToastMsg] = useState(null);
@@ -35,12 +36,14 @@ export const AdminUsers = () => {
     showToast(t('admin.userDeleted', 'Mijoz muvaffaqiyatli o‘chirildi va Swagger bazasidan tozalandi'));
   };
 
-  const filtered = users.filter(
-    (u) =>
-      u.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      u.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      u.phone?.includes(searchTerm)
-  );
+  const cleanSearch = (searchTerm || '').trim().toLowerCase();
+  const filtered = users.filter((u) => {
+    if (!u) return false;
+    const nameMatch = (u.name || u.full_name || '').toLowerCase().includes(cleanSearch);
+    const emailMatch = (u.email || '').toLowerCase().includes(cleanSearch);
+    const phoneMatch = (u.phone || '').includes(cleanSearch);
+    return nameMatch || emailMatch || phoneMatch;
+  });
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', position: 'relative' }}>

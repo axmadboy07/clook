@@ -17,20 +17,24 @@ import { formatPriceWithCurrency } from '../../store/slices/localeSlice';
 
 export const AdminDashboard = () => {
   const { t } = useTranslation();
-  const orders = useSelector((state) => state.orders.items);
-  const products = useSelector((state) => state.products.items);
-  const users = useSelector((state) => state.auth.users);
+  const rawOrders = useSelector((state) => state.orders.items);
+  const rawProducts = useSelector((state) => state.products.items);
+  const rawUsers = useSelector((state) => state.auth.users);
   const { currency, exchangeRates } = useSelector((state) => state.locale);
+
+  const orders = Array.isArray(rawOrders) ? rawOrders : [];
+  const products = Array.isArray(rawProducts) ? rawProducts : [];
+  const users = Array.isArray(rawUsers) ? rawUsers : [];
 
   const formatPrice = (amount) => formatPriceWithCurrency(amount, currency, exchangeRates);
 
   const [activeChartTab, setActiveChartTab] = useState('revenue');
   const [hoveredDataPoint, setHoveredDataPoint] = useState(null);
 
-  const totalRevenue = orders.reduce((sum, o) => sum + (o.totalAmountUSD || 0), 0);
+  const totalRevenue = orders.reduce((sum, o) => sum + Number(o?.totalAmountUSD || o?.total_amount || o?.totalUSD || 0), 0);
   const totalItemsCount = products.length;
-  const inStockCount = products.filter((p) => p.inStock).length;
-  const pendingOrdersCount = orders.filter((o) => o.orderStatus === 'pending').length;
+  const inStockCount = products.filter((p) => p?.inStock !== false).length;
+  const pendingOrdersCount = orders.filter((o) => (o?.orderStatus || o?.status) === 'pending').length;
 
   // Monthly Sales Chart Data
   const monthlyData = [

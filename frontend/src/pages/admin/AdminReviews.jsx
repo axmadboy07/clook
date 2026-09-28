@@ -2,18 +2,20 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
+import { Sparkles, Star, Check, Trash2 } from 'lucide-react';
 import { approveReview, deleteReview } from '../../store/slices/productsSlice';
 import { reviewsApi } from '../../api';
 
 export const AdminReviews = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const products = useSelector((state) => state.products.items);
+  const rawProducts = useSelector((state) => state.products?.items);
+  const products = Array.isArray(rawProducts) ? rawProducts : [];
 
   // Aggregate all reviews across products
   const allReviews = [];
   products.forEach((p) => {
-    (p.reviews || []).forEach((r) => {
+    (Array.isArray(p?.reviews) ? p.reviews : []).forEach((r) => {
       allReviews.push({ ...r, productName: p.name, productId: p.id });
     });
   });

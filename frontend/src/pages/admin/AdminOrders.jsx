@@ -20,7 +20,8 @@ export const AdminOrders = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  const orders = useSelector((state) => state.orders.items);
+  const rawOrders = useSelector((state) => state.orders.items);
+  const orders = Array.isArray(rawOrders) ? rawOrders : [];
   const { currency, exchangeRates } = useSelector((state) => state.locale);
 
   const formatPrice = (amount) => formatPriceWithCurrency(amount, currency, exchangeRates);
