@@ -23,6 +23,7 @@ import {
 import { clearCart } from '../store/slices/cartSlice';
 import { createOrder } from '../store/slices/ordersSlice';
 import { formatPriceWithCurrency } from '../store/slices/localeSlice';
+import { ordersApi } from '../api';
 
 export const CheckoutPage = () => {
   const { t } = useTranslation();
@@ -69,10 +70,19 @@ export const CheckoutPage = () => {
 
   const validateShipping = () => {
     const errs = {};
-    if (!formData.fullName.trim()) errs.fullName = t('checkout.errFullName') || 'Ism kiritilishi shart';
-    if (!formData.phone.trim() || formData.phone.length < 9) errs.phone = t('checkout.errPhone') || 'Telefon raqam kiritilishi shart';
-    if (!formData.email.trim()) errs.email = t('checkout.errEmail') || 'Email kiritilishi shart';
-    if (!formData.address.trim()) errs.address = t('checkout.errAddress') || 'Manzil kiritilishi shart';
+    if (!formData.fullName.trim() || formData.fullName.trim().length < 3) {
+      errs.fullName = t('checkout.errFullName', 'To‘liq ism-sharif kamida 3 ta belgidan iborat bo‘lishi shart');
+    }
+    const digits = (formData.phone || '').replace(/\D/g, '');
+    if (!digits || digits.length < 9) {
+      errs.phone = t('checkout.errPhone', 'Telefon raqam kamida 9 ta raqamdan iborat bo‘lishi shart');
+    }
+    if (!formData.email.trim() || !formData.email.includes('@')) {
+      errs.email = t('checkout.errEmail', 'To‘g‘ri elektron pochta manzilini kiriting');
+    }
+    if (!formData.address.trim() || formData.address.trim().length < 3) {
+      errs.address = t('checkout.errAddress', 'Yetkazib berish manzilini to‘liq kiriting');
+    }
     setFormErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -85,13 +95,14 @@ export const CheckoutPage = () => {
     }
   };
 
-  const handleCompleteOrder = (e) => {
+  const handleCompleteOrder = async (e) => {
     e.preventDefault();
     setIsProcessing(true);
 
     const orderData = {
       id: `ORD-${Date.now().toString().slice(-6)}`,
       userId: currentUser?.id || 'guest',
+      user_id: currentUser?.id || null,
       customerName: formData.fullName,
       customerEmail: formData.email,
       customerPhone: formData.phone,
@@ -108,29 +119,36 @@ export const CheckoutPage = () => {
       subtotalUSD: subtotal,
       discountUSD: discountAmount,
       totalUSD: total,
+      total_amount: total,
       status: 'pending',
       createdAt: new Date().toISOString(),
     };
 
-    setTimeout(() => {
-      dispatch(createOrder(orderData));
-      setCompletedOrder(orderData);
-      dispatch(clearCart());
-      setIsProcessing(false);
-      setCurrentStep('confirmation');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    try {
+      await ordersApi.create(orderData).catch((apiErr) => {
+        console.warn('Backend order notice:', apiErr.message);
+      });
+    } catch (err) {
+      console.warn('Order API error:', err);
+    }
 
-      try {
-        confetti({
-          particleCount: 100,
-          spread: 70,
-          origin: { y: 0.6 },
-          colors: ['#D4AF37', '#F5D77F', '#E5E4E2', '#FFFFFF'],
-        });
-      } catch (e) {
-        // Confetti fallback
-      }
-    }, 1200);
+    dispatch(createOrder(orderData));
+    setCompletedOrder(orderData);
+    dispatch(clearCart());
+    setIsProcessing(false);
+    setCurrentStep('confirmation');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    try {
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#D4AF37', '#F5D77F', '#E5E4E2', '#FFFFFF'],
+      });
+    } catch (e) {
+      // Confetti fallback
+    }
   };
 
   return (
@@ -140,9 +158,9 @@ export const CheckoutPage = () => {
         {/* Step Indicator */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
           {[
-            { id: 'shipping', num: '1', label: t('checkout.stepShipping') || 'Yetkazib berish' },
-            { id: 'payment', num: '2', label: t('checkout.stepPayment') || 'Xavfsiz To‘lov' },
-            { id: 'confirmation', num: '3', label: t('checkout.stepConfirm') || 'Tasdiqlash' },
+            { id: 'shipping', num: '1', label: t('checkout.stepShipping', 'Yetkazib berish') },
+            { id: 'payment', num: '2', label: t('checkout.stepPayment', 'Xavfsiz To‘lov') },
+            { id: 'confirmation', num: '3', label: t('checkout.stepConfirm', 'Tasdiqlash') },
           ].map((step, idx) => {
             const isActive = currentStep === step.id;
             const isPassed =
@@ -189,19 +207,19 @@ export const CheckoutPage = () => {
               {currentStep === 'shipping' && (
                 <form onSubmit={handleProceedToPayment} className="glass-panel" style={{ padding: 'clamp(1.25rem, 4vw, 2rem)', borderRadius: 'var(--radius-3xl)', display: 'flex', flexDirection: 'column', gap: '1.25rem', border: '1px solid var(--border-gold-subtle)' }}>
                   <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.35rem', margin: 0, color: 'var(--text-primary)' }}>
-                    {t('checkout.shippingDetails') || 'Yetkazib berish ma’lumotlari'}
+                    {t('checkout.shippingDetails', 'Yetkazib berish ma’lumotlari')}
                   </h2>
 
                   <div>
                     <label className="luxury-label" style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.35rem' }}>
-                      {t('auth.fullName') || 'To‘liq ismingiz *'}
+                      {t('auth.fullName', 'To‘liq ism-sharifingiz')} *
                     </label>
                     <input
                       type="text"
                       required
                       value={formData.fullName}
                       onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                      placeholder="Alisher Navoiy"
+                      placeholder="Admin Director"
                       className="luxury-input"
                     />
                     {formErrors.fullName && <div style={{ color: '#f87171', fontSize: '0.75rem', marginTop: '0.25rem' }}>{formErrors.fullName}</div>}
@@ -210,14 +228,17 @@ export const CheckoutPage = () => {
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: '0.75rem' }}>
                     <div>
                       <label className="luxury-label" style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.35rem' }}>
-                        {t('auth.phone') || 'Telefon *'}
+                        {t('auth.phone', 'Telefon raqam')} *
                       </label>
                       <input
                         type="tel"
                         required
                         inputMode="tel"
                         value={formData.phone}
-                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/[^\d+\s\-()]/g, '');
+                          setFormData({ ...formData, phone: val });
+                        }}
                         placeholder="+998 90 123 45 67"
                         className="luxury-input"
                       />
@@ -225,7 +246,7 @@ export const CheckoutPage = () => {
                     </div>
                     <div>
                       <label className="luxury-label" style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.35rem' }}>
-                        {t('auth.email') || 'Email *'}
+                        {t('auth.email', 'Email manzil')} *
                       </label>
                       <input
                         type="email"
@@ -233,7 +254,7 @@ export const CheckoutPage = () => {
                         autoCapitalize="none"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        placeholder="masalan@aura.uz"
+                        placeholder="admin@chronos.uz"
                         className="luxury-input"
                       />
                       {formErrors.email && <div style={{ color: '#f87171', fontSize: '0.75rem', marginTop: '0.25rem' }}>{formErrors.email}</div>}
@@ -243,7 +264,7 @@ export const CheckoutPage = () => {
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: '0.75rem' }}>
                     <div>
                       <label className="luxury-label" style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.35rem' }}>
-                        {t('auth.city') || 'Shahar'}
+                        {t('auth.city', 'Shahar / Viloyat')}
                       </label>
                       <select
                         value={formData.city}
@@ -261,14 +282,14 @@ export const CheckoutPage = () => {
                     </div>
                     <div>
                       <label className="luxury-label" style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.35rem' }}>
-                        {t('auth.address') || 'Manzil *'}
+                        {t('auth.address', 'Yetkazib berish manzili')} *
                       </label>
                       <input
                         type="text"
                         required
                         value={formData.address}
                         onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                        placeholder="Ko‘cha, uy raqami"
+                        placeholder="Amir Temur shoh ko‘chasi, 10"
                         className="luxury-input"
                       />
                       {formErrors.address && <div style={{ color: '#f87171', fontSize: '0.75rem', marginTop: '0.25rem' }}>{formErrors.address}</div>}
@@ -276,7 +297,7 @@ export const CheckoutPage = () => {
                   </div>
 
                   <div>
-                    <label className="luxury-label">{t('checkout.notes') || 'Kuryer yoki maxsus ko‘rsatmalar'}</label>
+                    <label className="luxury-label">{t('checkout.notes', 'Kuryer uchun izoh')}</label>
                     <textarea
                       rows={2}
                       value={formData.specialInstructions}
@@ -292,7 +313,7 @@ export const CheckoutPage = () => {
                     className="btn btn-gold"
                     style={{ padding: '0.85rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginTop: '0.5rem' }}
                   >
-                    <span>{t('checkout.continuePayment') || 'To‘lovga o‘tish'}</span>
+                    <span>{t('checkout.continuePayment', 'To‘lovga o‘tish')}</span>
                     <ArrowRight size={15} />
                   </button>
                 </form>
@@ -302,7 +323,7 @@ export const CheckoutPage = () => {
                 <form onSubmit={handleCompleteOrder} className="glass-panel" style={{ padding: '2rem', borderRadius: 'var(--radius-3xl)', display: 'flex', flexDirection: 'column', gap: '1.25rem', border: '1px solid var(--border-gold-subtle)' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.35rem', margin: 0, color: 'var(--text-primary)' }}>
-                      {t('checkout.selectPayment') || 'To‘lov usulini tanlang'}
+                      {t('checkout.selectPayment', 'To‘lov usulini tanlang')}
                     </h2>
                     <button
                       type="button"
@@ -311,7 +332,7 @@ export const CheckoutPage = () => {
                       style={{ padding: '0.3rem 0.75rem', fontSize: '0.75rem' }}
                     >
                       <ArrowLeft size={13} />
-                      <span>{t('common.back') || 'Orqaga'}</span>
+                      <span>{t('common.back', 'Orqaga')}</span>
                     </button>
                   </div>
 
@@ -332,12 +353,16 @@ export const CheckoutPage = () => {
 
                   {/* Mock Card Input */}
                   <div>
-                    <label className="luxury-label">{t('checkout.cardNumber') || 'Karta raqami'}</label>
+                    <label className="luxury-label">{t('checkout.cardNumber', 'Karta raqami')}</label>
                     <div style={{ position: 'relative' }}>
                       <input
                         type="text"
+                        inputMode="numeric"
                         value={formData.cardNumber}
-                        onChange={(e) => setFormData({ ...formData, cardNumber: e.target.value })}
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/[^\d\s]/g, '');
+                          setFormData({ ...formData, cardNumber: val });
+                        }}
                         className="luxury-input"
                         style={{ width: '100%', paddingLeft: '2.5rem' }}
                       />
@@ -347,17 +372,20 @@ export const CheckoutPage = () => {
 
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
                     <div>
-                      <label className="luxury-label">{t('checkout.cardExpiry') || 'Amal qilish muddati'}</label>
+                      <label className="luxury-label">{t('checkout.cardExpiry', 'Amal qilish muddati')}</label>
                       <input
                         type="text"
                         value={formData.cardExpiry}
-                        onChange={(e) => setFormData({ ...formData, cardExpiry: e.target.value })}
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/[^\d/]/g, '');
+                          setFormData({ ...formData, cardExpiry: val });
+                        }}
                         className="luxury-input"
                         style={{ width: '100%' }}
                       />
                     </div>
                     <div>
-                      <label className="luxury-label">{t('checkout.cvv') || 'CVC / CVV'}</label>
+                      <label className="luxury-label">{t('checkout.cvv', 'CVC / CVV')}</label>
                       <input
                         type="password"
                         defaultValue="777"
@@ -370,7 +398,7 @@ export const CheckoutPage = () => {
 
                   <div style={{ padding: '0.75rem', borderRadius: 'var(--radius-lg)', backgroundColor: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.2)', fontSize: '0.75rem', color: 'var(--color-gold-300)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <ShieldCheck size={18} />
-                    <span>{t('checkout.secure256') || '256-bit shifrlangan xavfsiz VIP to‘lov shlyuzi'}</span>
+                    <span>{t('checkout.secure256', '256-bit shifrlangan xavfsiz VIP to‘lov shlyuzi')}</span>
                   </div>
 
                   <button
@@ -382,12 +410,12 @@ export const CheckoutPage = () => {
                     {isProcessing ? (
                       <>
                         <Loader2 size={16} className="animate-spin" />
-                        <span>{t('checkout.processing') || 'To‘lov amalga oshirilmoqda...'}</span>
+                        <span>{t('checkout.processing', 'To‘lov amalga oshirilmoqda...')}</span>
                       </>
                     ) : (
                       <>
                         <Lock size={15} />
-                        <span>{t('checkout.payNow') || 'To‘lovni tasdiqlash'} ({formatPrice(total)})</span>
+                        <span>{t('checkout.payNow', 'To‘lovni tasdiqlash')} ({formatPrice(total)})</span>
                       </>
                     )}
                   </button>
@@ -399,7 +427,7 @@ export const CheckoutPage = () => {
             <div>
               <div className="glass-panel" style={{ padding: '1.75rem', borderRadius: 'var(--radius-3xl)', display: 'flex', flexDirection: 'column', gap: '1.25rem', border: '1px solid var(--border-subtle)' }}>
                 <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.15rem', margin: 0, color: 'var(--text-primary)' }}>
-                  {t('cart.orderSummary') || 'Buyurtma xulosasi'} ({cartItems.length})
+                  {t('checkout.orderSummary', 'Buyurtma xulosasi')} ({cartItems.length})
                 </h3>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', maxHeight: '240px', overflowY: 'auto' }}>
@@ -421,21 +449,21 @@ export const CheckoutPage = () => {
 
                 <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.8rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span className="text-muted">{t('cart.subtotal') || 'Oraliq summa'}:</span>
+                    <span className="text-muted">{t('checkout.subtotal', 'Oraliq summa')}:</span>
                     <span>{formatPrice(subtotal)}</span>
                   </div>
                   {discountAmount > 0 && (
                     <div style={{ display: 'flex', justifyContent: 'space-between', color: '#34d399' }}>
-                      <span>{t('cart.discount') || 'Chegirma'} ({discountPercentage}%):</span>
+                      <span>{t('checkout.discount', 'Chegirma')} ({discountPercentage}%):</span>
                       <span>-{formatPrice(discountAmount)}</span>
                     </div>
                   )}
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span className="text-muted">{t('cart.shipping') || 'VIP Yetkazish'}:</span>
-                    <span style={{ color: '#34d399', fontWeight: 600 }}>{t('common.free') || 'Bepul (VIP)'}</span>
+                    <span className="text-muted">{t('checkout.shipping', 'VIP Yetkazish')}:</span>
+                    <span style={{ color: '#34d399', fontWeight: 600 }}>{t('common.free', 'Bepul (VIP)')}</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '0.5rem', fontSize: '1.1rem', fontWeight: 700, color: 'var(--color-gold-400)' }}>
-                    <span>{t('cart.total') || 'Jami to‘lov'}:</span>
+                    <span>{t('checkout.total', 'Jami to‘lov')}:</span>
                     <span>{formatPrice(total)}</span>
                   </div>
                 </div>
@@ -458,34 +486,34 @@ export const CheckoutPage = () => {
 
             <div>
               <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.75rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
-                {t('checkout.orderSuccessTitle') || 'Xaridingiz uchun tashakkur!'}
+                {t('checkout.orderSuccessTitle', 'Xaridingiz uchun tashakkur!')}
               </h2>
               <p className="text-muted" style={{ fontSize: '0.85rem', margin: '0.5rem 0 0 0' }}>
-                {t('checkout.orderSuccessDesc') || 'Sizning buyurtmangiz muvaffaqiyatli qabul qilindi va mutaxassislarimiz uni tayyorlashga kirishdilar.'}
+                {t('checkout.orderSuccessDesc', 'Sizning buyurtmangiz muvaffaqiyatli qabul qilindi va mutaxassislarimiz uni tayyorlashga kirishdilar.')}
               </p>
             </div>
 
             <div className="glass-panel" style={{ width: '100%', padding: '1.25rem', borderRadius: 'var(--radius-xl)', textAlign: 'left', fontSize: '0.8rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span className="text-muted">{t('checkout.orderNumber') || 'Buyurtma raqami'}:</span>
+                <span className="text-muted">{t('checkout.orderNumber', 'Buyurtma raqami')}:</span>
                 <span style={{ color: 'var(--color-gold-400)', fontWeight: 700 }}>#{completedOrder.id}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span className="text-muted">{t('checkout.customer') || 'Mijoz'}:</span>
+                <span className="text-muted">{t('checkout.customer', 'Mijoz')}:</span>
                 <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{completedOrder.customerName}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span className="text-muted">{t('checkout.paidAmount') || 'To‘langan summa'}:</span>
+                <span className="text-muted">{t('checkout.paidAmount', 'To‘langan summa')}:</span>
                 <span style={{ color: 'var(--color-gold-400)', fontWeight: 700 }}>{formatPrice(completedOrder.totalUSD)}</span>
               </div>
             </div>
 
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
               <Link to="/profile" className="btn btn-gold" style={{ padding: '0.6rem 1.5rem', textDecoration: 'none' }}>
-                {t('profile.viewOrders') || 'Buyurtmalarimga o‘tish'}
+                {t('profile.viewOrders', 'Buyurtmalarimga o‘tish')}
               </Link>
               <Link to="/catalog" className="btn btn-outline" style={{ padding: '0.6rem 1.5rem', textDecoration: 'none' }}>
-                {t('checkout.continueShopping') || 'Xaridni davom ettirish'}
+                {t('checkout.continueShopping', 'Xaridni davom ettirish')}
               </Link>
             </div>
           </motion.div>

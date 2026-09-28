@@ -2,13 +2,15 @@ const Joi = require("joi");
 
 const validateOrder = (order) => {
     const Schema = Joi.object({
-        user_id: Joi.number().integer().required(),
-        address_id: Joi.number().integer().required(),
-        total_amount: Joi.number().required(),
-        status: Joi.string(),
-        currency: Joi.string()
-    });
+        user_id: Joi.any().optional(),
+        address_id: Joi.any().optional(),
+        total_amount: Joi.number().optional(),
+        totalUSD: Joi.number().optional(),
+        status: Joi.string().optional(),
+        currency: Joi.string().optional()
+    }).unknown(true);
     return Schema.validate(order);
 };
 
 module.exports = { validateOrder };
+

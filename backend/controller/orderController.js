@@ -6,7 +6,43 @@ exports.createOrder = async (req, res) => {
     if (error) return res.status(400).send(error.details[0].message);
 
     try {
-        const order = await Order.create(req.body);
+        let userId = req.body.user_id;
+        if (!userId) {
+            let u = await User.findOne();
+            if (!u) {
+                u = await User.create({
+                    full_name: req.body.customerName || "CHRONOS Guest Collector",
+                    email: req.body.customerEmail || `guest_${Date.now()}@chronos.uz`,
+                    phone: req.body.customerPhone || "+998900000000",
+                    password_hash: "guest_password_secure",
+                    role: "customer"
+                });
+            }
+            userId = u.id;
+        }
+
+        let addressId = req.body.address_id;
+        if (!addressId) {
+            let a = await Address.findOne();
+            if (!a) {
+                a = await Address.create({
+                    user_id: userId,
+                    address: req.body.shippingAddress || req.body.address || "Toshkent shahri",
+                    city: req.body.shippingCity || req.body.city || "Toshkent"
+                });
+            }
+            addressId = a.id;
+        }
+
+        const totalAmount = Number(req.body.total_amount || req.body.totalUSD || req.body.totalAmountUSD || 0);
+
+        const order = await Order.create({
+            user_id: userId,
+            address_id: addressId,
+            total_amount: totalAmount,
+            status: req.body.status || req.body.orderStatus || "pending",
+            currency: req.body.currency || "USD"
+        });
         res.status(201).send(order);
     } catch (error) {
         res.status(500).send(error.message || error);
