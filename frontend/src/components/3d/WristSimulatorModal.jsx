@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Sparkles } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { X, Sparkles, Check } from 'lucide-react';
 import { LuxuryWatchCanvas } from './LuxuryWatchCanvas.jsx';
 
 export const WristSimulatorModal = ({
@@ -8,11 +9,10 @@ export const WristSimulatorModal = ({
   isOpen,
   onClose,
 }) => {
+  const { t } = useTranslation();
   const [wristSizeCm, setWristSizeCm] = useState(17.5); // 17.5 cm / ~6.9 inches (standard average)
   const [skinTone, setSkinTone] = useState('tan');
   const [sleeveType, setSleeveType] = useState('tuxedo');
-
-  if (!isOpen || !watch) return null;
 
   const skinColors = {
     fair: '#f3d2c1',
@@ -23,25 +23,25 @@ export const WristSimulatorModal = ({
 
   const sleeveStyles = {
     tuxedo: {
-      label: 'Black Tie Tuxedo & French Cuff',
-      outerBg: 'background-obsidian-950',
+      label: t('wrist.tuxedo') || 'Smoking & Oq Mansjet',
+      outerBg: '#050608',
       borderStyle: '4px solid #e2e8f0',
       cufflink: true,
     },
     cashmere: {
-      label: 'Charcoal Cashmere Knit',
+      label: t('wrist.cashmere') || 'Kashmir Sviter',
       outerBg: '#1e293b',
       borderStyle: '2px solid #334155',
       cufflink: false,
     },
     linen: {
-      label: 'Crisp White Linen Shirt',
+      label: t('wrist.linen') || 'Oq Zig‘ir Ko‘ylak',
       outerBg: '#f5f5f4',
       borderStyle: '2px solid #d6d3d1',
       cufflink: false,
     },
     bare: {
-      label: 'Summer Bare Wrist (Casual)',
+      label: t('wrist.bare') || 'Ochiq Bilak (Klassik)',
       outerBg: 'transparent',
       borderStyle: 'none',
       cufflink: false,
@@ -54,29 +54,56 @@ export const WristSimulatorModal = ({
 
   return (
     <AnimatePresence>
-      <div className="modal-overlay" style={{ zIndex: 100 }}>
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={onClose}
-          className="modal-backdrop"
-        />
-
-        <motion.div
-          initial={{ scale: 0.95, opacity: 0, y: 20 }}
-          animate={{ scale: 1, opacity: 1, y: 0 }}
-          exit={{ scale: 0.95, opacity: 0, y: 20 }}
-          className="modal-content glass-panel"
+      {isOpen && watch && (
+        <div
           style={{
-            maxWidth: '900px',
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-            padding: 0,
-            overflow: 'hidden',
-            border: '1px solid var(--border-gold-subtle)'
+            position: 'fixed',
+            inset: 0,
+            zIndex: 9999,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '1rem',
+            overflowY: 'auto'
           }}
         >
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              backgroundColor: 'rgba(0, 0, 0, 0.85)',
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)',
+              zIndex: 1
+            }}
+          />
+
+          {/* Modal Card */}
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+            className="modal-content glass-panel"
+            style={{
+              position: 'relative',
+              zIndex: 2,
+              maxWidth: '920px',
+              width: '100%',
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+              padding: 0,
+              overflow: 'hidden',
+              borderRadius: 'var(--radius-3xl)',
+              border: '1px solid var(--border-gold-subtle)',
+              backgroundColor: 'rgba(10, 11, 15, 0.98)',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 30px rgba(212, 175, 55, 0.2)'
+            }}
+          >
           {/* Close button */}
           <button
             onClick={onClose}
@@ -296,12 +323,13 @@ export const WristSimulatorModal = ({
                 className="btn-gold"
                 style={{ width: '100%', padding: '0.75rem' }}
               >
-                Apply Fitted Specification
+                {t('wrist.apply') || 'Bilak Parametrlarini Qo‘llash'}
               </button>
             </div>
           </div>
         </motion.div>
       </div>
+      )}
     </AnimatePresence>
   );
 };
