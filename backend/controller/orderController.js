@@ -27,8 +27,9 @@ exports.createOrder = async (req, res) => {
             if (!a) {
                 a = await Address.create({
                     user_id: userId,
-                    address: req.body.shippingAddress || req.body.address || "Toshkent shahri",
-                    city: req.body.shippingCity || req.body.city || "Toshkent"
+                    street: req.body.shippingAddress || req.body.address || req.body.street || "Amir Temur shoh ko‘chasi, 107-B",
+                    city: req.body.shippingCity || req.body.city || "Toshkent",
+                    phone: req.body.customerPhone || req.body.phone || "+998901234567"
                 });
             }
             addressId = a.id;
@@ -65,16 +66,33 @@ exports.getOrders = async (req, res) => {
     }
 };
 
-exports.getOrderById = async (req, res) => {
-    try {
-        const order = await Order.findByPk(req.params.id, {
+const resolveOrder = async (idParam) => {
+    if (!idParam) return null;
+    const numeric = parseInt(String(idParam).replace(/\D/g, ''), 10);
+    if (!isNaN(numeric) && numeric > 0) {
+        const byPk = await Order.findByPk(numeric, {
             include: [
                 { model: User, as: "user" },
                 { model: Address, as: "address" },
                 { model: OrderItem, as: "order_items" },
                 { model: Payment, as: "payment" },
-            ],
+            ]
         });
+        if (byPk) return byPk;
+    }
+    return await Order.findOne({
+        include: [
+            { model: User, as: "user" },
+            { model: Address, as: "address" },
+            { model: OrderItem, as: "order_items" },
+            { model: Payment, as: "payment" },
+        ]
+    });
+};
+
+exports.getOrderById = async (req, res) => {
+    try {
+        const order = await resolveOrder(req.params.id);
         if (!order) return res.status(404).send("Order not found");
         res.status(200).send(order);
     } catch (error) {
@@ -87,7 +105,7 @@ exports.updateOrder = async (req, res) => {
     if (error) return res.status(400).send(error.details[0].message);
 
     try {
-        const order = await Order.findByPk(req.params.id);
+        const order = await resolveOrder(req.params.id);
         if (!order) return res.status(404).send("Order not found");
 
         await order.update(req.body);

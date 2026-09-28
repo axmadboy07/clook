@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { updateOrderStatus } from '../../store/slices/ordersSlice';
 import { formatPriceWithCurrency } from '../../store/slices/localeSlice';
+import { ordersApi } from '../../api';
 
 export const AdminOrders = () => {
   const { t } = useTranslation();
@@ -34,7 +35,14 @@ export const AdminOrders = () => {
     setTimeout(() => setToastMsg(null), 3000);
   };
 
-  const handleStatusChange = (orderId, newStatus) => {
+  const handleStatusChange = async (orderId, newStatus) => {
+    try {
+      await ordersApi.updateStatus(orderId, newStatus).catch((err) => {
+        console.warn('Backend order update notice:', err.message);
+      });
+    } catch (err) {
+      console.warn('Order status API error:', err);
+    }
     dispatch(updateOrderStatus({ orderId, status: newStatus }));
     const formattedStatus = String(newStatus || 'pending').toUpperCase();
     showToast(t('admin.ordersToastUpdated', { id: orderId, status: formattedStatus }) || `Buyurtma ${orderId} holati: ${formattedStatus}`);

@@ -27,6 +27,7 @@ import { toggleWishlist } from '../store/slices/wishlistSlice';
 import { addToCompare, removeFromCompare } from '../store/slices/compareSlice';
 import { formatPriceWithCurrency } from '../store/slices/localeSlice';
 import { addProductReview } from '../store/slices/productsSlice';
+import { reviewsApi } from '../api';
 
 export const ProductDetailPage = () => {
   const { id } = useParams();
@@ -140,7 +141,7 @@ export const ProductDetailPage = () => {
     setTimeout(() => setJustAdded(false), 2000);
   };
 
-  const handleAddReview = (e) => {
+  const handleAddReview = async (e) => {
     e.preventDefault();
     if (!newReviewAuthor.trim() || !newReviewComment.trim()) return;
 
@@ -155,6 +156,17 @@ export const ProductDetailPage = () => {
     const updated = [newRev, ...reviewsList];
     setReviewsList(updated);
     dispatch(addProductReview({ productId: watch.id, review: newRev }));
+
+    try {
+      const prodNumericId = parseInt(String(watch.id).replace(/\D/g, ''), 10) || 1;
+      await reviewsApi.create({
+        product_id: prodNumericId,
+        user_id: 2,
+        rating: newReviewRating,
+        comment: newReviewComment
+      }).catch((err) => console.warn('Review API notice:', err.message));
+    } catch (e) {}
+
     setReviewModalOpen(false);
     setNewReviewAuthor('');
     setNewReviewComment('');

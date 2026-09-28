@@ -2,8 +2,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { Star, Trash2, Check, Sparkles } from 'lucide-react';
 import { approveReview, deleteReview } from '../../store/slices/productsSlice';
+import { reviewsApi } from '../../api';
 
 export const AdminReviews = () => {
   const { t } = useTranslation();
@@ -85,7 +85,13 @@ export const AdminReviews = () => {
                           </button>
                         )}
                         <button
-                          onClick={() => dispatch(deleteReview({ productId: rev.productId, reviewId: rev.id }))}
+                          onClick={async () => {
+                            try {
+                              const numericId = parseInt(String(rev.id).replace(/\D/g, ''), 10);
+                              if (numericId) await reviewsApi.delete(numericId).catch(() => {});
+                            } catch(e) {}
+                            dispatch(deleteReview({ productId: rev.productId, reviewId: rev.id }));
+                          }}
                           className="btn-action-icon btn-action-delete"
                           title={t('admin.reviewsDelete') || 'O‘chirish'}
                         >

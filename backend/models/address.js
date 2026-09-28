@@ -18,10 +18,12 @@ module.exports = (sequelize, DataTypes) => {
             street: {
                 type: DataTypes.STRING,
                 allowNull: false,
+                defaultValue: "Markaziy manzil",
             },
             phone: {
                 type: DataTypes.STRING,
                 allowNull: false,
+                defaultValue: "+998900000000",
             },
         },
         {

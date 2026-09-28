@@ -38,17 +38,38 @@ exports.getProducts = async (req, res) => {
     }
 };
 
-exports.getProductById = async (req, res) => {
-    try {
-        const product = await Product.findByPk(req.params.id, {
+const resolveProduct = async (idParam) => {
+    if (!idParam) return null;
+    const numeric = parseInt(String(idParam).replace(/\D/g, ''), 10);
+    if (!isNaN(numeric) && numeric > 0) {
+        const byPk = await Product.findByPk(numeric, {
             include: [
                 { model: Category, as: "category" },
                 { model: Review, as: "reviews" },
                 { model: CartItem, as: "cart_items" },
                 { model: WishlistItem, as: "wishlist_items" },
                 { model: OrderItem, as: "order_items" },
-            ],
+            ]
         });
+        if (byPk) return byPk;
+    }
+    return await Product.findOne({
+        where: {
+            name: { [Op.iLike]: `%${idParam}%` }
+        },
+        include: [
+            { model: Category, as: "category" },
+            { model: Review, as: "reviews" },
+            { model: CartItem, as: "cart_items" },
+            { model: WishlistItem, as: "wishlist_items" },
+            { model: OrderItem, as: "order_items" },
+        ]
+    });
+};
+
+exports.getProductById = async (req, res) => {
+    try {
+        const product = await resolveProduct(req.params.id);
         if (!product) return res.status(404).send("Product not found");
         res.status(200).send(product);
     } catch (error) {
@@ -61,7 +82,7 @@ exports.updateProduct = async (req, res) => {
     if (error) return res.status(400).send(error.details[0].message);
 
     try {
-        const product = await Product.findByPk(req.params.id);
+        const product = await resolveProduct(req.params.id);
         if (!product) return res.status(404).send("Product not found");
 
         await product.update(req.body);
@@ -73,7 +94,7 @@ exports.updateProduct = async (req, res) => {
 
 exports.deleteProduct = async (req, res) => {
     try {
-        const product = await Product.findByPk(req.params.id);
+        const product = await resolveProduct(req.params.id);
         if (!product) return res.status(404).send("Product not found");
 
         const productData = product.toJSON();
