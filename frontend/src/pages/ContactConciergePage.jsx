@@ -325,7 +325,10 @@ export const ContactConciergePage = () => {
                     type="tel"
                     required
                     value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    onChange={(e) => {
+                      const val = e.target.value.replace(/[^\d+\s\-()]/g, '');
+                      setFormData({ ...formData, phone: val });
+                    }}
                     placeholder="+998 90 123 45 67"
                     className="luxury-input"
                     style={{ padding: '0.6rem 0.85rem', fontSize: '0.8rem' }}

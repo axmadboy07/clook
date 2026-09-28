@@ -33,6 +33,11 @@ export const RegisterPage = () => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
+  const validatePhone = (phone) => {
+    const digits = (phone || '').replace(/\D/g, '');
+    return digits.length >= 9 && digits.length <= 15 && /^(\+?[0-9\s\-()]+)$/.test(phone);
+  };
+
   const handleRegister = async (e) => {
     e.preventDefault();
     setErrorMsg('');
@@ -46,8 +51,12 @@ export const RegisterPage = () => {
       setErrorMsg(t('auth.invalidEmail', 'Iltimos, to‘g‘ri elektron pochta manzilini (email) kiriting!'));
       return;
     }
-    if (!formData.phone.trim() || formData.phone.length < 9) {
-      setErrorMsg(t('auth.invalidPhone', 'Iltimos, to‘g‘ri telefon raqamingizni kiriting!'));
+    if (!formData.phone.trim() || !validatePhone(formData.phone.trim())) {
+      setErrorMsg(t('auth.invalidPhone', 'Iltimos, haqiqiy telefon raqamingizni kiriting (masalan: +998 90 123 45 67, harflar kiritilmaydi)!'));
+      return;
+    }
+    if (!formData.address.trim() || formData.address.trim().length < 3) {
+      setErrorMsg('Iltimos, yetkazib berish manzilini to‘liq kiriting (kamida 3 ta belgi)!');
       return;
     }
     if (!formData.password || formData.password.length < 6) {
@@ -171,7 +180,10 @@ export const RegisterPage = () => {
                 required
                 inputMode="tel"
                 value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                onChange={(e) => {
+                  const val = e.target.value.replace(/[^\d+\s\-()]/g, '');
+                  setFormData({ ...formData, phone: val });
+                }}
                 placeholder="+998 90 123 45 67"
                 className="luxury-input"
               />
