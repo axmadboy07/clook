@@ -26,6 +26,7 @@ import {
   toggleStock,
   resetToDefaultProducts
 } from '../../store/slices/productsSlice';
+import { productsApi } from '../../api';
 import { formatPriceWithCurrency } from '../../store/slices/localeSlice';
 import { BRANDS, CATEGORIES } from '../../data/watches';
 
@@ -140,27 +141,81 @@ export const AdminProducts = () => {
     setIsDrawerOpen(true);
   };
 
-  const handleSaveProduct = (e) => {
+  const handleSaveProduct = async (e) => {
     e.preventDefault();
-    if (!formData.name.trim()) return;
-
-    if (editingProductId) {
-      dispatch(updateProduct({ id: editingProductId, ...formData }));
-      showToast(t('admin.productsToastUpdated') || 'Mahsulot muvaffaqiyatli tahrirlandi');
-    } else {
-      dispatch(addProduct(formData));
-      showToast(t('admin.productsToastAdded') || 'Yangi shoh asar kolleksiyaga qo‘shildi');
+    const trimmedName = (formData.name || '').trim();
+    if (!trimmedName || trimmedName.length < 3) {
+      showToast('Soat modeli nomi kamida 3 ta belgidan iborat bo‘lishi shart!');
+      return;
     }
-    setIsDrawerOpen(false);
+    const numPrice = Number(formData.price);
+    if (isNaN(numPrice) || numPrice <= 0) {
+      showToast('Soat narxi 0 dan yuqori musbat son bo‘lishi shart!');
+      return;
+    }
+    const trimmedImage = (formData.imageUrl || '').trim();
+    if (!trimmedImage || trimmedImage.length < 3) {
+      showToast('To‘g‘ri rasm havolasini (URL yoki fayl yo‘li) kiriting!');
+      return;
+    }
+    const stockCountNum = Number(formData.stockCount);
+    if (isNaN(stockCountNum) || stockCountNum < 0) {
+      showToast('Zaxira soni 0 dan kam bo‘lmasligi kerak!');
+      return;
+    }
+
+    const payload = {
+      ...formData,
+      name: trimmedName,
+      price: numPrice,
+      stockCount: stockCountNum,
+      stock: stockCountNum,
+      imageUrl: trimmedImage,
+    };
+
+    try {
+      if (editingProductId) {
+        // Backend API ga yuborish
+        await productsApi.update(editingProductId, payload).catch((err) => {
+          console.warn('Backend update notice:', err.message);
+        });
+        dispatch(updateProduct({ id: editingProductId, ...payload }));
+        showToast(t('admin.productsToastUpdated', 'Mahsulot muvaffaqiyatli tahrirlandi'));
+      } else {
+        let backendId = null;
+        try {
+          const res = await productsApi.create(payload);
+          if (res && res.id) backendId = res.id;
+        } catch (err) {
+          console.warn('Backend create notice:', err.message);
+        }
+        dispatch(addProduct({
+          ...payload,
+          id: backendId ? `watch-${backendId}` : `watch-${Date.now()}`
+        }));
+        showToast(t('admin.productsToastAdded', 'Yangi shoh asar kolleksiyaga qo‘shildi'));
+      }
+      setIsDrawerOpen(false);
+    } catch (err) {
+      console.error('Save product error:', err);
+      showToast('Xatolik yuz berdi: ' + (err.message || ''));
+    }
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
+    try {
+      await productsApi.delete(id).catch((err) => {
+        console.warn('Backend delete notice:', err.message);
+      });
+    } catch (err) {
+      console.warn('Backend delete error:', err);
+    }
     dispatch(deleteProduct(id));
     setDeleteConfirmId(null);
-    showToast(t('admin.productsToastDeleted') || 'Mahsulot katalogdan o‘chirildi');
+    showToast(t('admin.productsToastDeleted', 'Mahsulot katalogdan o‘chirildi'));
   };
 
-  const totalValue = products.reduce((acc, p) => acc + (p.price * (p.stockCount || 1)), 0);
+  const totalValue = products.reduce((acc, p) => acc + (Number(p.price || 0) * Number(p.stockCount || 1)), 0);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -417,7 +472,7 @@ export const AdminProducts = () => {
             >
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.25rem', color: 'var(--text-primary)', margin: 0 }}>
-                  {editingProductId ? (t('admin.editWatch') || 'Soatni Tahrirlash') : (t('admin.addWatch') || 'Yangi Soat Qo‘shish')}
+                  {editingProductId ? t('admin.editWatch', 'Soatni Tahrirlash') : t('admin.addWatch', 'Yangi Soat Qo‘shish')}
                 </h2>
                 <button onClick={() => setIsDrawerOpen(false)} className="btn-action-icon">
                   <X size={16} />
@@ -426,10 +481,12 @@ export const AdminProducts = () => {
 
               <form onSubmit={handleSaveProduct} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <div>
-                  <label className="luxury-label">{t('admin.formName') || 'Model Nomi'}</label>
+                  <label className="luxury-label">{t('admin.formName', 'Model Nomi')} * (kamida 3 ta belgi)</label>
                   <input
                     type="text"
                     required
+                    minLength={3}
+                    placeholder="Masalan: Rolex Daytona Platinum"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="luxury-input"
@@ -439,7 +496,7 @@ export const AdminProducts = () => {
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
                   <div>
-                    <label className="luxury-label">{t('admin.formBrand') || 'Brend'}</label>
+                    <label className="luxury-label">{t('admin.formBrand', 'Brend')} *</label>
                     <select
                       value={formData.brand}
                       onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
@@ -450,7 +507,7 @@ export const AdminProducts = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="luxury-label">{t('admin.formCategory') || 'Kategoriya'}</label>
+                    <label className="luxury-label">{t('admin.formCategory', 'Kategoriya')} *</label>
                     <select
                       value={formData.category}
                       onChange={(e) => setFormData({ ...formData, category: e.target.value })}
@@ -464,10 +521,11 @@ export const AdminProducts = () => {
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
                   <div>
-                    <label className="luxury-label">{t('admin.formPriceUSD') || 'Narx ($ USD)'}</label>
+                    <label className="luxury-label">{t('admin.formPriceUSD', 'Narx ($ USD)')} *</label>
                     <input
                       type="number"
                       required
+                      min={1}
                       value={formData.price}
                       onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
                       className="luxury-input"
@@ -475,9 +533,10 @@ export const AdminProducts = () => {
                     />
                   </div>
                   <div>
-                    <label className="luxury-label">{t('admin.formStock') || 'Zaxira Soni'}</label>
+                    <label className="luxury-label">{t('admin.formStock', 'Zaxira Soni')} *</label>
                     <input
                       type="number"
+                      min={0}
                       value={formData.stockCount}
                       onChange={(e) => setFormData({ ...formData, stockCount: Number(e.target.value) })}
                       className="luxury-input"
@@ -487,21 +546,36 @@ export const AdminProducts = () => {
                 </div>
 
                 <div>
-                  <label className="luxury-label">{t('admin.formImageURL') || 'Rasm Havolasi (URL)'}</label>
+                  <label className="luxury-label">{t('admin.formImageURL', 'Rasm Havolasi (URL)')} *</label>
                   <input
-                    type="url"
+                    type="text"
+                    required
+                    minLength={3}
+                    placeholder="/images/watches/rolex-daytona-gold.jpg yoki https://..."
                     value={formData.imageUrl}
                     onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
                     className="luxury-input"
                     style={{ width: '100%' }}
                   />
+                  {formData.imageUrl && (
+                    <div style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <img
+                        src={formData.imageUrl}
+                        alt="Preview"
+                        onError={(e) => { e.target.src = '/images/watches/rolex-daytona-gold.jpg'; }}
+                        style={{ width: '48px', height: '48px', objectFit: 'cover', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-gold-subtle)' }}
+                      />
+                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Rasm oldindan ko‘rish</span>
+                    </div>
+                  )}
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
                   <div>
-                    <label className="luxury-label">{t('admin.formCaseMaterial') || 'Korpus Materiali'}</label>
+                    <label className="luxury-label">{t('admin.formCaseMaterial', 'Korpus Materiali')}</label>
                     <input
                       type="text"
+                      placeholder="18K Yellow Gold / Titanium"
                       value={formData.caseMaterial}
                       onChange={(e) => setFormData({ ...formData, caseMaterial: e.target.value })}
                       className="luxury-input"
@@ -509,9 +583,10 @@ export const AdminProducts = () => {
                     />
                   </div>
                   <div>
-                    <label className="luxury-label">{t('admin.formStrapMaterial') || 'Tasma'}</label>
+                    <label className="luxury-label">{t('admin.formStrapMaterial', 'Tasma')}</label>
                     <input
                       type="text"
+                      placeholder="Alligator Leather / Steel"
                       value={formData.strapMaterial}
                       onChange={(e) => setFormData({ ...formData, strapMaterial: e.target.value })}
                       className="luxury-input"
@@ -521,9 +596,10 @@ export const AdminProducts = () => {
                 </div>
 
                 <div>
-                  <label className="luxury-label">{t('admin.formDescription') || 'Tavsif'}</label>
+                  <label className="luxury-label">{t('admin.formDescription', 'Tavsif')}</label>
                   <textarea
                     rows={3}
+                    placeholder="Soat haqida qisqacha ma’lumot..."
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                     className="luxury-input"
@@ -533,10 +609,10 @@ export const AdminProducts = () => {
 
                 <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1rem' }}>
                   <button type="button" onClick={() => setIsDrawerOpen(false)} className="btn btn-outline" style={{ padding: '0.5rem 1.25rem' }}>
-                    {t('common.cancel') || 'Bekor qilish'}
+                    {t('common.cancel', 'Bekor qilish')}
                   </button>
                   <button type="submit" className="btn btn-gold" style={{ padding: '0.5rem 1.5rem' }}>
-                    {editingProductId ? (t('common.save') || 'Saqlash') : (t('common.create') || 'Yaratish')}
+                    {editingProductId ? t('common.save', 'Saqlash') : t('common.create', 'Yaratish')}
                   </button>
                 </div>
               </form>
