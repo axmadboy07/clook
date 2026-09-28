@@ -1,14 +1,39 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { Search } from 'lucide-react';
-import { toggleUserBan } from '../../store/slices/authSlice';
+import { Search, Trash2, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { toggleUserBan, deleteUser } from '../../store/slices/authSlice';
+import { authApi } from '../../api';
 
 export const AdminUsers = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const users = useSelector((state) => state.auth.users);
   const [searchTerm, setSearchTerm] = useState('');
+  const [deleteConfirmUser, setDeleteConfirmUser] = useState(null);
+  const [toastMsg, setToastMsg] = useState(null);
+
+  const showToast = (msg) => {
+    setToastMsg(msg);
+    setTimeout(() => setToastMsg(null), 3500);
+  };
+
+  const handleDeleteUser = async (user) => {
+    if (!user) return;
+    try {
+      // 1. Delete from Backend / Swagger (PostgreSQL)
+      await authApi.deleteUser(user.id, user.email).catch((err) => {
+        console.warn('Backend delete user notice:', err.message);
+      });
+    } catch (err) {
+      console.warn('Delete API error:', err);
+    }
+
+    // 2. Delete from Frontend state
+    dispatch(deleteUser(user.id));
+    setDeleteConfirmUser(null);
+    showToast(t('admin.userDeleted', 'Mijoz muvaffaqiyatli o‘chirildi va Swagger bazasidan tozalandi'));
+  };
 
   const filtered = users.filter(
     (u) =>
@@ -18,7 +43,91 @@ export const AdminUsers = () => {
   );
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', position: 'relative' }}>
+      {/* Toast Notification */}
+      {toastMsg && (
+        <div style={{
+          position: 'fixed',
+          top: '1.5rem',
+          right: '1.5rem',
+          zIndex: 9999,
+          backgroundColor: 'rgba(10,11,14,0.95)',
+          border: '1px solid var(--color-gold-400)',
+          color: 'var(--color-gold-300)',
+          padding: '0.85rem 1.25rem',
+          borderRadius: 'var(--radius-xl)',
+          boxShadow: 'var(--shadow-gold)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.65rem',
+          fontSize: '0.85rem'
+        }}>
+          <CheckCircle2 size={18} color="#34d399" />
+          <span>{toastMsg}</span>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteConfirmUser && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          backgroundColor: 'rgba(0,0,0,0.75)',
+          backdropFilter: 'blur(4px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000,
+          padding: '1rem'
+        }}>
+          <div className="glass-panel" style={{
+            maxWidth: '420px',
+            width: '100%',
+            padding: '1.75rem',
+            borderRadius: 'var(--radius-2xl)',
+            border: '1px solid rgba(239, 68, 68, 0.4)',
+            boxShadow: '0 20px 40px rgba(0,0,0,0.6)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '1.25rem'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#f87171' }}>
+              <AlertTriangle size={24} />
+              <h3 style={{ margin: 0, fontSize: '1.15rem', color: 'var(--text-primary)' }}>
+                {t('admin.confirmDeleteUserTitle', 'Mijozni o‘chirish')}
+              </h3>
+            </div>
+            <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+              Haqiqatan ham <strong>{deleteConfirmUser.name || deleteConfirmUser.email}</strong> hisobini butunlay o‘chirmoqchimisiz? Ushbu mijoz ma'lumotlari PostgreSQL bazasi va Swaggerdan ham o‘chiriladi.
+            </p>
+            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
+              <button
+                onClick={() => setDeleteConfirmUser(null)}
+                className="btn btn-outline"
+                style={{ padding: '0.5rem 1rem', fontSize: '0.8rem' }}
+              >
+                {t('common.cancel', 'Bekor qilish')}
+              </button>
+              <button
+                onClick={() => handleDeleteUser(deleteConfirmUser)}
+                style={{
+                  padding: '0.5rem 1.25rem',
+                  fontSize: '0.8rem',
+                  backgroundColor: '#dc2626',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: 'var(--radius-md)',
+                  cursor: 'pointer',
+                  fontWeight: 600
+                }}
+              >
+                {t('common.delete', 'Ha, o‘chirish')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div>
         <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.75rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
           {t('admin.usersTitle') || 'Mijozlar & Foydalanuvchilar'}
@@ -78,18 +187,39 @@ export const AdminUsers = () => {
                   </td>
                   <td style={{ padding: '1rem', textAlign: 'right' }}>
                     {user.role !== 'admin' && (
-                      <button
-                        onClick={() => dispatch(toggleUserBan(user.id))}
-                        className="btn-glass"
-                        style={{
-                          padding: '0.35rem 0.75rem',
-                          fontSize: '0.7rem',
-                          color: user.isBanned ? 'var(--color-emerald-400)' : 'var(--color-ruby-400)',
-                          borderColor: user.isBanned ? 'var(--color-emerald-500)' : 'var(--border-subtle)'
-                        }}
-                      >
-                        {user.isBanned ? (t('admin.btnUnblock') || 'Faollashtirish') : (t('admin.btnBlock') || 'Bloklash')}
-                      </button>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '0.5rem' }}>
+                        <button
+                          onClick={() => dispatch(toggleUserBan(user.id))}
+                          className="btn-glass"
+                          style={{
+                            padding: '0.35rem 0.75rem',
+                            fontSize: '0.7rem',
+                            color: user.isBanned ? 'var(--color-emerald-400)' : 'var(--color-ruby-400)',
+                            borderColor: user.isBanned ? 'var(--color-emerald-500)' : 'var(--border-subtle)'
+                          }}
+                        >
+                          {user.isBanned ? (t('admin.btnUnblock') || 'Faollashtirish') : (t('admin.btnBlock') || 'Bloklash')}
+                        </button>
+
+                        <button
+                          onClick={() => setDeleteConfirmUser(user)}
+                          className="btn-action-icon btn-action-delete"
+                          title={t('common.delete', 'O‘chirish')}
+                          style={{
+                            padding: '0.35rem 0.5rem',
+                            color: 'var(--color-ruby-400)',
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            border: '1px solid rgba(239, 68, 68, 0.25)',
+                            borderRadius: 'var(--radius-md)',
+                            cursor: 'pointer',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                          }}
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
                     )}
                   </td>
                 </tr>

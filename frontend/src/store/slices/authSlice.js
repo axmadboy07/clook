@@ -194,6 +194,13 @@ const authSlice = createSlice({
       );
       saveToLocalStorage(state);
     },
+    deleteUser: (state, action) => {
+      const targetIdOrEmail = action.payload;
+      state.users = state.users.filter(
+        (u) => u.id !== targetIdOrEmail && u.email !== targetIdOrEmail
+      );
+      saveToLocalStorage(state);
+    },
   },
 });
 
@@ -207,6 +214,7 @@ export const {
   setDefaultAddress,
   changePassword,
   toggleUserBan,
+  deleteUser,
 } = authSlice.actions;
 
 export default authSlice.reducer;

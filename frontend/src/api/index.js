@@ -45,7 +45,11 @@ export const authApi = {
     getAllUsers: () => request("/users"),
     getUserById: (id) => request(`/users/${id}`),
     updateUser: (id, data) => request(`/users/${id}`, { method: "PUT", body: JSON.stringify(data) }),
-    deleteUser: (id) => request(`/users/${id}`, { method: "DELETE" }),
+    deleteUser: (id, email) => {
+        const param = encodeURIComponent(id || email || "");
+        const query = email ? `?email=${encodeURIComponent(email)}` : "";
+        return request(`/users/${param}${query}`, { method: "DELETE" });
+    },
 };
 
 // 2. Products API
