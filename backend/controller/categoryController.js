@@ -3,6 +3,9 @@ const { validateCategory } = require("../validation/categoryValidation");
 const { Op } = require("sequelize");
 
 exports.createCategory = async (req, res) => {
+    if (!req.body.slug && req.body.name) {
+        req.body.slug = req.body.name.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    }
     const { error } = validateCategory(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 

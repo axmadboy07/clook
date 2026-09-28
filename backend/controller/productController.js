@@ -7,6 +7,13 @@ exports.createProduct = async (req, res) => {
     if (error) return res.status(400).send(error.details[0].message);
 
     try {
+        if (!req.body.category_id) {
+            let cat = await Category.findOne();
+            if (!cat) {
+                cat = await Category.create({ name: req.body.category || "Luxury Watches", slug: "luxury-watches" });
+            }
+            req.body.category_id = cat.id;
+        }
         const product = await Product.create(req.body);
         res.status(201).send(product);
     } catch (error) {
