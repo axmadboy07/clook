@@ -287,11 +287,11 @@ export const ProductCard = ({ watch, onQuickView }) => {
           ) : (
             <div style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
               <img
-                src={watch.images?.[0] || 'https://images.unsplash.com/photo-1548169874-53e85f753f1e?auto=format&fit=crop&w=1200&q=80'}
+                src={watch.images?.[0] || '/images/watches/rolex-daytona-gold.jpg'}
                 alt={watch.name}
                 loading="lazy"
                 onError={(e) => {
-                  e.currentTarget.src = 'https://images.unsplash.com/photo-1548169874-53e85f753f1e?auto=format&fit=crop&w=1200&q=80';
+                  e.currentTarget.src = '/images/watches/rolex-daytona-gold.jpg';
                 }}
                 style={{
                   width: '100%',

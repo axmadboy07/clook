@@ -258,8 +258,9 @@ export const CartDrawer = () => {
                     >
                       {/* Watch thumbnail */}
                       <img
-                        src={item.watch?.images?.[0] || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1200&q=80'}
+                        src={item.watch?.images?.[0] || '/images/watches/rolex-daytona-gold.jpg'}
                         alt={item.watch?.name}
+                        onError={(e) => { e.currentTarget.src = '/images/watches/rolex-daytona-gold.jpg'; }}
                         style={{ width: '70px', height: '70px', objectFit: 'cover', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-platinum-subtle)', flexShrink: 0 }}
                       />
 

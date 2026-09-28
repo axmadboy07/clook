@@ -65,9 +65,8 @@ export const WATCHES = [
     description: 'The pinnacle of fine Swiss watchmaking. Featuring an unhindered 60-second flying tourbillon cage floating over a skeletonized gold mainplate, with hand-chamfered bridges and anti-reflective sapphire crystal.',
     story: 'Conceived in the Vallée de Joux, the Royal Tourbillon represents 380 hours of master craftsman engraving. Each wheel and pinion is mirror-polished by hand with gentian wood paste to achieve an unyielding luster.',
     images: [
-      'https://images.unsplash.com/photo-1548169874-53e85f753f1e?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1508057198894-247b23fe5ade?auto=format&fit=crop&w=1200&q=80'
+      '/images/watches/rolex-daytona-gold.jpg',
+      '/images/watches/rolex-daytona-gold-2.jpg'
     ],
     caseMaterial: '18K Yellow Gold',
     strapMaterial: 'Alligator Leather',
@@ -126,9 +125,8 @@ export const WATCHES = [
     description: 'Iconic 1978 integrated bracelet design equipped with modern Nivachron anti-magnetic balance spring.',
     story: 'Manufactured in Le Locle, Switzerland. The waffle tapisserie dial reflects light with exceptional brilliance.',
     images: [
-      'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1508057198894-247b23fe5ade?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=1200&q=80'
+      '/images/watches/tissot-prx-rosegold.jpg',
+      '/images/watches/tissot-prx-rosegold-2.jpg'
     ],
     caseMaterial: '18K Rose Gold',
     strapMaterial: 'Titanium Link',
@@ -175,9 +173,8 @@ export const WATCHES = [
     description: 'Legendary Japanese high-precision diving tool watch with Lumibrite hands and 200-meter water resistance.',
     story: 'Engineered in Shizukuishi Watch Studio. Built to withstand extreme mountain and deep ocean conditions.',
     images: [
-      'https://images.unsplash.com/photo-1614164185128-e4ec99c436d7?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1508057198894-247b23fe5ade?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1542496658-e33a6d0d50f6?auto=format&fit=crop&w=1200&q=80'
+      '/images/watches/seiko-prospex-diver.jpg',
+      '/images/watches/seiko-prospex-diver-2.jpg'
     ],
     caseMaterial: 'Titanium Grade 5',
     strapMaterial: 'Rubber Sport',
@@ -225,9 +222,8 @@ export const WATCHES = [
     description: 'Virtually indestructible tactical timepiece featuring Tough Solar power, Multi-Band 6 atomic timekeeping, and Bluetooth smartphone sync.',
     story: 'Forged in Yamagata Premium Production line in Japan from layers of carbon fiber and polished titanium.',
     images: [
-      'https://images.unsplash.com/photo-1542496658-e33a6d0d50f6?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1547996160-71dfabbce5ed?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&q=80'
+      '/images/watches/gshock-mtg-carbon.jpg',
+      '/images/watches/gshock-mtg-carbon-2.jpg'
     ],
     caseMaterial: 'Forged Carbon',
     strapMaterial: 'Rubber Sport',

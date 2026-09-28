@@ -206,8 +206,9 @@ export const ComparisonModal = () => {
                           <th key={watch.id} style={{ padding: '1rem', minWidth: '190px', textAlign: 'center' }}>
                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
                               <img
-                                src={watch.images?.[0] || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1200&q=80'}
+                                src={watch.images?.[0] || '/images/watches/rolex-daytona-gold.jpg'}
                                 alt={watch.name}
+                                onError={(e) => { e.currentTarget.src = '/images/watches/rolex-daytona-gold.jpg'; }}
                                 style={{ width: '5.5rem', height: '5.5rem', objectFit: 'contain', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-platinum-subtle)', backgroundColor: 'var(--product-img-bg)' }}
                               />
                               <p style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '0.9rem', color: 'var(--color-platinum-100)', margin: 0 }}>

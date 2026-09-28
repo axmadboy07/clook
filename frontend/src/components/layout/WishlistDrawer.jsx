@@ -94,8 +94,9 @@ export const WishlistDrawer = () => {
                       style={{ padding: '1rem', display: 'flex', gap: '1rem', position: 'relative' }}
                     >
                       <img
-                        src={watch.images?.[0] || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1200&q=80'}
+                        src={watch.images?.[0] || '/images/watches/rolex-daytona-gold.jpg'}
                         alt={watch.name}
+                        onError={(e) => { e.currentTarget.src = '/images/watches/rolex-daytona-gold.jpg'; }}
                         style={{ width: '70px', height: '70px', objectFit: 'cover', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-platinum-subtle)', flexShrink: 0 }}
                       />
 

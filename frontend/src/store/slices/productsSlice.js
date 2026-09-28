@@ -1,12 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { WATCHES } from '../../data/watches';
 
-const STORAGE_KEY = 'chronos_products_state_v4';
+const STORAGE_KEY = 'chronos_products_state_v5';
 
 const loadInitialProducts = () => {
   try {
     // Clear legacy keys if present
-    ['chronos_products_state', 'chronos_products_state_v2', 'chronos_products_state_v3'].forEach((k) => {
+    ['chronos_products_state', 'chronos_products_state_v2', 'chronos_products_state_v3', 'chronos_products_state_v4'].forEach((k) => {
       try { localStorage.removeItem(k); } catch(e) {}
     });
 

@@ -61,7 +61,7 @@ export const AdminProducts = () => {
     inStock: true,
     tagline: '',
     description: '',
-    imageUrl: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1200&q=80',
+    imageUrl: '/images/watches/rolex-daytona-gold.jpg',
     details: {
       caseDiameter: '42mm',
       waterResistance: '100m / 10 ATM',
@@ -101,7 +101,7 @@ export const AdminProducts = () => {
       inStock: true,
       tagline: '',
       description: '',
-      imageUrl: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/watches/rolex-daytona-gold.jpg',
       details: {
         caseDiameter: '42mm',
         waterResistance: '100m / 10 ATM',
@@ -320,8 +320,9 @@ export const AdminProducts = () => {
                   <td style={{ padding: '0.75rem 1rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                       <img
-                        src={prod.imageUrl || prod.images?.[0]}
+                        src={prod.imageUrl || prod.images?.[0] || '/images/watches/rolex-daytona-gold.jpg'}
                         alt={prod.name}
+                        onError={(e) => { e.currentTarget.src = '/images/watches/rolex-daytona-gold.jpg'; }}
                         style={{ width: '42px', height: '42px', borderRadius: 'var(--radius-md)', objectFit: 'cover', border: '1px solid var(--border-subtle)' }}
                       />
                       <div>

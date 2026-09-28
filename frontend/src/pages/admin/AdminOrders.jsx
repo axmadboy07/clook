@@ -301,8 +301,9 @@ export const AdminOrders = () => {
                 <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', paddingTop: '0.5rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                     <img
-                      src={order.items?.[0]?.image || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1200&q=80'}
+                      src={order.items?.[0]?.image || '/images/watches/rolex-daytona-gold.jpg'}
                       alt="Product"
+                      onError={(e) => { e.currentTarget.src = '/images/watches/rolex-daytona-gold.jpg'; }}
                       style={{ width: '2.5rem', height: '2.5rem', objectFit: 'contain', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}
                     />
                     <div>
