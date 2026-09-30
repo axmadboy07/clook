@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { UserPlus, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { register } from '../store/slices/authSlice';
-import { authApi } from '../api';
+import { authApi, addressApi } from '../api';
 
 export const RegisterPage = () => {
   const { t } = useTranslation();
@@ -91,6 +91,17 @@ export const RegisterPage = () => {
       }).catch((apiErr) => {
         console.warn('Backend register note:', apiErr.message);
       });
+
+      if (formData.address && formData.address.trim()) {
+        await addressApi.create({
+          user_id: cleanEmail,
+          city: formData.city || 'Toshkent shahri',
+          street: formData.address.trim(),
+          phone: formData.phone.trim()
+        }).catch((addrErr) => {
+          console.warn('Address register note:', addrErr.message);
+        });
+      }
     } catch (err) {
       console.warn('Backend error:', err);
     }

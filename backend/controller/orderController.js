@@ -23,16 +23,18 @@ exports.createOrder = async (req, res) => {
 
         let addressId = req.body.address_id;
         if (!addressId) {
-            let a = await Address.findOne();
-            if (!a) {
+            let a = null;
+            if (req.body.shippingAddress || req.body.address) {
                 a = await Address.create({
                     user_id: userId,
-                    street: req.body.shippingAddress || req.body.address || req.body.street || "Amir Temur shoh ko‘chasi, 107-B",
-                    city: req.body.shippingCity || req.body.city || "Toshkent",
-                    phone: req.body.customerPhone || req.body.phone || "+998901234567"
+                    street: req.body.shippingAddress || req.body.address || req.body.street || "Markaziy manzil",
+                    city: req.body.shippingCity || req.body.city || "Toshkent shahri",
+                    phone: req.body.customerPhone || req.body.phone || "+998900000000"
                 });
+            } else {
+                a = await Address.findOne({ where: { user_id: userId } }) || await Address.findOne();
             }
-            addressId = a.id;
+            addressId = a?.id || 1;
         }
 
         const totalAmount = Number(req.body.total_amount || req.body.totalUSD || req.body.totalAmountUSD || 0);

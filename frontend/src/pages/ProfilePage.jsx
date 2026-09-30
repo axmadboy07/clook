@@ -40,6 +40,7 @@ import {
 import { addToCart } from '../store/slices/cartSlice';
 import { removeFromWishlist } from '../store/slices/wishlistSlice';
 import { formatPriceWithCurrency } from '../store/slices/localeSlice';
+import { addressApi } from '../api';
 
 export const ProfilePage = () => {
   const { t } = useTranslation();
@@ -181,6 +182,17 @@ export const ProfilePage = () => {
       city: newAddrCity,
       address: newAddrStreet,
     }));
+
+    // Backend Swagger sync
+    addressApi.create({
+      user_id: currentUser?.email || currentUser?.id,
+      city: newAddrCity || 'Toshkent shahri',
+      street: newAddrStreet.trim(),
+      phone: currentUser?.phone || '+998900000000'
+    }).catch(err => {
+      console.warn('Address sync error:', err?.message || err);
+    });
+
     setNewAddrStreet('');
     setShowAddAddr(false);
   };

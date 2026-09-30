@@ -136,6 +136,15 @@ export const faqApi = {
     create: (faq) => request("/faqs", { method: "POST", body: JSON.stringify(faq) }),
 };
 
+// 10. Address API
+export const addressApi = {
+    getAll: () => request("/addresses"),
+    getById: (id) => request(`/addresses/${id}`),
+    create: (address) => request("/addresses", { method: "POST", body: JSON.stringify(address) }),
+    update: (id, address) => request(`/addresses/${id}`, { method: "PUT", body: JSON.stringify(address) }),
+    delete: (id) => request(`/addresses/${id}`, { method: "DELETE" }),
+};
+
 export default {
     auth: authApi,
     products: productsApi,
@@ -148,4 +157,5 @@ export default {
     contact: contactApi,
     blog: blogApi,
     faq: faqApi,
+    address: addressApi,
 };
