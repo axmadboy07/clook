@@ -5,7 +5,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
  */
 async function request(endpoint, options = {}) {
     const url = endpoint.startsWith("http") ? endpoint : `${API_BASE_URL}${endpoint}`;
-    
+
     const headers = {
         "Content-Type": "application/json",
         ...(options.headers || {}),

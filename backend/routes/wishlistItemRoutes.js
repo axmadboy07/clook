@@ -38,6 +38,34 @@ router.post("/wishlist-items", wishlistItemController.createWishlistItem);
 
 /**
  * @swagger
+ * /wishlist-items/sync:
+ *   post:
+ *     summary: Synchronize all wishlist items for a user
+ *     tags: [WishlistItems]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - user_id
+ *               - items
+ *             properties:
+ *               user_id:
+ *                 type: string
+ *               items:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *     responses:
+ *       200:
+ *         description: Wishlist synchronized successfully
+ */
+router.post("/wishlist-items/sync", wishlistItemController.syncWishlistItems);
+
+/**
+ * @swagger
  * /wishlist-items:
  *   get:
  *     summary: Get all wishlist items

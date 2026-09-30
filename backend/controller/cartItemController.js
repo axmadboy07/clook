@@ -1,13 +1,118 @@
 const { CartItem, User, Product } = require("../models");
 const { validateCartItem } = require("../validation/cartItemValidation");
+const { Op } = require("sequelize");
+
+const resolveUser = async (userIdOrEmail) => {
+    if (!userIdOrEmail) return null;
+    const numeric = parseInt(String(userIdOrEmail).replace(/\D/g, ''), 10);
+    if (!isNaN(numeric) && numeric > 0 && numeric < 2147483647) {
+        let u = await User.findByPk(numeric);
+        if (u) return u;
+    }
+    let u = await User.findOne({
+        where: {
+            [Op.or]: [
+                { email: String(userIdOrEmail) },
+                { phone: String(userIdOrEmail) },
+                { full_name: String(userIdOrEmail) }
+            ]
+        }
+    });
+    if (u) return u;
+    return await User.findOne();
+};
+
+const resolveProduct = async (prodIdOrName) => {
+    if (!prodIdOrName) return null;
+    const numeric = parseInt(String(prodIdOrName).replace(/\D/g, ''), 10);
+    if (!isNaN(numeric) && numeric > 0 && numeric < 2147483647) {
+        let p = await Product.findByPk(numeric);
+        if (p) return p;
+    }
+    const clean = String(prodIdOrName).replace(/[-_]/g, ' ').trim();
+    const keywords = clean.split(' ').filter(k => k.length > 2);
+    if (keywords.length > 0) {
+        let p = await Product.findOne({
+            where: {
+                [Op.or]: keywords.map(kw => ({
+                    name: { [Op.iLike]: `%${kw}%` }
+                }))
+            }
+        });
+        if (p) return p;
+    }
+    return await Product.findOne();
+};
 
 exports.createCartItem = async (req, res) => {
-    const { error } = validateCartItem(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
-
     try {
-        const cartItem = await CartItem.create(req.body);
+        const { error } = validateCartItem(req.body);
+        if (error) return res.status(400).send(error.details[0].message);
+
+        const user = await resolveUser(req.body.user_id);
+        const prod = await resolveProduct(req.body.product_id);
+
+        if (!user || !prod) {
+            return res.status(404).send("User or Product not found");
+        }
+
+        const qty = parseInt(req.body.quantity, 10) || 1;
+
+        let existing = await CartItem.findOne({
+            where: { user_id: user.id, product_id: prod.id }
+        });
+
+        if (existing) {
+            existing.quantity = (existing.quantity || 1) + qty;
+            await existing.save();
+            return res.status(200).send(existing);
+        }
+
+        const cartItem = await CartItem.create({
+            user_id: user.id,
+            product_id: prod.id,
+            quantity: qty
+        });
         res.status(201).send(cartItem);
+    } catch (error) {
+        res.status(500).send(error.message || error);
+    }
+};
+
+exports.syncCartItems = async (req, res) => {
+    try {
+        const { user_id, items } = req.body;
+        const user = await resolveUser(user_id);
+        if (!user) return res.status(404).send("User not found");
+
+        const itemList = Array.isArray(items) ? items : [];
+
+        await CartItem.destroy({ where: { user_id: user.id } });
+
+        const createdItems = [];
+        for (const itm of itemList) {
+            const prod = await resolveProduct(itm.id || itm.product_id || itm.name || itm.key);
+            if (prod) {
+                const qty = parseInt(itm.quantity, 10) || 1;
+                const existing = createdItems.find(c => c.product_id === prod.id);
+                if (existing) {
+                    existing.quantity += qty;
+                    await existing.save();
+                } else {
+                    const row = await CartItem.create({
+                        user_id: user.id,
+                        product_id: prod.id,
+                        quantity: qty
+                    });
+                    createdItems.push(row);
+                }
+            }
+        }
+
+        res.status(200).send({
+            message: "Cart synced successfully",
+            cart_items: createdItems
+        });
     } catch (error) {
         res.status(500).send(error.message || error);
     }
@@ -15,7 +120,14 @@ exports.createCartItem = async (req, res) => {
 
 exports.getCartItems = async (req, res) => {
     try {
+        const whereClause = {};
+        if (req.query.user_id) {
+            const user = await resolveUser(req.query.user_id);
+            if (user) whereClause.user_id = user.id;
+        }
+
         const cartItems = await CartItem.findAll({
+            where: whereClause,
             include: [
                 { model: User, as: "user" },
                 { model: Product, as: "product" },
@@ -59,8 +171,28 @@ exports.updateCartItem = async (req, res) => {
 
 exports.deleteCartItem = async (req, res) => {
     try {
-        const cartItem = await CartItem.findByPk(req.params.id);
-        if (!cartItem) return res.status(404).send("Cart item not found");
+        const { id } = req.params;
+        const { user_id, product_id } = req.query;
+
+        let cartItem = null;
+        const numeric = parseInt(String(id).replace(/\D/g, ''), 10);
+        if (!isNaN(numeric) && numeric > 0 && numeric < 2147483647) {
+            cartItem = await CartItem.findByPk(numeric);
+        }
+
+        if (!cartItem && (user_id || product_id || id)) {
+            const user = await resolveUser(user_id);
+            const prod = await resolveProduct(product_id || id);
+            if (user && prod) {
+                cartItem = await CartItem.findOne({
+                    where: { user_id: user.id, product_id: prod.id }
+                });
+            }
+        }
+
+        if (!cartItem) {
+            return res.status(200).send({ message: "Cart item already removed or not found" });
+        }
 
         const cartItemData = cartItem.toJSON();
         await cartItem.destroy();

@@ -101,11 +101,11 @@ export const CheckoutPage = () => {
 
     const orderData = {
       id: `ORD-${Date.now().toString().slice(-6)}`,
-      userId: currentUser?.id || 'guest',
-      user_id: currentUser?.id || null,
+      userId: currentUser?.id || currentUser?.email || 7,
+      user_id: currentUser?.id || currentUser?.email || 7,
       customerName: formData.fullName,
-      customerEmail: formData.email,
-      customerPhone: formData.phone,
+      customerEmail: formData.email || currentUser?.email || 'ali@gmail.com',
+      customerPhone: formData.phone || currentUser?.phone || '+998938484848',
       shippingCity: formData.city,
       shippingAddress: formData.address,
       paymentMethod: formData.paymentMethod,

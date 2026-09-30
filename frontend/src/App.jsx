@@ -143,7 +143,7 @@ export function App() {
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
-            
+
             {/* Protected User Routes */}
             <Route element={<UserProtectedRoute />}>
               <Route path="/profile" element={<ProfilePage />} />

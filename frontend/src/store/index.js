@@ -25,4 +25,40 @@ export const store = configureStore({
     }),
 });
 
+// Automatic real-time synchronization with PostgreSQL backend & Swagger
+import('../api').then(({ cartApi, wishlistApi }) => {
+  let prevCartItems = null;
+  let prevWishlistItems = null;
+  let syncTimeout = null;
+
+  store.subscribe(() => {
+    try {
+      const state = store.getState();
+      const currentCart = state.cart?.items;
+      const currentWishlist = state.wishlist?.items;
+      const currentUser = state.auth?.currentUser;
+      const userId = currentUser?.id || currentUser?.email || 7;
+
+      if (currentCart !== prevCartItems || currentWishlist !== prevWishlistItems) {
+        const cartChanged = currentCart !== prevCartItems;
+        const wishChanged = currentWishlist !== prevWishlistItems;
+        prevCartItems = currentCart;
+        prevWishlistItems = currentWishlist;
+
+        clearTimeout(syncTimeout);
+        syncTimeout = setTimeout(() => {
+          if (cartChanged && Array.isArray(currentCart)) {
+            cartApi.sync(currentCart, userId).catch(() => {});
+          }
+          if (wishChanged && Array.isArray(currentWishlist)) {
+            wishlistApi.sync(currentWishlist, userId).catch(() => {});
+          }
+        }, 400);
+      }
+    } catch (e) {
+      // safe catch
+    }
+  });
+}).catch(() => {});
+
 export default store;

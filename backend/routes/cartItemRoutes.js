@@ -41,6 +41,34 @@ router.post("/cart-items", cartItemController.createCartItem);
 
 /**
  * @swagger
+ * /cart-items/sync:
+ *   post:
+ *     summary: Synchronize all cart items for a user
+ *     tags: [CartItems]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - user_id
+ *               - items
+ *             properties:
+ *               user_id:
+ *                 type: string
+ *               items:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *     responses:
+ *       200:
+ *         description: Cart synchronized successfully
+ */
+router.post("/cart-items/sync", cartItemController.syncCartItems);
+
+/**
+ * @swagger
  * /cart-items:
  *   get:
  *     summary: Get all cart items
