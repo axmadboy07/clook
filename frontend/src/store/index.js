@@ -38,7 +38,7 @@ const syncCurrentState = () => {
     const currentCart = state.cart?.items;
     const currentWishlist = state.wishlist?.items;
     const currentUser = state.auth?.currentUser;
-    const userId = currentUser?.id || currentUser?.email || 7;
+    const userIdentifier = currentUser?.email || (typeof currentUser?.id === 'number' ? currentUser.id : null) || currentUser?.phone || currentUser?.name || 8;
 
     const cartJson = JSON.stringify(currentCart || []);
     const wishJson = JSON.stringify(currentWishlist || []);
@@ -50,12 +50,12 @@ const syncCurrentState = () => {
       clearTimeout(syncTimeout);
       syncTimeout = setTimeout(() => {
         if (Array.isArray(currentCart)) {
-          cartApi.sync(currentCart, userId).catch((err) => {
+          cartApi.sync(currentCart, userIdentifier).catch((err) => {
             console.warn("Cart sync warning:", err?.message || err);
           });
         }
         if (Array.isArray(currentWishlist)) {
-          wishlistApi.sync(currentWishlist, userId).catch((err) => {
+          wishlistApi.sync(currentWishlist, userIdentifier).catch((err) => {
             console.warn("Wishlist sync warning:", err?.message || err);
           });
         }

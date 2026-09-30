@@ -4,30 +4,36 @@ const { Op } = require("sequelize");
 
 const resolveUser = async (userIdOrEmail) => {
     if (!userIdOrEmail) {
-        return await User.findByPk(7) || await User.findOne();
+        return await User.findByPk(8) || await User.findByPk(7) || await User.findOne();
     }
     const rawStr = String(userIdOrEmail).trim();
-    const numeric = parseInt(rawStr, 10);
-    if (!isNaN(numeric) && String(numeric) === rawStr) {
-        const u = await User.findByPk(numeric);
-        if (u) return u;
-    }
+    // 1. Check email (case-insensitive)
     let u = await User.findOne({
         where: {
+            email: { [Op.iLike]: rawStr }
+        }
+    });
+    if (u) return u;
+
+    // 2. Check phone or full_name
+    u = await User.findOne({
+        where: {
             [Op.or]: [
-                { email: rawStr },
                 { phone: rawStr },
-                { full_name: rawStr }
+                { full_name: { [Op.iLike]: rawStr } }
             ]
         }
     });
     if (u) return u;
-    const digits = parseInt(rawStr.replace(/\D/g, ''), 10);
-    if (!isNaN(digits) && digits > 0) {
-        const byDigits = await User.findByPk(digits);
-        if (byDigits) return byDigits;
+
+    // 3. Exact integer ID check
+    const numeric = parseInt(rawStr, 10);
+    if (!isNaN(numeric) && String(numeric) === rawStr && numeric > 0 && numeric < 2147483647) {
+        u = await User.findByPk(numeric);
+        if (u) return u;
     }
-    return await User.findByPk(7) || await User.findOne();
+
+    return await User.findByPk(8) || await User.findByPk(7) || await User.findOne();
 };
 
 const resolveProduct = async (prodIdOrName) => {
