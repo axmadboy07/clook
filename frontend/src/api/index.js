@@ -72,17 +72,31 @@ export const categoriesApi = {
 
 // 4. Cart API
 export const cartApi = {
-    getAll: () => request("/cart-items"),
+    getAll: (params) => {
+        const q = params ? `?${new URLSearchParams(params).toString()}` : "";
+        return request(`/cart-items${q}`);
+    },
     addItem: (item) => request("/cart-items", { method: "POST", body: JSON.stringify(item) }),
     updateItem: (id, data) => request(`/cart-items/${id}`, { method: "PUT", body: JSON.stringify(data) }),
     removeItem: (id) => request(`/cart-items/${id}`, { method: "DELETE" }),
+    sync: (items, userId) => request("/cart-items/sync", {
+        method: "POST",
+        body: JSON.stringify({ user_id: userId, items })
+    }),
 };
 
 // 5. Wishlist API
 export const wishlistApi = {
-    getAll: () => request("/wishlist-items"),
+    getAll: (params) => {
+        const q = params ? `?${new URLSearchParams(params).toString()}` : "";
+        return request(`/wishlist-items${q}`);
+    },
     addItem: (item) => request("/wishlist-items", { method: "POST", body: JSON.stringify(item) }),
     removeItem: (id) => request(`/wishlist-items/${id}`, { method: "DELETE" }),
+    sync: (items, userId) => request("/wishlist-items/sync", {
+        method: "POST",
+        body: JSON.stringify({ user_id: userId, items })
+    }),
 };
 
 // 6. Orders API

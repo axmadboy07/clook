@@ -2,9 +2,9 @@ const Joi = require("joi");
 
 const validateCartItem = (cartItem) => {
     const Schema = Joi.object({
-        user_id: Joi.number().integer().required(),
-        product_id: Joi.number().integer().required(),
-        quantity: Joi.number().integer().min(1)
+        user_id: Joi.alternatives().try(Joi.number().integer(), Joi.string()).required(),
+        product_id: Joi.alternatives().try(Joi.number().integer(), Joi.string()).required(),
+        quantity: Joi.number().integer().min(1).optional()
     });
     return Schema.validate(cartItem);
 };

@@ -8,6 +8,8 @@ import ordersReducer from './slices/ordersSlice';
 import notificationsReducer from './slices/notificationsSlice';
 import compareReducer from './slices/compareSlice';
 
+import { cartApi, wishlistApi } from '../api';
+
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -26,39 +28,47 @@ export const store = configureStore({
 });
 
 // Automatic real-time synchronization with PostgreSQL backend & Swagger
-import('../api').then(({ cartApi, wishlistApi }) => {
-  let prevCartItems = null;
-  let prevWishlistItems = null;
-  let syncTimeout = null;
+let prevCartItems = null;
+let prevWishlistItems = null;
+let syncTimeout = null;
 
-  store.subscribe(() => {
-    try {
-      const state = store.getState();
-      const currentCart = state.cart?.items;
-      const currentWishlist = state.wishlist?.items;
-      const currentUser = state.auth?.currentUser;
-      const userId = currentUser?.id || currentUser?.email || 7;
+const syncCurrentState = () => {
+  try {
+    const state = store.getState();
+    const currentCart = state.cart?.items;
+    const currentWishlist = state.wishlist?.items;
+    const currentUser = state.auth?.currentUser;
+    const userId = currentUser?.id || currentUser?.email || 7;
 
-      if (currentCart !== prevCartItems || currentWishlist !== prevWishlistItems) {
-        const cartChanged = currentCart !== prevCartItems;
-        const wishChanged = currentWishlist !== prevWishlistItems;
-        prevCartItems = currentCart;
-        prevWishlistItems = currentWishlist;
+    const cartJson = JSON.stringify(currentCart || []);
+    const wishJson = JSON.stringify(currentWishlist || []);
 
-        clearTimeout(syncTimeout);
-        syncTimeout = setTimeout(() => {
-          if (cartChanged && Array.isArray(currentCart)) {
-            cartApi.sync(currentCart, userId).catch(() => {});
-          }
-          if (wishChanged && Array.isArray(currentWishlist)) {
-            wishlistApi.sync(currentWishlist, userId).catch(() => {});
-          }
-        }, 400);
-      }
-    } catch (e) {
-      // safe catch
+    if (cartJson !== prevCartItems || wishJson !== prevWishlistItems) {
+      prevCartItems = cartJson;
+      prevWishlistItems = wishJson;
+
+      clearTimeout(syncTimeout);
+      syncTimeout = setTimeout(() => {
+        if (Array.isArray(currentCart)) {
+          cartApi.sync(currentCart, userId).catch((err) => {
+            console.warn("Cart sync warning:", err?.message || err);
+          });
+        }
+        if (Array.isArray(currentWishlist)) {
+          wishlistApi.sync(currentWishlist, userId).catch((err) => {
+            console.warn("Wishlist sync warning:", err?.message || err);
+          });
+        }
+      }, 250);
     }
-  });
-}).catch(() => {});
+  } catch (e) {
+    // safe catch
+  }
+};
+
+store.subscribe(syncCurrentState);
+
+// Trigger initial sync on application boot
+setTimeout(syncCurrentState, 500);
 
 export default store;
